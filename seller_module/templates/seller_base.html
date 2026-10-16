@@ -78,9 +78,8 @@
     </div>
 
     <!-- Mobile Backdrop -->
-    <div
-        id="sidebar-backdrop"
-        class="fixed inset-0 z-30 hidden bg-black/50 md:hidden">
+    <div id="sidebar-backdrop"
+         class="fixed inset-0 z-30 hidden bg-black/50 md:hidden">
     </div>
 
     <!-- Sidebar -->
@@ -114,7 +113,6 @@
         <!-- Navigation -->
         <nav class="flex flex-1 flex-col gap-2">
 
-            <!-- Main Menu -->
             <p class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[.18em] text-emerald-100/55">
                 Main Menu
             </p>
@@ -167,6 +165,13 @@
                 <span class="w-6 text-center text-lg">₹</span>
                 <span>Seller Wallet</span>
             </a>
+
+            <!-- Bank Details -->
+            <a href="{% url 'bank_details' %}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#ffc845] hover:text-[#123f3a]">
+                    <span class="w-6 text-center text-lg">▤</span>
+                    <span>Bank Details</span>
+                </a>
 
             <!-- Tax and Audit Reports -->
             <a href="{% url 'seller_tax_audit_reports' %}"
@@ -245,7 +250,6 @@
         <!-- Page Content -->
         <main class="min-w-0 p-4 sm:p-6 lg:p-8">
 
-            <!-- Django Messages -->
             {% if messages %}
                 <div class="mx-auto mb-6 max-w-7xl space-y-3">
                     {% for message in messages %}
@@ -336,6 +340,8 @@
         }
     </script>
 
+    <!-- Page-Specific JavaScript -->
+    {% block extra_js %}{% endblock %}
+
 </body>
 </html>
-
