@@ -1,808 +1,356 @@
+
 {% extends "seller_base.html" %}
 
-{% block title %}
-Bank Details
-{% endblock %}
+{% block title %}Bank Details | ShopHub{% endblock %}
 
-{% block extra_css %}
+{% block page_heading %}Bank Details{% endblock %}
 
-<style>
-
-.bank-page {
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-
-/* =========================
-   PAGE HEADER
-========================= */
-
-.page-header {
-    margin-bottom: 24px;
-}
-
-.page-header h1 {
-    margin: 0;
-    font-size: 28px;
-    color: #123f3a;
-}
-
-.page-header p {
-    margin: 7px 0 0;
-    color: #6b7c78;
-    font-size: 14px;
-}
-
-
-/* =========================
-   SAVED BANK CARD
-========================= */
-
-.saved-bank-card {
-    background: #ffffff;
-    border: 1px solid #e1ebe8;
-    border-radius: 18px;
-    padding: 28px 30px;
-    margin-bottom: 24px;
-    box-shadow: 0 8px 25px rgba(18, 63, 58, 0.06);
-}
-
-
-/* Header */
-
-.saved-bank-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 15px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e7eeec;
-}
-
-.saved-bank-header h2 {
-    margin: 0;
-    color: #123f3a;
-    font-size: 19px;
-}
-
-.saved-bank-header p {
-    margin: 5px 0 0;
-    color: #71827e;
-    font-size: 13px;
-}
-
-
-/* Active badge */
-
-.bank-status {
-    padding: 6px 11px;
-    border-radius: 20px;
-    background: #e7f4ee;
-    color: #18794e;
-    font-size: 11px;
-    font-weight: 700;
-}
-
-
-/* Bank summary */
-
-.bank-summary {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 22px 0;
-}
-
-.bank-icon {
-    width: 48px;
-    height: 48px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 12px;
-    background: #e7f2ef;
-
-    font-size: 22px;
-}
-
-.bank-summary h3 {
-    margin: 0;
-    color: #123f3a;
-    font-size: 17px;
-}
-
-.bank-summary p {
-    margin: 4px 0 0;
-    color: #71827e;
-    font-size: 13px;
-}
-
-
-/* Header actions */
-
-.bank-card-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-
-/* Edit button */
-
-.edit-bank-button {
-    padding: 8px 13px;
-
-    border: 1px solid #d7e3df;
-    border-radius: 9px;
-
-    background: #ffffff;
-    color: #123f3a;
-
-    font-size: 12px;
-    font-weight: 700;
-
-    cursor: pointer;
-
-    transition: 0.2s ease;
-}
-
-.edit-bank-button:hover {
-    background: #e7f2ef;
-    border-color: #b8d3cd;
-}
-
-
-/* Details */
-
-.bank-details-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px 40px;
-}
-
-.bank-detail-item {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.bank-detail-item span {
-    color: #7b8b87;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-.bank-detail-item strong {
-    color: #294a45;
-    font-size: 14px;
-}
-
-
-/* Bottom edit button */
-
-.bank-edit-action {
-    display: flex;
-    justify-content: flex-end;
-
-    margin-top: 22px;
-    padding-top: 18px;
-
-    border-top: 1px solid #e7eeec;
-}
-
-
-/* Hidden edit form */
-
-.bank-edit-card {
-    display: none;
-}
-
-
-/* =========================
-   EDIT BANK CARD
-========================= */
-
-.bank-card {
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 30px;
-
-    box-shadow: 0 8px 25px rgba(18, 63, 58, 0.07);
-
-    border: 1px solid #e1ebe8;
-}
-
-.card-header {
-    padding-bottom: 20px;
-    margin-bottom: 24px;
-
-    border-bottom: 1px solid #e7eeec;
-}
-
-.card-header h2 {
-    margin: 0;
-    color: #123f3a;
-    font-size: 19px;
-}
-
-.card-header p {
-    margin: 6px 0 0;
-    color: #71827e;
-    font-size: 13px;
-}
-
-
-/* =========================
-   FORM
-========================= */
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 22px 24px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group label {
-    margin-bottom: 8px;
-
-    color: #294a45;
-
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.form-group input {
-    width: 100%;
-    box-sizing: border-box;
-
-    padding: 12px 14px;
-
-    border: 1px solid #d7e3df;
-    border-radius: 10px;
-
-    background: #fbfdfc;
-
-    color: #183f3a;
-
-    font-size: 14px;
-
-    outline: none;
-
-    transition: 0.2s ease;
-}
-
-.form-group input:focus {
-    border-color: #7aa9a1;
-
-    background: #ffffff;
-
-    box-shadow:
-        0 0 0 3px rgba(18, 63, 58, 0.07);
-}
-
-.form-group input::placeholder {
-    color: #a2afac;
-}
-
-.form-actions {
-display: flex;
-align-items: center;
-gap: 12px;
-margin-top: 28px;
-}
-
-.form-actions .save-button {
-margin-top: 0;
-}
-
-.cancel-button {
-padding: 12px 20px;
-
-
-border: 1px solid #d7e3df;
-border-radius: 10px;
-
-background: #ffffff;
-color: #123f3a;
-
-font-size: 13px;
-font-weight: 700;
-
-cursor: pointer;
-
-transition: 0.2s ease;
-
-
-}
-
-.cancel-button:hover {
-background: #f1f6f4;
-}
-
-
-
-/* =========================
-   SAVE BUTTON
-========================= */
-
-.save-button {
-    margin-top: 28px;
-
-    padding: 12px 20px;
-
-    border: none;
-    border-radius: 10px;
-
-    background: #123f3a;
-
-    color: #ffffff;
-
-    font-size: 13px;
-    font-weight: 700;
-
-    cursor: pointer;
-
-    transition: 0.2s ease;
-}
-
-.save-button:hover {
-    background: #0d332f;
-}
-
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media (max-width: 700px) {
-
-    .saved-bank-card {
-        padding: 22px;
-    }
-
-    .bank-card {
-        padding: 22px;
-    }
-
-    .bank-details-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-        gap: 18px;
-    }
-
-    .page-header h1 {
-        font-size: 24px;
-    }
-
-    .save-button {
-        width: 100%;
-    }
-
-}
-
-</style>
-
-{% endblock %}
+{% block bank_details_active %}bg-[#ffc845] !text-[#123f3a]{% endblock %}
 
 {% block content %}
 
-<div class="bank-page">
+<div class="mx-auto max-w-5xl space-y-6">
 
-
-<!-- =========================
-     PAGE HEADER
-========================== -->
-
-<div class="page-header">
-
-    <h1>
-        Bank Details
-    </h1>
-
-    <p>
-        Manage the bank account used for your seller payouts.
-    </p>
-
-</div>
-
-
-<!-- =========================
-     SAVED BANK ACCOUNT
-========================== -->
-
-<div class="saved-bank-card">
-
-
-    <div class="saved-bank-header">
+    <!-- Page Header -->
+    <div class="flex items-center gap-3">
+        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e7f2ef] text-[#123f3a]">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="h-6 w-6"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor"
+                 stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3 10h18M5 10V20M9 10V20M15 10V20M19 10V20M3 20h18M12 3 3 8h18l-9-5Z"/>
+            </svg>
+        </div>
 
         <div>
-
-            <h2>
-                My Bank Account
-            </h2>
-
-            <p>
-                Your saved payout account
+            <h1 class="text-2xl font-bold tracking-tight text-[#123f3a] sm:text-3xl">
+                Bank Details
+            </h1>
+            <p class="mt-1 text-sm text-gray-500">
+                Manage the bank account used for your seller payouts.
             </p>
-
         </div>
-
-
-        <div class="bank-card-actions">
-
-            <span class="bank-status">
-                Active
-            </span>
-
-        </div>
-
     </div>
 
+    <!-- Saved Bank Account Card -->
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
 
-    <!-- Bank name -->
-
-    <div class="bank-summary">
-
-        <div class="bank-icon">
-            🏦
-        </div>
-
-
-        <div>
-
-            <h3>
-
-                {% if bank_details.bank_name %}
-
-                    {{ bank_details.bank_name }}
-
-                {% else %}
-
-                    Bank account not added
-
-                {% endif %}
-
-            </h3>
-
-
-            {% if bank_details.branch_name %}
-
-                <p>
-                    {{ bank_details.branch_name }}
+        <div class="flex flex-col gap-3 border-b border-gray-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+            <div>
+                <h2 class="text-lg font-bold text-[#123f3a]">
+                    My Bank Account
+                </h2>
+                <p class="mt-1 text-sm text-gray-500">
+                    Your saved payout account
                 </p>
+            </div>
 
+            {% if bank_details.account_number and bank_details.bank_name and bank_details.account_holder_name and bank_details.ifsc_code %}
+                <span class="inline-flex w-fit items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">
+                    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                    Details Added
+                </span>
+            {% else %}
+                <span class="inline-flex w-fit items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700">
+                    <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+                    Not Configured
+                </span>
             {% endif %}
-
         </div>
 
-    </div>
-
-
-    <!-- Bank information -->
-
-    <div class="bank-details-grid">
-
-
-        <!-- Account Holder -->
-
-        <div class="bank-detail-item">
-
-            <span>
-                Account Holder
-            </span>
-
-            <strong>
-
-                {% if bank_details.account_holder_name %}
-
-                    {{ bank_details.account_holder_name }}
-
-                {% else %}
-
-                    Not added
-
-                {% endif %}
-
-            </strong>
-
-        </div>
-
-
-        <!-- Account Number -->
-
-        <div class="bank-detail-item">
-
-            <span>
-                Account Number
-            </span>
-
-            <strong>
-
-                {% if bank_details.account_number %}
-
-                    XXXX XXXX
-                    {{ bank_details.account_number|slice:"-4:" }}
-
-                {% else %}
-
-                    Not added
-
-                {% endif %}
-
-            </strong>
-
-        </div>
-
-
-        <!-- IFSC -->
-
-        <div class="bank-detail-item">
-
-            <span>
-                IFSC Code
-            </span>
-
-            <strong>
-
-                {% if bank_details.ifsc_code %}
-
-                    {{ bank_details.ifsc_code }}
-
-                {% else %}
-
-                    Not added
-
-                {% endif %}
-
-            </strong>
-
-        </div>
-
-
-        <!-- Bank -->
-
-        <div class="bank-detail-item">
-
-            <span>
-                Bank
-            </span>
-
-            <strong>
-
-                {% if bank_details.bank_name %}
-
-                    {{ bank_details.bank_name }}
-
-                {% else %}
-
-                    Not added
-
-                {% endif %}
-
-            </strong>
-
-        </div>
-
-
-    </div>
-
-
-    <!-- Bottom edit button -->
-
-    <div class="bank-edit-action">
-
-        <button
-            type="button"
-            class="edit-bank-button"
-            onclick="toggleBankEdit()"
-        >
-            Edit Details
-        </button>
-
-    </div>
-
-
-</div>
-
-
-<!-- =========================
-     EDIT BANK DETAILS
-========================== -->
-
-<div
-    class="bank-card bank-edit-card"
-    id="bank-edit-card"
->
-
-
-    <div class="card-header">
-
-        <h2>
-            Edit Bank Details
-        </h2>
-
-        <p>
-            Update your account information whenever needed.
-        </p>
-
-    </div>
-
-
-    <form method="POST">
-
-        {% csrf_token %}
-
-
-        <div class="form-grid">
-
-
-            <!-- Account Holder -->
-
-            <div class="form-group">
-
-                <label>
-                    Account Holder Name
-                </label>
-
-                <input
-                    type="text"
-                    name="account_holder_name"
-                    value="{{ bank_details.account_holder_name }}"
-                    placeholder="Enter account holder name"
-                    required
-                >
-
+        <!-- Bank Summary -->
+        <div class="flex items-center gap-4 px-5 py-6 sm:px-7">
+            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#e7f2ef] text-[#123f3a]">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-7 w-7"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor"
+                     stroke-width="1.7">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M3 10h18M5 10V20M9 10V20M15 10V20M19 10V20M3 20h18M12 3 3 8h18l-9-5Z"/>
+                </svg>
             </div>
 
+            <div class="min-w-0">
+                <h3 class="break-words text-base font-bold text-[#123f3a] sm:text-lg">
+                    {% if bank_details.bank_name %}
+                        {{ bank_details.bank_name }}
+                    {% else %}
+                        Bank account not added
+                    {% endif %}
+                </h3>
 
-            <!-- Bank Name -->
+                <p class="mt-1 text-sm text-gray-500">
+                    {% if bank_details.branch_name %}
+                        {{ bank_details.branch_name }}
+                    {% else %}
+                        Add your bank information to get started.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
 
-            <div class="form-group">
+        <!-- Bank Information -->
+        <div class="grid grid-cols-1 gap-5 border-t border-gray-100 px-5 py-6 sm:grid-cols-2 sm:gap-x-10 sm:px-7">
 
-                <label>
-                    Bank Name
-                </label>
-
-                <input
-                    type="text"
-                    name="bank_name"
-                    value="{{ bank_details.bank_name }}"
-                    placeholder="Enter bank name"
-                    required
-                >
-
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    Account Holder
+                </p>
+                <p class="mt-2 break-words text-sm font-semibold text-gray-800">
+                    {% if bank_details.account_holder_name %}
+                        {{ bank_details.account_holder_name }}
+                    {% else %}
+                        Not added
+                    {% endif %}
+                </p>
             </div>
 
-
-            <!-- Account Number -->
-
-            <div class="form-group">
-
-                <label>
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
                     Account Number
-                </label>
-
-                <input
-                    type="text"
-                    name="account_number"
-                    value="{{ bank_details.account_number }}"
-                    placeholder="Enter account number"
-                    required
-                >
-
+                </p>
+                <p class="mt-2 text-sm font-semibold tracking-wide text-gray-800">
+                    {% if bank_details.account_number %}
+                        •••• •••• {{ bank_details.account_number|slice:"-4:" }}
+                    {% else %}
+                        Not added
+                    {% endif %}
+                </p>
             </div>
 
-
-            <!-- IFSC -->
-
-            <div class="form-group">
-
-                <label>
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
                     IFSC Code
-                </label>
-
-                <input
-                    type="text"
-                    name="ifsc_code"
-                    value="{{ bank_details.ifsc_code }}"
-                    placeholder="Enter IFSC code"
-                    required
-                >
-
+                </p>
+                <p class="mt-2 break-words text-sm font-semibold uppercase text-gray-800">
+                    {% if bank_details.ifsc_code %}
+                        {{ bank_details.ifsc_code }}
+                    {% else %}
+                        Not added
+                    {% endif %}
+                </p>
             </div>
 
-
-            <!-- Branch -->
-
-            <div class="form-group">
-
-                <label>
-                    Branch Name
-                </label>
-
-                <input
-                    type="text"
-                    name="branch_name"
-                    value="{{ bank_details.branch_name }}"
-                    placeholder="Enter branch name"
-                >
-
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    Bank
+                </p>
+                <p class="mt-2 break-words text-sm font-semibold text-gray-800">
+                    {% if bank_details.bank_name %}
+                        {{ bank_details.bank_name }}
+                    {% else %}
+                        Not added
+                    {% endif %}
+                </p>
             </div>
-
 
         </div>
 
+        <!-- Edit Action -->
+        <div class="flex justify-end border-t border-gray-100 bg-gray-50/70 px-5 py-4 sm:px-7">
+            <button type="button"
+                    id="edit-bank-button"
+                    onclick="toggleBankEdit(true)"
+                    aria-controls="bank-edit-card"
+                    aria-expanded="false"
+                    class="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-[#123f3a] shadow-sm transition hover:border-[#b8d3cd] hover:bg-[#e7f2ef] focus:outline-none focus:ring-2 focus:ring-[#123f3a]/20">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-4 w-4"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor"
+                     stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="m16.862 4.487 2.651 2.651M4 20l4.5-1 11.013-11.013a1.875 1.875 0 0 0-2.652-2.652L5.848 16.348 4 20Z"/>
+                </svg>
+                Edit Details
+            </button>
+        </div>
+    </div>
 
-        <div class="form-actions">
+    <!-- Edit Bank Details Form -->
+    <div id="bank-edit-card"
+         class="hidden overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
 
+        <div class="border-b border-gray-100 px-5 py-5 sm:px-7">
+            <h2 class="text-lg font-bold text-[#123f3a]">
+                Edit Bank Details
+            </h2>
+            <p class="mt-1 text-sm text-gray-500">
+                Update your account information whenever needed.
+            </p>
+        </div>
 
-<button
-    type="submit"
-    class="save-button"
->
-    Save Bank Details
-</button>
+        <form method="POST" class="p-5 sm:p-7">
+            {% csrf_token %}
 
-<button
-    type="button"
-    class="cancel-button"
-    onclick="toggleBankEdit()"
->
-    Cancel
-</button>
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
 
+                <div>
+                    <label for="account_holder_name"
+                           class="mb-2 block text-sm font-semibold text-gray-700">
+                        Account Holder Name
+                    </label>
+                    <input id="account_holder_name"
+                           type="text"
+                           name="account_holder_name"
+                           value="{{ bank_details.account_holder_name|default:'' }}"
+                           placeholder="Enter account holder name"
+                           autocomplete="name"
+                           required
+                           class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#123f3a] focus:bg-white focus:ring-4 focus:ring-[#123f3a]/10">
+                </div>
+
+                <div>
+                    <label for="bank_name"
+                           class="mb-2 block text-sm font-semibold text-gray-700">
+                        Bank Name
+                    </label>
+                    <input id="bank_name"
+                           type="text"
+                           name="bank_name"
+                           value="{{ bank_details.bank_name|default:'' }}"
+                           placeholder="Enter bank name"
+                           required
+                           class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#123f3a] focus:bg-white focus:ring-4 focus:ring-[#123f3a]/10">
+                </div>
+
+                <div>
+                    <label for="account_number"
+                           class="mb-2 block text-sm font-semibold text-gray-700">
+                        Account Number
+                    </label>
+                    <input id="account_number"
+                           type="text"
+                           name="account_number"
+                           value="{{ bank_details.account_number|default:'' }}"
+                           placeholder="Enter account number"
+                           inputmode="numeric"
+                           autocomplete="off"
+                           required
+                           class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#123f3a] focus:bg-white focus:ring-4 focus:ring-[#123f3a]/10">
+                </div>
+
+                <div>
+                    <label for="ifsc_code"
+                           class="mb-2 block text-sm font-semibold text-gray-700">
+                        IFSC Code
+                    </label>
+                    <input id="ifsc_code"
+                           type="text"
+                           name="ifsc_code"
+                           value="{{ bank_details.ifsc_code|default:'' }}"
+                           placeholder="e.g. SBIN0001234"
+                           autocapitalize="characters"
+                           required
+                           class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm uppercase text-gray-800 outline-none transition placeholder:normal-case placeholder:text-gray-400 focus:border-[#123f3a] focus:bg-white focus:ring-4 focus:ring-[#123f3a]/10">
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label for="branch_name"
+                           class="mb-2 block text-sm font-semibold text-gray-700">
+                        Branch Name
+                        <span class="font-normal text-gray-400">(Optional)</span>
+                    </label>
+                    <input id="branch_name"
+                           type="text"
+                           name="branch_name"
+                           value="{{ bank_details.branch_name|default:'' }}"
+                           placeholder="Enter branch name"
+                           class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-[#123f3a] focus:bg-white focus:ring-4 focus:ring-[#123f3a]/10">
+                </div>
+
+            </div>
+
+            <!-- Security Note -->
+            <div class="mt-6 flex items-start gap-3 rounded-xl border border-amber-100 bg-amber-50 p-4">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="mt-0.5 h-5 w-5 shrink-0 text-amber-700"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor"
+                     stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 9v3.75m0 3h.008v.008H12v-.008ZM10.29 3.86 1.82 18.1A1.5 1.5 0 0 0 3.11 20.35h17.78a1.5 1.5 0 0 0 1.29-2.25L13.71 3.86a1.99 1.99 0 0 0-3.42 0Z"/>
+                </svg>
+                <p class="text-xs leading-5 text-amber-800">
+                    Check your bank details carefully before saving. These details may be used for seller payouts.
+                </p>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="mt-7 flex flex-col-reverse gap-3 border-t border-gray-100 pt-5 sm:flex-row sm:justify-end">
+
+                <button type="button"
+                        onclick="toggleBankEdit(false)"
+                        class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-5 py-3 text-sm font-semibold text-gray-600 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#123f3a] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0d332f] focus:outline-none focus:ring-4 focus:ring-[#123f3a]/20">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-4 w-4"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor"
+                         stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="m5 12 4 4L19 6"/>
+                    </svg>
+                    Save Bank Details
+                </button>
+
+            </div>
+        </form>
+    </div>
 
 </div>
-
-
-
-    </form>
-
-
-</div>
-
-
-</div>
-
-{% block extra_js %}
-
-<script>
-
-function toggleBankEdit() {
-
-    const editCard = document.getElementById('bank-edit-card');
-
-    if (
-        editCard.style.display === 'none' ||
-        editCard.style.display === ''
-    ) {
-
-        editCard.style.display = 'block';
-
-    } else {
-
-        editCard.style.display = 'none';
-
-    }
-
-}
-
-</script>
 
 {% endblock %}
 
+{% block extra_js %}
+<script>
+    function toggleBankEdit(forceOpen) {
+        const editCard = document.getElementById('bank-edit-card');
+        const editButton = document.getElementById('edit-bank-button');
+
+        if (!editCard || !editButton) {
+            return;
+        }
+
+        const shouldOpen = typeof forceOpen === 'boolean'
+            ? forceOpen
+            : editCard.classList.contains('hidden');
+
+        if (shouldOpen) {
+            editCard.classList.remove('hidden');
+            editButton.setAttribute('aria-expanded', 'true');
+
+            editCard.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            const firstInput = editCard.querySelector('input');
+
+            if (firstInput) {
+                firstInput.focus({ preventScroll: true });
+            }
+        } else {
+            editCard.classList.add('hidden');
+            editButton.setAttribute('aria-expanded', 'false');
+
+            editButton.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            });
+        }
+    }
+</script>
 {% endblock %}
