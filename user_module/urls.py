@@ -1,0 +1,124 @@
+from django.urls import path
+from .views import(
+     customer_dashboard,
+     customer_home,
+     wishlist,
+     customer_register,
+     customer_login,
+     customer_logout,
+      customer_product_detail,
+      add_to_cart,
+      customer_cart,
+      update_cart_quantity,
+      remove_from_cart,
+      customer_checkout,
+      customer_payment,
+      customer_order_success,
+      customer_orders,
+      buy_now,
+      customer_cancel_order,
+      customer_return_order,
+      add_to_wishlist,
+      remove_from_wishlist,
+      toggle_wishlist,
+      customer_product_list,
+      submit_review,
+      customer_store_detail
+)
+
+urlpatterns = [
+    path('dashboard/', customer_dashboard, name='customer_dashboard'),
+    path('',customer_home,name='customer_home'),
+    path('wishlist/',wishlist,name='wishlist'),
+    path(
+    'wishlist/add/<int:product_id>/',
+    add_to_wishlist,
+    name='add_to_wishlist'
+    ),
+    path(
+        'wishlist/remove/<int:product_id>/',
+        remove_from_wishlist,
+        name='remove_from_wishlist'
+    ),
+    path(
+    'wishlist/toggle/<int:product_id>/',
+     toggle_wishlist,
+    name='toggle_wishlist'
+    ),
+    path('product/<int:product_id>/review/', submit_review, name='submit_review'),
+    path(
+    'products/',
+    customer_product_list,
+    name='customer_product_list'
+    ),
+    path('register/', customer_register, name='customer_register'),
+    path('login/', customer_login, name='customer_login'),
+    path('logout/', customer_logout, name='customer_logout'),
+        
+    path(
+    'product/<int:product_id>/',
+    customer_product_detail,
+    name='customer_product_detail'
+    ),
+    path(
+    'cart/add/<int:product_id>/',
+    add_to_cart,
+    name='add_to_cart'
+    ),
+    path(
+    'cart/',
+    customer_cart,
+    name='customer_cart'
+    ),
+    path(
+    'store/<int:store_id>/',
+    customer_store_detail,
+    name='customer_store_detail'
+),
+    path(
+    'cart/update/<int:item_id>/<str:action>/',
+    update_cart_quantity,
+    name='update_cart_quantity'
+    ),
+    path(
+    'cart/remove/<int:item_id>/',
+    remove_from_cart,
+    name='remove_from_cart'
+    ),
+    path(
+    'checkout/',
+    customer_checkout,
+    name='customer_checkout'
+    ),
+    path(
+    'payment/',
+    customer_payment,
+    name='customer_payment'
+    ),
+    path(
+    'order-success/<int:order_id>/',
+    customer_order_success,
+    name='customer_order_success'
+    ),
+    path(
+    'orders/',
+    customer_orders,
+    name='customer_orders'
+    ),
+    path(
+    'orders/<int:order_id>/cancel/',
+    customer_cancel_order,
+    name='customer_cancel_order'
+    ),
+    path(
+    'orders/<int:order_id>/return/',
+     customer_return_order,
+    name='customer_return_order'
+    ),
+    path(
+    'buy-now/<int:product_id>/',
+    buy_now,
+    name='buy_now'
+    ),
+   
+]

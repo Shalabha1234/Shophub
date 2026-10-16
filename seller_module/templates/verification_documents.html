@@ -1,0 +1,554 @@
+
+
+{% extends "seller_base.html" %}
+
+{% block title %}Verification & Documents{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+    .verification-page {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        margin-bottom: 28px;
+    }
+
+    .page-header h1 {
+        margin: 0 0 8px;
+        font-size: 30px;
+        color: #123f3a;
+    }
+
+    .page-header p {
+        margin: 0;
+        color: #66736f;
+        font-size: 15px;
+    }
+
+    .verification-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr;
+        gap: 24px;
+        align-items: start;
+    }
+
+    .card {
+        background: #ffffff;
+        border: 1px solid #dce7e3;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 8px 24px rgba(18, 63, 58, 0.05);
+    }
+
+    .card h2 {
+        margin: 0 0 8px;
+        color: #123f3a;
+        font-size: 20px;
+    }
+
+    .card-description {
+        margin: 0 0 22px;
+        color: #71807b;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #29433e;
+    }
+
+    .form-group select,
+    .form-group input[type="file"] {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 14px;
+        border: 1px solid #cfdcd8;
+        border-radius: 10px;
+        background: #f8fbfa;
+        color: #263d38;
+        font-family: inherit;
+        font-size: 14px;
+    }
+
+    .form-group select:focus,
+    .form-group input[type="file"]:focus {
+        outline: none;
+        border-color: #2f766b;
+    }
+
+    .upload-button {
+        width: 100%;
+        border: none;
+        border-radius: 10px;
+        padding: 13px 18px;
+        background: #123f3a;
+        color: #ffffff;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .upload-button:hover {
+        background: #0d332f;
+    }
+
+    .documents-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .document-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 17px;
+        border: 1px solid #e0e9e6;
+        border-radius: 14px;
+        background: #f9fbfa;
+    }
+
+    .document-info {
+        min-width: 0;
+    }
+
+    .document-name {
+        margin: 0 0 5px;
+        color: #183f39;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .document-date {
+        margin: 0;
+        color: #7b8985;
+        font-size: 12px;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        background: #fff4d6;
+        color: #8a6500;
+    }
+
+    .status-approved {
+        background: #e0f3e9;
+        color: #24734e;
+    }
+
+    .status-rejected {
+        background: #fde7e7;
+        color: #a33a3a;
+    }
+
+    .empty-state {
+        padding: 36px 20px;
+        text-align: center;
+        border: 1px dashed #cbd9d5;
+        border-radius: 14px;
+        background: #f8fbfa;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 7px;
+        color: #29433e;
+        font-size: 16px;
+    }
+
+    .empty-state p {
+        margin: 0;
+        color: #7b8985;
+        font-size: 13px;
+    }
+
+    .privacy-note {
+        margin-top: 20px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: #eef6f3;
+        color: #4d6660;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    
+.document-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.view-document {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 11px;
+    border-radius: 8px;
+    background: #e7f2ef;
+    color: #123f3a;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+.delete-document {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 11px;
+    border: none;
+    border-radius: 8px;
+    background: #fdeaea;
+    color: #b42318;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.delete-document:hover {
+    background: #fbd5d5;
+}
+
+
+.replace-document {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 11px;
+    border-radius: 8px;
+    background: #fff4d6;
+    color: #8a5a00;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.replace-document:hover {
+    background: #ffe9b0;
+}
+
+
+
+.view-document:hover {
+    background: #d9ebe6;
+}
+
+
+.rejection-reason {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #fff4f2;
+    border: 1px solid #f3c7c2;
+}
+
+.rejection-reason strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #b42318;
+    font-size: 12px;
+}
+
+.rejection-reason p {
+    margin: 0;
+    color: #6b2b25;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+
+
+
+    @media (max-width: 850px) {
+        .verification-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .card {
+            padding: 18px;
+        }
+
+        .page-header h1 {
+            font-size: 25px;
+        }
+
+        .document-card {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="verification-page">
+
+    <div class="page-header">
+        <h1>Verification & Documents</h1>
+        <p>
+            Upload the documents required to verify your seller account.
+        </p>
+    </div>
+
+
+    <div class="verification-grid">
+
+        <!-- Upload Document -->
+
+        <div class="card">
+
+            <h2>Upload Document</h2>
+
+            <p class="card-description">
+                Select the document type and upload a clear copy of your
+                document.
+            </p>
+
+            <form method="POST" enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <div class="form-group">
+
+                    <label for="document_type">
+                        Document Type
+                    </label>
+
+                    <select
+                        name="document_type"
+                        id="document_type"
+                        required
+                    >
+
+                        <option value="">
+                            Select document type
+                        </option>
+
+                        <option value="ID_PROOF">
+                            ID Proof
+                        </option>
+
+                        <option value="ADDRESS_PROOF">
+                            Address Proof
+                        </option>
+
+                        <option value="BUSINESS_PROOF">
+                            Business Proof
+                        </option>
+
+                        <option value="TAX_DOCUMENT">
+                            Tax Document
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="document">
+                        Choose Document
+                    </label>
+
+                    <input
+                        type="file"
+                        name="document"
+                        id="document"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="upload-button"
+                >
+                    Upload Document
+                </button>
+
+            </form>
+
+
+            <div class="privacy-note">
+                Your verification documents are private and can only be
+                accessed through your seller account.
+            </div>
+
+        </div>
+
+
+        <!-- Uploaded Documents -->
+
+        <div class="card">
+
+            <h2>My Documents</h2>
+
+            <p class="card-description">
+                Documents you have uploaded for seller verification.
+            </p>
+
+
+            {% if documents %}
+
+                <div class="documents-list">
+
+                    {% for document in documents %}
+
+                      
+<div class="document-card">
+
+    <div class="document-info">
+
+        <p class="document-name">
+            {{ document.get_document_type_display }}
+        </p>
+
+        <p class="document-date">
+            Uploaded
+            {{ document.uploaded_at|date:"d M Y, h:i A" }}
+        </p>
+
+    </div>
+
+
+    <div class="document-actions">
+
+        <a
+            href="/media/{{ document.document.name }}"
+            target="_blank"
+            class="view-document"
+        >
+            View Document
+        </a>
+
+   
+<form
+    method="POST"
+    action="{% url 'replace_verification_document' document.id %}"
+    enctype="multipart/form-data"
+>
+    {% csrf_token %}
+
+    <label class="replace-document">
+        Replace
+        <input
+            type="file"
+            name="document"
+            accept=".pdf,.jpg,.jpeg,.png"
+            onchange="this.form.submit()"
+            hidden
+        >
+    </label>
+</form>
+
+
+        
+<form
+    method="POST"
+    action="{% url 'delete_verification_document' document.id %}"
+    onsubmit="return confirm('Are you sure you want to delete this document?');"
+>
+    {% csrf_token %}
+
+    <button
+        type="submit"
+        class="delete-document"
+    >
+        Delete
+    </button>
+</form>
+
+
+
+
+        {% if document.status == 'PENDING' %}
+
+            <span class="status-badge status-pending">
+                Pending
+            </span>
+
+        {% elif document.status == 'APPROVED' %}
+
+            <span class="status-badge status-approved">
+                Approved
+            </span>
+
+        {% elif document.status == 'REJECTED' %}
+
+            <span class="status-badge status-rejected">
+                Rejected
+            </span>
+
+        {% endif %}
+
+        {% if document.status == 'REJECTED' and document.rejection_reason %} 
+           <div class="rejection-reason"> 
+            <strong>Reason for rejection</strong>
+             <p>{{ document.rejection_reason }}</p>
+             </div> 
+             {% endif %}
+
+    </div>
+
+</div>
+
+
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <h3>No documents uploaded</h3>
+
+                    <p>
+                        Upload your first verification document using
+                        the form.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

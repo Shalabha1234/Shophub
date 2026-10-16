@@ -1,0 +1,61 @@
+
+{% extends "seller_base.html" %}
+
+{% block title %}Add Product{% endblock %}
+
+{% block page_heading %}Add Product{% endblock %}
+
+{% block add_active %}bg-shop-yellow !text-shop-dark{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-5xl">
+
+    <!-- Page Introduction -->
+    <div class="mb-8">
+        <p class="text-sm font-medium text-shop-teal">
+            Product Management
+        </p>
+
+        <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-shop-dark">
+            Add New Product
+        </h1>
+
+        <p class="mt-2 text-sm text-gray-500">
+            Add a product to your store and make it available to customers.
+        </p>
+    </div>
+
+    <!-- Product Form Card -->
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+        <div class="border-b border-gray-100 px-6 py-5 sm:px-8">
+            <h2 class="text-lg font-bold text-shop-dark">
+                Product Information
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-500">
+                Enter the product details below.
+            </p>
+        </div>
+
+        <div class="p-6 sm:p-8">
+
+            <!-- IMPORTANT:
+                 Insert your existing working Add Product form here.
+                 Preserve its original field names, validation,
+                 image upload, CSRF token and form action.
+            -->
+
+            {% comment %}
+            Replace this comment with your existing form code.
+            Do not submit the form until the original fields have
+            been restored.
+            {% endcomment %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

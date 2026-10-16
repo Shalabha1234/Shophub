@@ -1,0 +1,523 @@
+
+{% extends "seller_base.html" %}
+
+{% block title %}
+Business Details
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+    .business-page {
+        max-width: 1050px;
+    }
+
+    .page-header {
+        margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+        margin: 0;
+        font-size: 1.7rem;
+        letter-spacing: -0.02em;
+    }
+
+    .page-header p {
+        margin: 5px 0 0;
+        color: #5d6f70;
+        font-size: 0.92rem;
+    }
+
+
+    /* Main card */
+
+    .business-card {
+        background: #ffffff;
+        border: 1px solid #dfe7e6;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+    }
+
+    .business-card-header {
+        margin-bottom: 22px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #dfe7e6;
+    }
+
+    .business-card-header h2 {
+        margin: 0 0 5px;
+        font-size: 1.1rem;
+    }
+
+    .business-card-header p {
+        margin: 0;
+        color: #5d6f70;
+        font-size: 0.84rem;
+    }
+
+
+    /* Form */
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-size: 0.84rem;
+        font-weight: 700;
+        color: #1b2a2b;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 11px 13px;
+        border: 1.5px solid #dfe7e6;
+        border-radius: 9px;
+        background: #fafcfb;
+        color: #1b2a2b;
+        font: inherit;
+        font-size: 0.9rem;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #0f3d3e;
+        background: #ffffff;
+    }
+
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .field-help {
+        color: #7a898a;
+        font-size: 0.76rem;
+    }
+
+
+    /* Upload cards */
+
+    .upload-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 24px;
+    }
+
+    .upload-card {
+        padding: 18px;
+        background: #f7faf9;
+        border: 1px solid #dfe7e6;
+        border-radius: 12px;
+    }
+
+    .upload-preview {
+        width: 100%;
+        height: 150px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        background: #e3f2ef;
+        color: #0f3d3e;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        font-size: 1.5rem;
+        font-weight: 800;
+    }
+
+    .upload-preview.logo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .upload-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .upload-preview.banner img {
+        object-fit: cover;
+    }
+
+    .upload-card h3 {
+        margin: 0 0 5px;
+        font-size: 0.95rem;
+    }
+
+    .upload-card p {
+        margin: 0 0 12px;
+        color: #5d6f70;
+        font-size: 0.78rem;
+    }
+
+    .upload-card input[type="file"] {
+        width: 100%;
+        font: inherit;
+        font-size: 0.78rem;
+    }
+
+
+    /* Actions */
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 24px;
+    }
+
+    .save-btn {
+        border: 0;
+        border-radius: 9px;
+        padding: 11px 18px;
+        background: #0f3d3e;
+        color: #ffffff;
+        font: inherit;
+        font-size: 0.86rem;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .save-btn:hover {
+        background: #16504f;
+    }
+
+
+    /* Store status */
+
+    .status-card {
+        background: #ffffff;
+        border: 1px solid #dfe7e6;
+        border-radius: 16px;
+        padding: 22px;
+    }
+
+    .status-card h2 {
+        margin: 0 0 5px;
+        font-size: 1rem;
+    }
+
+    .status-card p {
+        margin: 0;
+        color: #5d6f70;
+        font-size: 0.84rem;
+    }
+
+    .status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 18px;
+        padding-top: 18px;
+        border-top: 1px solid #eef2f1;
+    }
+
+    .status-label {
+        font-size: 0.84rem;
+        font-weight: 700;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: #e3f2ef;
+        color: #0f3d3e;
+        font-size: 0.74rem;
+        font-weight: 700;
+    }
+
+
+    /* Responsive */
+
+    @media (max-width: 800px) {
+
+        .form-grid,
+        .upload-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full {
+            grid-column: auto;
+        }
+
+    }
+
+
+    @media (max-width: 600px) {
+
+        .business-card,
+        .status-card {
+            padding: 18px;
+        }
+
+        .status-row {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="business-page">
+
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <h1>
+            Business Details
+        </h1>
+
+        <p>
+            Manage the information and branding of your seller store.
+        </p>
+
+    </div>
+
+
+    <!-- BUSINESS DETAILS -->
+
+    <div class="business-card">
+
+        <div class="business-card-header">
+
+            <h2>
+                Store Information
+            </h2>
+
+            <p>
+                Keep your business information accurate for customers.
+            </p>
+
+        </div>
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group full">
+
+                    <label for="store_name">
+                        Store Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="store_name"
+                        name="store_name"
+                        value="{{ store.store_name }}"
+                        placeholder="Enter your store name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label for="description">
+                        Business Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        placeholder="Tell customers about your business"
+                    >{{ store.description }}</textarea>
+
+                    <span class="field-help">
+                        Give customers a short description of your business and products.
+                    </span>
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label for="address">
+                        Business Address
+                    </label>
+
+                    <textarea
+                        id="address"
+                        name="address"
+                        placeholder="Enter your business address"
+                    >{{ store.address }}</textarea>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- LOGO + BANNER -->
+
+            <div class="upload-grid">
+
+
+                <!-- LOGO -->
+
+                <div class="upload-card">
+
+                    <div class="upload-preview logo">
+
+                        {% if store.logo %}
+
+                            <img
+                                src="{{ store.logo.url }}"
+                                alt="Business logo"
+                            >
+
+                        {% else %}
+
+                            {{ store.store_name|first|upper }}
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <h3>
+                        Business Logo
+                    </h3>
+
+                    <p>
+                        Upload the logo representing your business.
+                    </p>
+
+                    <input
+                        type="file"
+                        name="logo"
+                        accept="image/*"
+                    >
+
+                </div>
+
+
+                <!-- BANNER -->
+
+                <div class="upload-card">
+
+                    <div class="upload-preview banner">
+
+                        {% if store.banner %}
+
+                            <img
+                                src="{{ store.banner.url }}"
+                                alt="Store banner"
+                            >
+
+                        {% else %}
+
+                            Store Banner
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <h3>
+                        Store Banner
+                    </h3>
+
+                    <p>
+                        Upload a banner image for your store.
+                    </p>
+
+                    <input
+                        type="file"
+                        name="banner"
+                        accept="image/*"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <!-- SAVE -->
+
+            <div class="form-actions">
+
+                <button
+                    type="submit"
+                    class="save-btn"
+                >
+                    Save Business Details
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- STORE STATUS -->
+
+    <div class="status-card">
+
+        <h2>
+            Store Status
+        </h2>
+
+        <p>
+            Your current store status is controlled by the marketplace.
+        </p>
+
+
+        <div class="status-row">
+
+            <span class="status-label">
+                Current Status
+            </span>
+
+            <span class="status-badge">
+                {{ store.get_status_display }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}
+

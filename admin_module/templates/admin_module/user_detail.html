@@ -1,0 +1,279 @@
+{% extends "admin_module/admin_base.html" %}
+
+{% block content %}
+
+<div class="p-6">
+
+    <!-- Header -->
+    <div class="mb-6">
+
+        <a
+            href="{% url 'admin_user_list' %}"
+            class="text-sm text-teal-700 hover:underline"
+        >
+            ← Back to Users
+        </a>
+
+        <h1 class="mt-3 text-2xl font-bold text-gray-900">
+            User Details
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500">
+            View account information for this user.
+        </p>
+
+    </div>
+
+
+    <!-- User Card -->
+    <div class="rounded-xl bg-white p-6 shadow-sm">
+
+        <!-- Basic Information -->
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+
+            <div>
+
+                <h2 class="text-2xl font-bold text-gray-900">
+                    {% if user.first_name or user.last_name %}
+                        {{ user.first_name }} {{ user.last_name }}
+                    {% else %}
+                        User #{{ user.id }}
+                    {% endif %}
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-500">
+                    User ID: #{{ user.id }}
+                </p>
+
+            </div>
+
+
+            <!-- Status -->
+           <div class="flex items-center gap-3">
+
+    {% if user.is_active %}
+
+        <span class="w-fit rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+            Active
+        </span>
+
+        {% if user.role != 'ADMIN' %}
+
+            <form
+                method="POST"
+                action="{% url 'admin_user_toggle_status' user.id %}"
+            >
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    onclick="return confirm('Are you sure you want to deactivate this user?')"
+                    class="rounded-lg bg-red-100 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-200"
+                >
+                    Deactivate
+                </button>
+
+            </form>
+
+        {% endif %}
+
+    {% else %}
+
+        <span class="w-fit rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+            Inactive
+        </span>
+
+        <form
+            method="POST"
+            action="{% url 'admin_user_toggle_status' user.id %}"
+        >
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                onclick="return confirm('Are you sure you want to activate this user?')"
+                class="rounded-lg bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 hover:bg-green-200"
+            >
+                Activate
+            </button>
+
+        </form>
+
+    {% endif %}
+
+</div>
+
+        </div>
+
+
+        <!-- Account Information -->
+        <div class="mt-8 border-t border-gray-200 pt-6">
+
+            <h3 class="text-lg font-bold text-gray-900">
+                Account Information
+            </h3>
+
+            <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <!-- Email -->
+                <div class="rounded-lg bg-gray-50 p-4">
+
+                    <p class="text-xs text-gray-500">
+                        Email
+                    </p>
+
+                    <p class="mt-1 font-semibold text-gray-900">
+                        {{ user.email }}
+                    </p>
+
+                </div>
+
+
+                <!-- Role -->
+                <div class="rounded-lg bg-gray-50 p-4">
+
+                    <p class="text-xs text-gray-500">
+                        Role
+                    </p>
+
+                    <p class="mt-1 font-semibold text-gray-900">
+                        {{ user.get_role_display }}
+                    </p>
+
+                </div>
+
+
+                <!-- First Name -->
+                <div class="rounded-lg bg-gray-50 p-4">
+
+                    <p class="text-xs text-gray-500">
+                        First Name
+                    </p>
+
+                    <p class="mt-1 font-semibold text-gray-900">
+                        {{ user.first_name|default:"Not provided" }}
+                    </p>
+
+                </div>
+
+
+                <!-- Last Name -->
+                <div class="rounded-lg bg-gray-50 p-4">
+
+                    <p class="text-xs text-gray-500">
+                        Last Name
+                    </p>
+
+                    <p class="mt-1 font-semibold text-gray-900">
+                        {{ user.last_name|default:"Not provided" }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Account Dates -->
+        <div class="mt-8 border-t border-gray-200 pt-6">
+
+            <h3 class="text-lg font-bold text-gray-900">
+                Account Activity
+            </h3>
+
+            <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <!-- Date Joined -->
+                <div>
+
+                    <p class="text-xs text-gray-500">
+                        Date Joined
+                    </p>
+
+                    <p class="mt-1 text-sm font-medium text-gray-900">
+                        {{ user.date_joined|date:"d M Y, h:i A" }}
+                    </p>
+
+                </div>
+
+
+                <!-- Last Login -->
+                <div>
+
+                    <p class="text-xs text-gray-500">
+                        Last Login
+                    </p>
+
+                    <p class="mt-1 text-sm font-medium text-gray-900">
+
+                        {% if user.last_login %}
+                            {{ user.last_login|date:"d M Y, h:i A" }}
+                        {% else %}
+                            Never
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Permissions -->
+        <div class="mt-8 border-t border-gray-200 pt-6">
+
+            <h3 class="text-lg font-bold text-gray-900">
+                Permissions
+            </h3>
+
+            <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <div>
+
+                    <p class="text-xs text-gray-500">
+                        Staff Access
+                    </p>
+
+                    {% if user.is_staff %}
+                        <p class="mt-1 font-semibold text-green-600">
+                            Yes
+                        </p>
+                    {% else %}
+                        <p class="mt-1 font-semibold text-gray-600">
+                            No
+                        </p>
+                    {% endif %}
+
+                </div>
+
+
+                <div>
+
+                    <p class="text-xs text-gray-500">
+                        Superuser
+                    </p>
+
+                    {% if user.is_superuser %}
+                        <p class="mt-1 font-semibold text-green-600">
+                            Yes
+                        </p>
+                    {% else %}
+                        <p class="mt-1 font-semibold text-gray-600">
+                            No
+                        </p>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

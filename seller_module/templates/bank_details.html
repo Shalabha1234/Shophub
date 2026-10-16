@@ -1,0 +1,808 @@
+{% extends "seller_base.html" %}
+
+{% block title %}
+Bank Details
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+.bank-page {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+
+/* =========================
+   PAGE HEADER
+========================= */
+
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #123f3a;
+}
+
+.page-header p {
+    margin: 7px 0 0;
+    color: #6b7c78;
+    font-size: 14px;
+}
+
+
+/* =========================
+   SAVED BANK CARD
+========================= */
+
+.saved-bank-card {
+    background: #ffffff;
+    border: 1px solid #e1ebe8;
+    border-radius: 18px;
+    padding: 28px 30px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 25px rgba(18, 63, 58, 0.06);
+}
+
+
+/* Header */
+
+.saved-bank-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e7eeec;
+}
+
+.saved-bank-header h2 {
+    margin: 0;
+    color: #123f3a;
+    font-size: 19px;
+}
+
+.saved-bank-header p {
+    margin: 5px 0 0;
+    color: #71827e;
+    font-size: 13px;
+}
+
+
+/* Active badge */
+
+.bank-status {
+    padding: 6px 11px;
+    border-radius: 20px;
+    background: #e7f4ee;
+    color: #18794e;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* Bank summary */
+
+.bank-summary {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 22px 0;
+}
+
+.bank-icon {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    background: #e7f2ef;
+
+    font-size: 22px;
+}
+
+.bank-summary h3 {
+    margin: 0;
+    color: #123f3a;
+    font-size: 17px;
+}
+
+.bank-summary p {
+    margin: 4px 0 0;
+    color: #71827e;
+    font-size: 13px;
+}
+
+
+/* Header actions */
+
+.bank-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+
+/* Edit button */
+
+.edit-bank-button {
+    padding: 8px 13px;
+
+    border: 1px solid #d7e3df;
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: #123f3a;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.edit-bank-button:hover {
+    background: #e7f2ef;
+    border-color: #b8d3cd;
+}
+
+
+/* Details */
+
+.bank-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 40px;
+}
+
+.bank-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.bank-detail-item span {
+    color: #7b8b87;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.bank-detail-item strong {
+    color: #294a45;
+    font-size: 14px;
+}
+
+
+/* Bottom edit button */
+
+.bank-edit-action {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 22px;
+    padding-top: 18px;
+
+    border-top: 1px solid #e7eeec;
+}
+
+
+/* Hidden edit form */
+
+.bank-edit-card {
+    display: none;
+}
+
+
+/* =========================
+   EDIT BANK CARD
+========================= */
+
+.bank-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 30px;
+
+    box-shadow: 0 8px 25px rgba(18, 63, 58, 0.07);
+
+    border: 1px solid #e1ebe8;
+}
+
+.card-header {
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+
+    border-bottom: 1px solid #e7eeec;
+}
+
+.card-header h2 {
+    margin: 0;
+    color: #123f3a;
+    font-size: 19px;
+}
+
+.card-header p {
+    margin: 6px 0 0;
+    color: #71827e;
+    font-size: 13px;
+}
+
+
+/* =========================
+   FORM
+========================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+
+    color: #294a45;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.form-group input {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    border: 1px solid #d7e3df;
+    border-radius: 10px;
+
+    background: #fbfdfc;
+
+    color: #183f3a;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition: 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: #7aa9a1;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(18, 63, 58, 0.07);
+}
+
+.form-group input::placeholder {
+    color: #a2afac;
+}
+
+.form-actions {
+display: flex;
+align-items: center;
+gap: 12px;
+margin-top: 28px;
+}
+
+.form-actions .save-button {
+margin-top: 0;
+}
+
+.cancel-button {
+padding: 12px 20px;
+
+
+border: 1px solid #d7e3df;
+border-radius: 10px;
+
+background: #ffffff;
+color: #123f3a;
+
+font-size: 13px;
+font-weight: 700;
+
+cursor: pointer;
+
+transition: 0.2s ease;
+
+
+}
+
+.cancel-button:hover {
+background: #f1f6f4;
+}
+
+
+
+/* =========================
+   SAVE BUTTON
+========================= */
+
+.save-button {
+    margin-top: 28px;
+
+    padding: 12px 20px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #123f3a;
+
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.save-button:hover {
+    background: #0d332f;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 700px) {
+
+    .saved-bank-card {
+        padding: 22px;
+    }
+
+    .bank-card {
+        padding: 22px;
+    }
+
+    .bank-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .page-header h1 {
+        font-size: 24px;
+    }
+
+    .save-button {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="bank-page">
+
+
+<!-- =========================
+     PAGE HEADER
+========================== -->
+
+<div class="page-header">
+
+    <h1>
+        Bank Details
+    </h1>
+
+    <p>
+        Manage the bank account used for your seller payouts.
+    </p>
+
+</div>
+
+
+<!-- =========================
+     SAVED BANK ACCOUNT
+========================== -->
+
+<div class="saved-bank-card">
+
+
+    <div class="saved-bank-header">
+
+        <div>
+
+            <h2>
+                My Bank Account
+            </h2>
+
+            <p>
+                Your saved payout account
+            </p>
+
+        </div>
+
+
+        <div class="bank-card-actions">
+
+            <span class="bank-status">
+                Active
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- Bank name -->
+
+    <div class="bank-summary">
+
+        <div class="bank-icon">
+            🏦
+        </div>
+
+
+        <div>
+
+            <h3>
+
+                {% if bank_details.bank_name %}
+
+                    {{ bank_details.bank_name }}
+
+                {% else %}
+
+                    Bank account not added
+
+                {% endif %}
+
+            </h3>
+
+
+            {% if bank_details.branch_name %}
+
+                <p>
+                    {{ bank_details.branch_name }}
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- Bank information -->
+
+    <div class="bank-details-grid">
+
+
+        <!-- Account Holder -->
+
+        <div class="bank-detail-item">
+
+            <span>
+                Account Holder
+            </span>
+
+            <strong>
+
+                {% if bank_details.account_holder_name %}
+
+                    {{ bank_details.account_holder_name }}
+
+                {% else %}
+
+                    Not added
+
+                {% endif %}
+
+            </strong>
+
+        </div>
+
+
+        <!-- Account Number -->
+
+        <div class="bank-detail-item">
+
+            <span>
+                Account Number
+            </span>
+
+            <strong>
+
+                {% if bank_details.account_number %}
+
+                    XXXX XXXX
+                    {{ bank_details.account_number|slice:"-4:" }}
+
+                {% else %}
+
+                    Not added
+
+                {% endif %}
+
+            </strong>
+
+        </div>
+
+
+        <!-- IFSC -->
+
+        <div class="bank-detail-item">
+
+            <span>
+                IFSC Code
+            </span>
+
+            <strong>
+
+                {% if bank_details.ifsc_code %}
+
+                    {{ bank_details.ifsc_code }}
+
+                {% else %}
+
+                    Not added
+
+                {% endif %}
+
+            </strong>
+
+        </div>
+
+
+        <!-- Bank -->
+
+        <div class="bank-detail-item">
+
+            <span>
+                Bank
+            </span>
+
+            <strong>
+
+                {% if bank_details.bank_name %}
+
+                    {{ bank_details.bank_name }}
+
+                {% else %}
+
+                    Not added
+
+                {% endif %}
+
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- Bottom edit button -->
+
+    <div class="bank-edit-action">
+
+        <button
+            type="button"
+            class="edit-bank-button"
+            onclick="toggleBankEdit()"
+        >
+            Edit Details
+        </button>
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================
+     EDIT BANK DETAILS
+========================== -->
+
+<div
+    class="bank-card bank-edit-card"
+    id="bank-edit-card"
+>
+
+
+    <div class="card-header">
+
+        <h2>
+            Edit Bank Details
+        </h2>
+
+        <p>
+            Update your account information whenever needed.
+        </p>
+
+    </div>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <div class="form-grid">
+
+
+            <!-- Account Holder -->
+
+            <div class="form-group">
+
+                <label>
+                    Account Holder Name
+                </label>
+
+                <input
+                    type="text"
+                    name="account_holder_name"
+                    value="{{ bank_details.account_holder_name }}"
+                    placeholder="Enter account holder name"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Bank Name -->
+
+            <div class="form-group">
+
+                <label>
+                    Bank Name
+                </label>
+
+                <input
+                    type="text"
+                    name="bank_name"
+                    value="{{ bank_details.bank_name }}"
+                    placeholder="Enter bank name"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Account Number -->
+
+            <div class="form-group">
+
+                <label>
+                    Account Number
+                </label>
+
+                <input
+                    type="text"
+                    name="account_number"
+                    value="{{ bank_details.account_number }}"
+                    placeholder="Enter account number"
+                    required
+                >
+
+            </div>
+
+
+            <!-- IFSC -->
+
+            <div class="form-group">
+
+                <label>
+                    IFSC Code
+                </label>
+
+                <input
+                    type="text"
+                    name="ifsc_code"
+                    value="{{ bank_details.ifsc_code }}"
+                    placeholder="Enter IFSC code"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Branch -->
+
+            <div class="form-group">
+
+                <label>
+                    Branch Name
+                </label>
+
+                <input
+                    type="text"
+                    name="branch_name"
+                    value="{{ bank_details.branch_name }}"
+                    placeholder="Enter branch name"
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <div class="form-actions">
+
+
+<button
+    type="submit"
+    class="save-button"
+>
+    Save Bank Details
+</button>
+
+<button
+    type="button"
+    class="cancel-button"
+    onclick="toggleBankEdit()"
+>
+    Cancel
+</button>
+
+
+</div>
+
+
+
+    </form>
+
+
+</div>
+
+
+</div>
+
+{% block extra_js %}
+
+<script>
+
+function toggleBankEdit() {
+
+    const editCard = document.getElementById('bank-edit-card');
+
+    if (
+        editCard.style.display === 'none' ||
+        editCard.style.display === ''
+    ) {
+
+        editCard.style.display = 'block';
+
+    } else {
+
+        editCard.style.display = 'none';
+
+    }
+
+}
+
+</script>
+
+{% endblock %}
+
+{% endblock %}

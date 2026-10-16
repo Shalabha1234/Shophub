@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Order Details</title>
+
+
+<style>
+    .delivery-tracker {
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        margin: 30px 0;
+    }
+
+    .tracker-step {
+        text-align: center;
+        min-width: 100px;
+    }
+
+    .tracker-circle {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        font-size: 20px;
+    }
+
+    .tracker-step p {
+        margin-top: 8px;
+        font-size: 14px;
+    }
+
+    .tracker-line {
+    height: 3px;
+    background-color: #d3d3d3;
+    flex: 1;
+    min-width: 40px;
+    margin-top: 12px;
+}
+.tracker-line.completed {
+    background-color: black;
+}
+    .tracker-vehicle {
+    display: inline-block;
+    transform: scaleX(-1);
+}
+.tracker-vehicle {
+    display: inline-block;
+    font-size: 24px;
+    animation: vehicleMove 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes vehicleMove {
+    from {
+        transform: translateX(-2px) scaleX(-1);
+    }
+
+    to {
+        transform: translateX(2px) scaleX(-1);
+    }
+}
+</style>
+
+
+</head>
+
+<body>
+
+<h1>Order #{{ order.id }}</h1>
+
+<h2>Order Items</h2>
+
+{% for item in order_items %}
+    <div>
+        <p>Product: {{ item.product.name }}</p>
+        <p>Quantity: {{ item.quantity }}</p>
+        <p>Price: ₹{{ item.price }}</p>
+    </div>
+    <hr>
+{% endfor %}
+
+
+<h2>Order Information</h2>
+
+<p>Total Amount: ₹{{ order.total_amount }}</p>
+
+
+<h3>Delivery Status</h3>
+
+<div class="delivery-tracker">
+
+    <!-- Confirmed -->
+    <div class="tracker-step">
+        <div class="tracker-circle">
+            {% if order.status == 'PENDING' %}
+                ○
+            {% else %}
+                ✓
+            {% endif %}
+        </div>
+        <p>Confirmed</p>
+    </div>
+
+
+  <div class="tracker-line {% if order.status != 'PENDING' %}completed{% endif %}"></div>
+
+
+    <!-- Processing -->
+    <div class="tracker-step">
+        <div class="tracker-circle">
+            {% if order.status == 'PROCESSING' %}
+                <span class="tracker-vehicle">🚚</span>
+            {% elif order.status == 'PENDING' %}
+                ○
+            {% else %}
+                ✓
+            {% endif %}
+        </div>
+        <p>Processing</p>
+    </div>
+
+
+    <div class="tracker-line {% if order.status == 'SHIPPED' or order.status == 'IN_TRANSIT' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}"></div>
+
+
+    <!-- Shipped -->
+    <div class="tracker-step">
+        <div class="tracker-circle">
+            {% if order.status == 'SHIPPED' %}
+                <span class="tracker-vehicle">🚚</span>
+            {% elif order.status == 'PENDING' or order.status == 'CONFIRMED' %}
+                ○
+            {% else %}
+                ✓
+            {% endif %}
+        </div>
+        <p>Shipped</p>
+    </div>
+
+
+    <div class="tracker-line {% if order.status == 'IN_TRANSIT' or order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}"></div>
+
+
+    <!-- In Transit -->
+    <div class="tracker-step">
+        <div class="tracker-circle">
+            {% if order.status == 'IN_TRANSIT' %}
+                <span class="tracker-vehicle">🚚</span>
+            {% elif order.status == 'PENDING' or order.status == 'CONFIRMED' or order.status == 'PROCESSING' or order.status == 'SHIPPED' %}
+                ○
+            {% else %}
+                ✓
+            {% endif %}
+        </div>
+        <p>In Transit</p>
+    </div>
+
+
+    <div class="tracker-line {% if order.status == 'OUT_FOR_DELIVERY' or order.status == 'DELIVERED' %}completed{% endif %}"></div>
+
+
+    <!-- Out for Delivery -->
+    <div class="tracker-step">
+        <div class="tracker-circle">
+            {% if order.status == 'OUT_FOR_DELIVERY' %}
+               <span class="tracker-vehicle">🚚</span>
+            {% elif order.status == 'PENDING' or order.status == 'CONFIRMED' or order.status == 'PROCESSING' or order.status == 'SHIPPED' or order.status == 'IN_TRANSIT' %}
+                ○
+            {% else %}
+                ✓
+            {% endif %}
+        </div>
+        <p>Out for Delivery</p>
+    </div>
+
+
+    <div class="tracker-line {% if order.status == 'DELIVERED' %}completed{% endif %}"></div>
+
+
+    <!-- Delivered -->
+    <div class="tracker-step">
+        <div class="tracker-circle">
+            {% if order.status == 'DELIVERED' %}
+               <span class="tracker-vehicle">🚚</span>
+            {% else %}
+                ○
+            {% endif %}
+        </div>
+        <p>Delivered</p>
+    </div>
+
+</div>
+
+
+<p>Placed on: {{ order.created_at }}</p>
+
+
+<h2>Delivery Address</h2>
+
+{% if address %}
+    <p>Name: {{ address.full_name }}</p>
+    <p>Phone: {{ address.phone }}</p>
+    <p>Address: {{ address.address }}</p>
+    <p>City: {{ address.city }}</p>
+    <p>State: {{ address.state }}</p>
+    <p>Postal Code: {{ address.postal_code }}</p>
+{% else %}
+    <p>No delivery address available.</p>
+{% endif %}
+
+
+<h2>Payment Information</h2>
+
+{% if payment %}
+    <p>Payment Method: {{ payment.payment_method }}</p>
+    <p>Payment Status: {{ payment.status }}</p>
+    <p>Transaction ID: {{ payment.transaction_id }}</p>
+{% else %}
+    <p>Payment not completed.</p>
+{% endif %}
+
+
+</body>
+</html>

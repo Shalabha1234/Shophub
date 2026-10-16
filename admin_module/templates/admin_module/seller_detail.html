@@ -1,0 +1,316 @@
+{% extends "admin_module/admin_base.html" %}
+
+{% block content %}
+
+<div class="p-6">
+
+    <!-- Header -->
+    <div class="mb-6">
+
+        <a
+            href="{% url 'admin_seller_list' %}"
+            class="text-sm text-teal-700 hover:underline"
+        >
+            ← Back to Sellers
+        </a>
+
+        <h1 class="mt-3 text-2xl font-bold text-gray-900">
+            Seller Details
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500">
+            View seller and store information.
+        </p>
+
+    </div>
+
+
+    <!-- Seller Card -->
+    <div class="rounded-xl bg-white p-6 shadow-sm">
+
+        <!-- Seller Header -->
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+            <div>
+
+                <h2 class="text-2xl font-bold text-gray-900">
+
+                    {% if seller.user.first_name or seller.user.last_name %}
+                        {{ seller.user.first_name }} {{ seller.user.last_name }}
+                    {% else %}
+                        Seller #{{ seller.id }}
+                    {% endif %}
+
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-500">
+                    Seller ID: #{{ seller.id }}
+                </p>
+
+            </div>
+
+
+            <!-- Store Status -->
+           
+{% if seller.store %}
+
+    <div class="flex flex-col items-end gap-3">
+
+        {% if seller.store.status == 'ACTIVE' %}
+
+            <span class="w-fit rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                Active
+            </span>
+
+            <form
+                method="POST"
+                action="{% url 'admin_seller_toggle_status' seller.id %}"
+            >
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    onclick="return confirm('Are you sure you want to suspend this seller?')"
+                    class="rounded-lg bg-red-100 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-200"
+                >
+                    Suspend Seller
+                </button>
+            </form>
+
+        {% elif seller.store.status == 'PENDING' %}
+
+            <span class="w-fit rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
+                Pending
+            </span>
+
+            <form
+                method="POST"
+                action="{% url 'admin_seller_toggle_status' seller.id %}"
+            >
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    onclick="return confirm('Are you sure you want to approve this seller?')"
+                    class="rounded-lg bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 hover:bg-green-200"
+                >
+                    Approve Seller
+                </button>
+            </form>
+
+        {% else %}
+
+            <span class="w-fit rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                Suspended
+            </span>
+
+            <form
+                method="POST"
+                action="{% url 'admin_seller_toggle_status' seller.id %}"
+            >
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    onclick="return confirm('Are you sure you want to activate this seller?')"
+                    class="rounded-lg bg-green-100 px-4 py-2 text-sm font-semibold text-green-700 hover:bg-green-200"
+                >
+                    Activate Seller
+                </button>
+            </form>
+
+        {% endif %}
+
+    </div>
+
+{% endif %}
+
+
+        </div>
+
+
+        <!-- Seller Information -->
+        <div class="mt-8 border-t border-gray-200 pt-6">
+
+            <h3 class="text-lg font-bold text-gray-900">
+                Seller Information
+            </h3>
+
+            <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <div class="rounded-lg bg-gray-50 p-4">
+
+                    <p class="text-xs text-gray-500">
+                        Email
+                    </p>
+
+                    <p class="mt-1 font-semibold text-gray-900">
+                        {{ seller.user.email }}
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-lg bg-gray-50 p-4">
+
+                    <p class="text-xs text-gray-500">
+                        Account Status
+                    </p>
+
+                    {% if seller.user.is_active %}
+
+                        <p class="mt-1 font-semibold text-green-600">
+                            Active
+                        </p>
+
+                    {% else %}
+
+                        <p class="mt-1 font-semibold text-red-600">
+                            Inactive
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Store Information -->
+        <div class="mt-8 border-t border-gray-200 pt-6">
+
+            <h3 class="text-lg font-bold text-gray-900">
+                Store Information
+            </h3>
+
+            {% if seller.store %}
+
+                <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                    <div class="rounded-lg bg-gray-50 p-4">
+
+                        <p class="text-xs text-gray-500">
+                            Store Name
+                        </p>
+
+                        <p class="mt-1 font-semibold text-gray-900">
+                            {{ seller.store.store_name }}
+                        </p>
+
+                    </div>
+
+
+                    <div class="rounded-lg bg-gray-50 p-4">
+
+                        <p class="text-xs text-gray-500">
+                            Store Status
+                        </p>
+
+                        <p class="mt-1 font-semibold text-gray-900">
+                            {{ seller.store.get_status_display }}
+                        </p>
+
+                    </div>
+
+
+                    <div class="rounded-lg bg-gray-50 p-4 sm:col-span-2">
+
+                        <p class="text-xs text-gray-500">
+                            Description
+                        </p>
+
+                        <p class="mt-1 text-sm leading-6 text-gray-700">
+
+                            {% if seller.store.description %}
+                                {{ seller.store.description }}
+                            {% else %}
+                                No description available.
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="rounded-lg bg-gray-50 p-4 sm:col-span-2">
+
+                        <p class="text-xs text-gray-500">
+                            Address
+                        </p>
+
+                        <p class="mt-1 text-sm leading-6 text-gray-700">
+
+                            {% if seller.store.address %}
+                                {{ seller.store.address }}
+                            {% else %}
+                                No address provided.
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                <p class="mt-4 text-sm text-gray-500">
+                    This seller does not have a store yet.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Dates -->
+        <div class="mt-8 border-t border-gray-200 pt-6">
+
+            <h3 class="text-lg font-bold text-gray-900">
+                Account Information
+            </h3>
+
+            <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <div>
+
+                    <p class="text-xs text-gray-500">
+                        Seller Account Created
+                    </p>
+
+                    <p class="mt-1 text-sm font-medium text-gray-900">
+                        {{ seller.user.date_joined|date:"d M Y, h:i A" }}
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <p class="text-xs text-gray-500">
+                        Store Created
+                    </p>
+
+                    <p class="mt-1 text-sm font-medium text-gray-900">
+
+                        {% if seller.store %}
+                            {{ seller.store.created_at|date:"d M Y, h:i A" }}
+                        {% else %}
+                            —
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

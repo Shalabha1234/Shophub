@@ -1,0 +1,338 @@
+{% extends "admin_module/admin_base.html" %}
+
+{% block content %}
+
+<div class="p-4 sm:p-6">
+
+    <!-- Header -->
+    <div class="mb-6">
+
+        <h1 class="text-2xl font-bold text-gray-900">
+            User Management
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500">
+            View and manage users registered on ShopHub.
+        </p>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- Desktop Table -->
+    <!-- ============================= -->
+
+    <div class="hidden overflow-hidden rounded-xl bg-white shadow-sm md:block">
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full">
+
+                <thead class="border-b border-gray-200 bg-gray-50">
+
+                    <tr>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            User
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            Email
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            Role
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            Joined
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            Status
+                        </th>
+
+                        <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-100">
+
+                    {% for user in users %}
+
+                    <tr class="hover:bg-gray-50">
+
+                        <!-- User -->
+                        <td class="px-5 py-4">
+
+                            <p class="font-semibold text-gray-900">
+
+                                {% if user.first_name or user.last_name %}
+                                    {{ user.first_name }} {{ user.last_name }}
+                                {% else %}
+                                    User #{{ user.id }}
+                                {% endif %}
+
+                            </p>
+
+                            <p class="text-xs text-gray-500">
+                                ID #{{ user.id }}
+                            </p>
+
+                        </td>
+
+
+                        <!-- Email -->
+                        <td class="px-5 py-4 text-sm text-gray-700">
+                            {{ user.email }}
+                        </td>
+
+
+                        <!-- Role -->
+                        <td class="px-5 py-4">
+
+                            {% if user.role == 'ADMIN' %}
+
+                                <span class="rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
+                                    Admin
+                                </span>
+
+                            {% elif user.role == 'SELLER' %}
+
+                                <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+                                    Seller
+                                </span>
+
+                            {% else %}
+
+                                <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                                    Customer
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Joined -->
+                        <td class="px-5 py-4 text-sm text-gray-600">
+                            {{ user.date_joined|date:"d M Y" }}
+                        </td>
+
+
+                        <!-- Status -->
+                        <td class="px-5 py-4">
+
+                            {% if user.is_active %}
+
+                                <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                                    Active
+                                </span>
+
+                            {% else %}
+
+                                <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                                    Inactive
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Actions -->
+                        <td class="px-5 py-4">
+
+                            <a
+                                href="{% url 'admin_user_detail' user.id %}"
+                                class="rounded-lg bg-teal-700 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-800"
+                            >
+                                View
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="px-5 py-10 text-center text-sm text-gray-500"
+                        >
+                            No users found.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- Mobile Cards -->
+    <!-- ============================= -->
+
+    <div class="space-y-4 md:hidden">
+
+        {% for user in users %}
+
+        <div class="rounded-xl bg-white p-5 shadow-sm">
+
+            <!-- User Header -->
+            <div class="flex items-start justify-between gap-4">
+
+                <div>
+
+                    <p class="font-semibold text-gray-900">
+
+                        {% if user.first_name or user.last_name %}
+                            {{ user.first_name }} {{ user.last_name }}
+                        {% else %}
+                            User #{{ user.id }}
+                        {% endif %}
+
+                    </p>
+
+                    <p class="mt-1 text-xs text-gray-500">
+                        ID #{{ user.id }}
+                    </p>
+
+                </div>
+
+
+                <!-- Status -->
+                {% if user.is_active %}
+
+                    <span class="shrink-0 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                        Active
+                    </span>
+
+                {% else %}
+
+                    <span class="shrink-0 rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                        Inactive
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- User Information -->
+
+            <div class="mt-5 space-y-4 border-t border-gray-100 pt-4">
+
+
+                <!-- Email -->
+
+                <div>
+
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                        Email
+                    </p>
+
+                    <p class="mt-1 break-all text-sm text-gray-700">
+                        {{ user.email }}
+                    </p>
+
+                </div>
+
+
+                <!-- Role -->
+
+                <div>
+
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                        Role
+                    </p>
+
+                    <div class="mt-1">
+
+                        {% if user.role == 'ADMIN' %}
+
+                            <span class="rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
+                                Admin
+                            </span>
+
+                        {% elif user.role == 'SELLER' %}
+
+                            <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+                                Seller
+                            </span>
+
+                        {% else %}
+
+                            <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                                Customer
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Joined -->
+
+                <div>
+
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                        Joined
+                    </p>
+
+                    <p class="mt-1 text-sm text-gray-600">
+                        {{ user.date_joined|date:"d M Y" }}
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- Action -->
+
+            <div class="mt-5 border-t border-gray-100 pt-4">
+
+                <a
+                    href="{% url 'admin_user_detail' user.id %}"
+                    class="block w-full rounded-lg bg-[#0f3d3e] px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#16504f]"
+                >
+                    View User
+                </a>
+
+            </div>
+
+        </div>
+
+
+        {% empty %}
+
+        <div class="rounded-xl bg-white px-5 py-10 text-center text-sm text-gray-500 shadow-sm">
+            No users found.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

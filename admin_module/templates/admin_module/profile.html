@@ -1,0 +1,162 @@
+{% extends "admin_module/admin_base.html" %}
+
+{% block content %}
+
+<div class="p-6">
+
+    <!-- Header -->
+    <div class="mb-6">
+
+        <h1 class="text-2xl font-bold text-gray-900">
+            Admin Profile
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500">
+            View your administrator account information.
+        </p>
+
+    </div>
+
+
+    <!-- Profile Card -->
+    <div class="max-w-3xl rounded-xl bg-white p-6 shadow-sm">
+
+        <h2 class="mb-6 text-lg font-semibold text-gray-900">
+            Account Information
+        </h2>
+
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+            <!-- Email -->
+            <div>
+
+                <p class="text-sm text-gray-500">
+                    Email
+                </p>
+
+                <p class="mt-1 font-semibold text-gray-900">
+                    {{ user.email }}
+                </p>
+
+            </div>
+
+
+            <!-- Role -->
+            <div>
+
+                <p class="text-sm text-gray-500">
+                    Role
+                </p>
+
+                <p class="mt-1 font-semibold text-gray-900">
+                    {{ user.get_role_display }}
+                </p>
+
+            </div>
+
+
+            <!-- Account Status -->
+            <div>
+
+                <p class="text-sm text-gray-500">
+                    Account Status
+                </p>
+
+                <p class="mt-1">
+
+                    {% if user.is_active %}
+
+                        <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                            Active
+                        </span>
+
+                    {% else %}
+
+                        <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                            Inactive
+                        </span>
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+
+            <!-- Staff Access -->
+            <div>
+
+                <p class="text-sm text-gray-500">
+                    Staff Access
+                </p>
+
+                <p class="mt-1">
+
+                    {% if user.is_staff %}
+
+                        <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                            Enabled
+                        </span>
+
+                    {% else %}
+
+                        <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                            Disabled
+                        </span>
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+
+            <!-- Superuser -->
+            <div>
+
+                <p class="text-sm text-gray-500">
+                    Superuser Access
+                </p>
+
+                <p class="mt-1">
+
+                    {% if user.is_superuser %}
+
+                        <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                            Enabled
+                        </span>
+
+                    {% else %}
+
+                        <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                            Disabled
+                        </span>
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+
+            <!-- Joined -->
+            <div>
+
+                <p class="text-sm text-gray-500">
+                    Account Created
+                </p>
+
+                <p class="mt-1 font-semibold text-gray-900">
+                    {{ user.date_joined|date:"d M Y, h:i A" }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,341 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}ShopHub Seller Panel{% endblock %}</title>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        bricolage: ['Bricolage Grotesque', 'sans-serif']
+                    },
+                    colors: {
+                        shop: {
+                            dark: '#123f3a',
+                            teal: '#16504f',
+                            yellow: '#ffc845',
+                            paper: '#f1f4f3',
+                            ink: '#163f3b'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="min-h-screen bg-[#f1f4f3] font-bricolage text-[#163f3b]">
+
+    <!-- Mobile Top Bar -->
+    <div class="sticky top-0 z-50 flex items-center justify-between bg-[#123f3a] px-4 py-3 text-white md:hidden">
+
+        <a href="{% url 'seller_dashboard' %}" class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ffc845] text-xl font-extrabold text-[#123f3a]">
+                S
+            </div>
+
+            <div>
+                <p class="font-extrabold">ShopHub</p>
+                <p class="text-xs text-emerald-100/70">Seller Panel</p>
+            </div>
+        </a>
+
+        <button
+            type="button"
+            id="mobile-menu-button"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="seller-sidebar"
+            class="flex h-11 w-11 items-center justify-center rounded-xl border border-white/30 bg-white/10 text-white transition hover:bg-[#ffc845] hover:text-[#123f3a] focus:outline-none focus:ring-2 focus:ring-[#ffc845]">
+
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 width="26"
+                 height="26"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2.5"
+                 stroke-linecap="round"
+                 stroke-linejoin="round"
+                 aria-hidden="true">
+                <path d="M4 6h16"></path>
+                <path d="M4 12h16"></path>
+                <path d="M4 18h16"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Mobile Backdrop -->
+    <div
+        id="sidebar-backdrop"
+        class="fixed inset-0 z-30 hidden bg-black/50 md:hidden">
+    </div>
+
+    <!-- Sidebar -->
+    <aside
+        id="seller-sidebar"
+        class="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col overflow-y-auto bg-[#123f3a] px-4 py-5 text-white shadow-2xl md:flex md:shadow-none">
+
+        <!-- Brand -->
+        <div class="mb-6 flex shrink-0 items-center justify-between border-b border-white/15 px-2 pb-6">
+
+            <a href="{% url 'seller_dashboard' %}" class="flex items-center gap-3">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#ffc845] text-2xl font-extrabold text-[#123f3a]">
+                    S
+                </div>
+
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tight">ShopHub</h1>
+                    <p class="mt-0.5 text-xs text-emerald-100/70">Seller Panel</p>
+                </div>
+            </a>
+
+            <button
+                type="button"
+                id="mobile-close-button"
+                aria-label="Close navigation menu"
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-2xl text-white hover:bg-white/10 md:hidden">
+                &times;
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex flex-1 flex-col gap-2">
+
+            <!-- Main Menu -->
+            <p class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[.18em] text-emerald-100/55">
+                Main Menu
+            </p>
+
+            <!-- Overview -->
+            <a href="{% url 'seller_dashboard' %}"
+               class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#ffc845] hover:text-[#123f3a]">
+                <span class="w-6 text-center text-lg">▦</span>
+                <span>Overview</span>
+            </a>
+
+            <!-- Orders -->
+            <a href="{% url 'seller_orders' %}"
+               class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#ffc845] hover:text-[#123f3a] {% block orders_active %}{% endblock %}">
+                <span class="w-6 text-center text-lg">▤</span>
+                <span>Orders</span>
+            </a>
+
+            <!-- Inventory -->
+            <a href="{% url 'seller_inventory' %}"
+               class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#ffc845] hover:text-[#123f3a] {% block inventory_active %}{% endblock %}">
+                <span class="w-6 text-center text-lg">□</span>
+                <span>Inventory</span>
+            </a>
+
+            <!-- Add Product -->
+            <a href="{% url 'seller_products' %}"
+               class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#ffc845] hover:text-[#123f3a] {% block add_active %}{% endblock %}">
+                <span class="w-6 text-center text-xl">+</span>
+                <span>Add Product</span>
+            </a>
+
+            <!-- Finance Management -->
+            <div class="mb-1 mt-6 border-t border-white/15 pt-5">
+                <p class="px-3 text-[10px] font-bold uppercase tracking-[.18em] text-emerald-100/55">
+                    Finance Management
+                </p>
+            </div>
+
+            <!-- Finance Overview -->
+            <a href="{% url 'finance_overview' %}"
+               class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#ffc845] hover:text-[#123f3a] {% block finance_overview_active %}{% endblock %}">
+                <span class="w-6 text-center text-lg">▥</span>
+                <span>Finance Overview</span>
+            </a>
+
+            <!-- Seller Wallet -->
+            <a href="{% url 'seller_wallet' %}"
+               class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#ffc845] hover:text-[#123f3a] {% block wallet_active %}{% endblock %}">
+                <span class="w-6 text-center text-lg">₹</span>
+                <span>Seller Wallet</span>
+            </a>
+
+            <!-- Tax and Audit Reports -->
+            <a href="{% url 'seller_tax_audit_reports' %}"
+               class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#ffc845] hover:text-[#123f3a] {% block tax_audit_active %}{% endblock %}">
+                <span class="w-6 text-center text-lg">▧</span>
+                <span>Tax &amp; Audit Reports</span>
+            </a>
+
+            <!-- Account -->
+            <div class="mb-1 mt-6 border-t border-white/15 pt-5">
+                <p class="px-3 text-[10px] font-bold uppercase tracking-[.18em] text-emerald-100/55">
+                    Account
+                </p>
+            </div>
+
+            <!-- Seller Profile -->
+            <a href="{% url 'seller_profile' %}"
+               class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#ffc845] hover:text-[#123f3a] {% block profile_active %}{% endblock %}">
+                <span class="w-6 text-center text-lg">♙</span>
+                <span>Seller Profile</span>
+            </a>
+
+        </nav>
+
+        <!-- Logout -->
+        <div class="mt-6 shrink-0 border-t border-white/15 pt-5">
+            <a href="{% url 'seller_logout' %}"
+               class="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10 hover:text-[#ffc845]">
+                <span class="w-6 text-center text-lg">↪</span>
+                <span>Logout</span>
+            </a>
+
+            <p class="mt-5 px-3 text-[10px] text-emerald-100/45">
+                © ShopHub Marketplace
+            </p>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div id="seller-main" class="min-w-0 md:ml-64 lg:ml-72">
+
+        <!-- Page Header -->
+        <header class="border-b border-[#163f3b]/10 bg-white px-5 py-5 sm:px-8 lg:px-10">
+            <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[.18em] text-[#16504f]/65">
+                        ShopHub Marketplace
+                    </p>
+
+                    <h2 class="mt-1 text-2xl font-extrabold tracking-tight text-[#163f3b] sm:text-3xl">
+                        {% block page_heading %}Seller Dashboard{% endblock %}
+                    </h2>
+
+                    <p class="mt-1 text-sm text-gray-500">
+                        Manage your store and grow your business.
+                    </p>
+                </div>
+
+                <div class="flex w-fit items-center gap-3 rounded-2xl border border-gray-100 bg-[#f1f4f3]/70 px-4 py-3">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#ffc845]/50 font-extrabold text-[#123f3a]">
+                        {{ request.user.email|first|upper }}
+                    </div>
+
+                    <div class="min-w-0">
+                        <p class="text-xs text-gray-500">Your Store</p>
+                        <p class="max-w-48 truncate text-sm font-bold text-[#163f3b]">
+                            {{ request.user.sellerprofile.store.store_name|default:"Seller Account" }}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="min-w-0 p-4 sm:p-6 lg:p-8">
+
+            <!-- Django Messages -->
+            {% if messages %}
+                <div class="mx-auto mb-6 max-w-7xl space-y-3">
+                    {% for message in messages %}
+                        <div role="status"
+                             class="rounded-xl border px-4 py-3 text-sm font-medium
+                             {% if message.tags == 'success' %}
+                                 border-emerald-200 bg-emerald-50 text-emerald-800
+                             {% elif message.tags == 'error' %}
+                                 border-rose-200 bg-rose-50 text-rose-800
+                             {% elif message.tags == 'warning' %}
+                                 border-amber-200 bg-amber-50 text-amber-900
+                             {% else %}
+                                 border-sky-200 bg-sky-50 text-sky-800
+                             {% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+
+        </main>
+    </div>
+
+    <!-- Mobile Menu Functionality -->
+    <script>
+        const mobileButton = document.getElementById('mobile-menu-button');
+        const closeButton = document.getElementById('mobile-close-button');
+        const sidebar = document.getElementById('seller-sidebar');
+        const backdrop = document.getElementById('sidebar-backdrop');
+
+        function openSellerMenu() {
+            sidebar.classList.remove('hidden');
+            sidebar.classList.add('flex');
+            backdrop.classList.remove('hidden');
+
+            mobileButton.setAttribute('aria-expanded', 'true');
+            mobileButton.setAttribute('aria-label', 'Close navigation menu');
+        }
+
+        function closeSellerMenu() {
+            sidebar.classList.add('hidden');
+            sidebar.classList.remove('flex');
+            backdrop.classList.add('hidden');
+
+            mobileButton.setAttribute('aria-expanded', 'false');
+            mobileButton.setAttribute('aria-label', 'Open navigation menu');
+        }
+
+        if (mobileButton && sidebar && backdrop) {
+            mobileButton.addEventListener('click', function () {
+                const menuIsOpen =
+                    mobileButton.getAttribute('aria-expanded') === 'true';
+
+                if (menuIsOpen) {
+                    closeSellerMenu();
+                } else {
+                    openSellerMenu();
+                }
+            });
+
+            if (closeButton) {
+                closeButton.addEventListener('click', closeSellerMenu);
+            }
+
+            backdrop.addEventListener('click', closeSellerMenu);
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    closeSellerMenu();
+                }
+            });
+
+            sidebar.querySelectorAll('a').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    if (window.innerWidth < 768) {
+                        closeSellerMenu();
+                    }
+                });
+            });
+
+            window.addEventListener('resize', function () {
+                if (window.innerWidth >= 768) {
+                    closeSellerMenu();
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
+

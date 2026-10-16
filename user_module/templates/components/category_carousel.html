@@ -1,0 +1,112 @@
+
+<!-- ShopHub Continuous Category Carousel -->
+
+<section class="w-full overflow-hidden py-6">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+        <!-- Section Heading -->
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-[#123f3a] sm:text-3xl">
+                    Shop by Category
+                </h2>
+                
+            </div>
+        </div>
+
+        <!-- Moving Categories -->
+        <div class="category-marquee w-full overflow-hidden">
+            <div class="category-track flex w-max gap-6">
+
+                <!-- First Set of Categories -->
+                {% for category in categories %}
+                <a href="{% url 'customer_home' %}?category={{ category.id }}"
+                   class="group flex w-28 shrink-0 flex-col items-center text-center sm:w-32">
+
+                    <div class="flex h-24 w-24 items-center justify-center
+                                overflow-hidden rounded-full border border-gray-100
+                                bg-[#f1f4f3] shadow-sm transition duration-300
+                                group-hover:-translate-y-1 group-hover:shadow-md
+                                sm:h-28 sm:w-28">
+
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}"
+                                 alt="{{ category.name }}"
+                                 class="h-full w-full object-cover transition duration-300
+                                        group-hover:scale-110">
+                        {% else %}
+                            <span class="text-3xl font-bold text-[#123f3a]">
+                                {{ category.name|first|upper }}
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+                    <span class="mt-3 text-sm font-semibold text-[#F4C542]
+                                 transition group-hover:text-[#123f3a]">
+                        {{ category.name }}
+                    </span>
+                </a>
+                {% empty %}
+                    <p class="text-sm text-gray-500">
+                        No categories available yet.
+                    </p>
+                {% endfor %}
+
+                <!-- Duplicate Set for Seamless Loop -->
+                {% for category in categories %}
+                <a href="{% url 'customer_home' %}?category={{ category.id }}"
+                   aria-hidden="true"
+                   tabindex="-1"
+                   class="group flex w-28 shrink-0 flex-col items-center text-center sm:w-32">
+
+                    <div class="flex h-24 w-24 items-center justify-center
+                                overflow-hidden rounded-full border border-gray-100
+                                bg-[#f1f4f3] shadow-sm sm:h-28 sm:w-28">
+
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}"
+                                 alt=""
+                                 class="h-full w-full object-cover">
+                        {% else %}
+                            <span class="text-3xl font-bold text-[#123f3a]">
+                                {{ category.name|first|upper }}
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+                    <span class="mt-3 text-sm font-semibold text-gray-700">
+                        {{ category.name }}
+                    </span>
+                </a>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Continuous Animation -->
+<style>
+    .category-marquee {
+        --category-gap: 24px;
+    }
+
+    .category-track {
+        animation: category-scroll 30s linear infinite;
+        will-change: transform;
+    }
+
+    @keyframes category-scroll {
+        from {
+            transform: translateX(0);
+        }
+
+        to {
+            transform: translateX(-50%);
+        }
+    }
+</style>
+

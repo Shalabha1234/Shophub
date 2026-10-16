@@ -1,0 +1,551 @@
+{% extends "admin_module/admin_base.html" %}
+
+{% block content %}
+
+<div class="p-4 sm:p-6">
+
+    <!-- Header -->
+    <div class="mb-6">
+
+        <a
+            href="{% url 'admin_order_list' %}"
+            class="text-sm text-teal-700 hover:underline"
+        >
+            ← Back to Orders
+        </a>
+
+        <div class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">
+                    Order #{{ order.id }}
+                </h1>
+
+                <p class="mt-1 text-sm text-gray-500">
+                    Order placed on {{ order.created_at|date:"d M Y, h:i A" }}
+                </p>
+            </div>
+
+            <div>
+                {% if order.status == 'PENDING' %}
+                    <span class="inline-flex rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
+                        Pending
+                    </span>
+
+                {% elif order.status == 'CONFIRMED' %}
+                    <span class="inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+                        Confirmed
+                    </span>
+
+                {% elif order.status == 'PROCESSING' %}
+                    <span class="inline-flex rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
+                        Processing
+                    </span>
+
+                {% elif order.status == 'SHIPPED' %}
+                    <span class="inline-flex rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
+                        Shipped
+                    </span>
+
+                {% elif order.status == 'IN_TRANSIT' %}
+                    <span class="inline-flex rounded-full bg-cyan-100 px-3 py-1 text-xs font-semibold text-cyan-700">
+                        In Transit
+                    </span>
+
+                {% elif order.status == 'OUT_FOR_DELIVERY' %}
+                    <span class="inline-flex rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-700">
+                        Out for Delivery
+                    </span>
+
+                {% elif order.status == 'DELIVERED' %}
+                    <span class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                        Delivered
+                    </span>
+
+                {% elif order.status == 'CANCELLED' %}
+                    <span class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                        Cancelled
+                    </span>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Customer Information -->
+    <div class="mb-6 rounded-xl bg-white p-4 shadow-sm sm:p-6">
+
+        <h2 class="mb-5 text-lg font-semibold text-gray-900">
+            Customer Information
+        </h2>
+
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+            <div>
+                <p class="text-sm text-gray-500">
+                    Customer
+                </p>
+
+                <p class="mt-1 font-semibold text-gray-900">
+                    Customer #{{ order.user.id }}
+                </p>
+            </div>
+
+            <div class="min-w-0">
+                <p class="text-sm text-gray-500">
+                    Email
+                </p>
+
+                <p class="mt-1 break-all font-semibold text-gray-900">
+                    {{ order.user.email }}
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Order Items -->
+    <div class="mb-6 rounded-xl bg-white p-4 shadow-sm sm:p-6">
+
+        <h2 class="mb-5 text-lg font-semibold text-gray-900">
+            Order Items
+        </h2>
+
+
+        <!-- DESKTOP TABLE -->
+        <div class="hidden md:block">
+
+            <table class="min-w-full">
+
+                <thead>
+                    <tr class="border-b border-gray-200 text-left">
+
+                        <th class="px-4 py-3 text-sm font-semibold text-gray-700">
+                            Product
+                        </th>
+
+                        <th class="px-4 py-3 text-sm font-semibold text-gray-700">
+                            Quantity
+                        </th>
+
+                        <th class="px-4 py-3 text-sm font-semibold text-gray-700">
+                            Price
+                        </th>
+
+                        <th class="px-4 py-3 text-sm font-semibold text-gray-700">
+                            Total
+                        </th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in order.orderitem_set.all %}
+
+                        <tr class="border-b border-gray-100">
+
+                            <td class="px-4 py-4 text-sm">
+                                <p class="font-semibold text-gray-900">
+                                    {{ item.product.name }}
+                                </p>
+
+                                <p class="mt-1 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    Seller
+                                </p>
+
+                                <p class="text-sm font-medium text-gray-700">
+                                    {{ item.product.store.store_name }}
+                                </p>
+                            </td>
+
+                            <td class="px-4 py-4 text-sm text-gray-700">
+                                {{ item.quantity }}
+                            </td>
+
+                            <td class="px-4 py-4 text-sm text-gray-700">
+                                ₹{{ item.price }}
+                            </td>
+
+                            <td class="px-4 py-4 text-sm font-semibold text-gray-900">
+                                ₹{% widthratio item.price 1 item.quantity %}
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td
+                                colspan="4"
+                                class="px-4 py-6 text-center text-sm text-gray-500"
+                            >
+                                No items found for this order.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- MOBILE CARDS -->
+        <div class="space-y-4 md:hidden">
+
+            {% for item in order.orderitem_set.all %}
+
+                <div class="rounded-xl border border-gray-200 p-4">
+
+                    <!-- Product -->
+                    <div class="flex items-start justify-between gap-3">
+
+                        <div class="min-w-0">
+
+                            <p class="text-xs font-medium uppercase tracking-wide text-gray-400">
+                                Product
+                            </p>
+
+                            <p class="mt-1 break-words font-semibold text-gray-900">
+                                    {{ item.product.name }}
+                                </p>
+
+                                <p class="mt-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    Seller
+                                </p>
+
+                                <p class="mt-1 break-words text-sm font-medium text-gray-700">
+                                    {{ item.product.store.store_name }}
+                                </p>
+
+                        </div>
+
+                        <span class="shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                            Qty {{ item.quantity }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- Price Details -->
+                    <div class="mt-4 grid grid-cols-2 gap-4 border-t border-gray-100 pt-4">
+
+                        <div>
+
+                            <p class="text-xs text-gray-500">
+                                Price
+                            </p>
+
+                            <p class="mt-1 text-sm font-medium text-gray-900">
+                                ₹{{ item.price }}
+                            </p>
+
+                        </div>
+
+                        <div class="text-right">
+
+                            <p class="text-xs text-gray-500">
+                                Total
+                            </p>
+
+                            <p class="mt-1 text-sm font-bold text-gray-900">
+                                ₹{% widthratio item.price 1 item.quantity %}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="rounded-xl border border-gray-200 p-6 text-center text-sm text-gray-500">
+                    No items found for this order.
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- Order Total -->
+        <div class="mt-5 flex justify-end border-t border-gray-200 pt-5">
+
+            <div class="text-right">
+
+                <p class="text-sm text-gray-500">
+                    Order Total
+                </p>
+
+                <p class="mt-1 text-xl font-bold text-gray-900">
+                    ₹{{ order.total_amount }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Shipping Address -->
+    <div class="mb-6 rounded-xl bg-white p-4 shadow-sm sm:p-6">
+
+        <h2 class="text-lg font-semibold text-gray-900">
+            Shipping Address
+        </h2>
+
+        {% if order.orderaddress %}
+
+            <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <div>
+                    <p class="text-xs text-gray-500">
+                        Full Name
+                    </p>
+
+                    <p class="mt-1 font-medium text-gray-900">
+                        {{ order.orderaddress.full_name }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-xs text-gray-500">
+                        Phone
+                    </p>
+
+                    <p class="mt-1 font-medium text-gray-900">
+                        {{ order.orderaddress.phone }}
+                    </p>
+                </div>
+
+                <div class="sm:col-span-2">
+
+                    <p class="text-xs text-gray-500">
+                        Address
+                    </p>
+
+                    <p class="mt-1 leading-6 text-gray-700">
+                        {{ order.orderaddress.address }}<br>
+                        {{ order.orderaddress.city }},
+                        {{ order.orderaddress.state }} -
+                        {{ order.orderaddress.postal_code }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        {% else %}
+
+            <p class="mt-4 text-sm text-gray-500">
+                No shipping address available.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Payment Information -->
+    <div class="mb-6 rounded-xl bg-white p-4 shadow-sm sm:p-6">
+
+        <h2 class="mb-5 text-lg font-semibold text-gray-900">
+            Payment Information
+        </h2>
+
+        {% if order.payment %}
+
+            <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+                <div>
+                    <p class="text-sm text-gray-500">
+                        Payment Method
+                    </p>
+
+                    <p class="mt-1 font-semibold text-gray-900">
+                        {{ order.payment.get_payment_method_display }}
+                    </p>
+                </div>
+
+
+                <div>
+
+                    <p class="text-sm text-gray-500">
+                        Payment Status
+                    </p>
+
+                    <p class="mt-1">
+
+                        {% if order.payment.status == 'SUCCESS' %}
+
+                            <span class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                                Success
+                            </span>
+
+                        {% elif order.payment.status == 'PENDING' %}
+
+                            <span class="inline-flex rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold text-yellow-700">
+                                Pending
+                            </span>
+
+                        {% elif order.payment.status == 'FAILED' %}
+
+                            <span class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                                Failed
+                            </span>
+
+                        {% elif order.payment.status == 'REFUNDED' %}
+
+                            <span class="inline-flex rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
+                                Refunded
+                            </span>
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    <p class="text-sm text-gray-500">
+                        Amount
+                    </p>
+
+                    <p class="mt-1 font-semibold text-gray-900">
+                        ₹{{ order.payment.amount }}
+                    </p>
+
+                </div>
+
+
+                <div class="min-w-0">
+
+                    <p class="text-sm text-gray-500">
+                        Transaction ID
+                    </p>
+
+                    <p class="mt-1 break-all font-semibold text-gray-900">
+                        {% if order.payment.transaction_id %}
+                            {{ order.payment.transaction_id }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </p>
+
+                </div>
+
+            </div>
+
+        {% else %}
+
+            <p class="text-sm text-gray-500">
+                No payment information available.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- Order Status -->
+    <div class="rounded-xl bg-white p-4 shadow-sm sm:p-6">
+
+        <h2 class="mb-5 text-lg font-semibold text-gray-900">
+            Order Status
+        </h2>
+
+        <form
+            method="POST"
+            action="{% url 'admin_order_update_status' order.id %}"
+            class="flex flex-col gap-4 sm:flex-row sm:items-end"
+        >
+
+            {% csrf_token %}
+
+            <div class="w-full sm:max-w-sm">
+
+                <label
+                    for="status"
+                    class="mb-2 block text-sm font-medium text-gray-700"
+                >
+                    Update Status
+                </label>
+<select
+    name="status"
+    id="status"
+    class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-100"
+>
+
+    {% for status in available_statuses %}
+
+        {% if status == 'PENDING' %}
+            <option value="PENDING" {% if order.status == 'PENDING' %}selected{% endif %}>
+                Pending
+            </option>
+
+        {% elif status == 'CONFIRMED' %}
+            <option value="CONFIRMED" {% if order.status == 'CONFIRMED' %}selected{% endif %}>
+                Confirmed
+            </option>
+
+        {% elif status == 'PROCESSING' %}
+            <option value="PROCESSING" {% if order.status == 'PROCESSING' %}selected{% endif %}>
+                Processing
+            </option>
+
+        {% elif status == 'SHIPPED' %}
+            <option value="SHIPPED" {% if order.status == 'SHIPPED' %}selected{% endif %}>
+                Shipped
+            </option>
+
+        {% elif status == 'IN_TRANSIT' %}
+            <option value="IN_TRANSIT" {% if order.status == 'IN_TRANSIT' %}selected{% endif %}>
+                In Transit
+            </option>
+
+        {% elif status == 'OUT_FOR_DELIVERY' %}
+            <option value="OUT_FOR_DELIVERY" {% if order.status == 'OUT_FOR_DELIVERY' %}selected{% endif %}>
+                Out for Delivery
+            </option>
+
+        {% elif status == 'DELIVERED' %}
+            <option value="DELIVERED" {% if order.status == 'DELIVERED' %}selected{% endif %}>
+                Delivered
+            </option>
+
+        {% elif status == 'CANCELLED' %}
+            <option value="CANCELLED" {% if order.status == 'CANCELLED' %}selected{% endif %}>
+                Cancelled
+            </option>
+        {% endif %}
+
+    {% endfor %}
+
+</select>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="w-full rounded-lg bg-[#0f3d3e] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#16504f] sm:w-auto"
+            >
+                Update Status
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

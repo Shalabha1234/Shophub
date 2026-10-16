@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Seller Registration</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        :root {
+            --ink: #0f3d3e;
+            --ink-2: #16504f;
+            --sun: #ffc845;
+            --paper: #f6f8f7;
+            --text: #1b2a2b;
+            --muted: #5d6f70;
+            --line: #cdd8d7;
+            --error: #b3261e;
+            --error-bg: #fdecea;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+
+            font-family:
+                "Bricolage Grotesque",
+                system-ui,
+                -apple-system,
+                "Segoe UI",
+                sans-serif;
+
+            color: var(--text);
+            background: var(--paper);
+
+            line-height: 1.5;
+        }
+
+        .page {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            min-height: 100vh;
+        }
+
+
+        /* Form section */
+
+        .form-side {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 40px 24px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .card h1 {
+            font-size: 2rem;
+
+            letter-spacing: -0.03em;
+
+            margin: 0 0 6px;
+        }
+
+        .card .sub {
+            color: var(--muted);
+
+            margin: 0 0 28px;
+        }
+
+
+        /* Error message */
+
+        .alert {
+            background: var(--error-bg);
+
+            color: var(--error);
+
+            border-left: 4px solid var(--error);
+
+            border-radius: 6px;
+
+            padding: 10px 14px;
+
+            margin-bottom: 20px;
+
+            font-size: 0.95rem;
+        }
+
+        .alert ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+
+        /* Form fields */
+
+        label {
+            display: block;
+
+            font-weight: 500;
+
+            margin-bottom: 6px;
+
+            font-size: 0.95rem;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+
+            font: inherit;
+
+            padding: 12px 14px;
+
+            border: 1.5px solid var(--line);
+
+            border-radius: 8px;
+
+            background: #fff;
+
+            color: var(--text);
+        }
+
+        input:focus-visible,
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid var(--sun);
+
+            outline-offset: 2px;
+
+            border-color: var(--ink);
+        }
+
+        .hint {
+            color: var(--muted);
+
+            font-size: 0.85rem;
+
+            margin: 6px 0 0;
+        }
+
+
+        /* Password fields */
+
+        .password-row {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 12px;
+        }
+
+        .show-pw {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-weight: 400;
+
+            margin: 0 0 20px;
+
+            cursor: pointer;
+        }
+
+
+        /* Button */
+
+        .submit {
+            width: 100%;
+
+            font: inherit;
+
+            font-weight: 700;
+
+            font-size: 1rem;
+
+            padding: 13px 16px;
+
+            background: var(--ink);
+
+            color: #fff;
+
+            border: 0;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            transition: background 0.15s;
+        }
+
+        .submit:hover {
+            background: var(--ink-2);
+        }
+
+
+        /* Terms */
+
+        .terms {
+            color: var(--muted);
+
+            font-size: 0.85rem;
+
+            margin: 14px 0 0;
+        }
+
+
+        /* Login link */
+
+        .alt {
+            margin-top: 24px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid var(--line);
+
+            color: var(--muted);
+
+            font-size: 0.95rem;
+        }
+
+        .alt p {
+            margin: 0;
+        }
+
+        a {
+            color: var(--ink);
+
+            font-weight: 500;
+        }
+
+
+        /* Brand section */
+
+    .brand {
+    background: var(--ink);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0 56px 48px;
+    }
+
+    .pitch {
+    margin-top: 180px;
+    }
+        .awning {
+            height: 36px;
+
+            margin: 0 -56px 40px;
+
+            background: repeating-linear-gradient(
+                90deg,
+                var(--sun) 0 48px,
+                var(--ink) 48px 96px
+            );
+
+            border-bottom: 6px solid var(--sun);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+
+            font-weight: 800;
+
+            letter-spacing: -0.02em;
+        }
+
+        .logo span {
+            color: var(--sun);
+        }
+
+        .pitch h2 {
+            font-size: clamp(
+                2rem,
+                3.6vw,
+                3.25rem
+            );
+
+            line-height: 1.05;
+
+            letter-spacing: -0.03em;
+
+            font-weight: 800;
+
+            margin: 0 0 16px;
+
+            max-width: 14ch;
+        }
+
+        .pitch p {
+            margin: 0;
+
+            color: #c5dad8;
+
+            max-width: 38ch;
+        }
+
+
+        /* Seller benefits */
+
+        .perks {
+            list-style: none;
+
+            margin: 0;
+
+            padding: 0;
+
+            display: grid;
+
+            gap: 12px;
+        }
+
+        .perks li {
+            background: var(--ink-2);
+
+            border: 1px solid #2a6664;
+
+            border-radius: 10px;
+
+            padding: 12px 16px;
+
+            font-size: 0.95rem;
+        }
+
+        .perks b {
+            color: var(--sun);
+        }
+
+
+        /* Responsive */
+
+        @media (max-width: 860px) {
+
+            .page {
+                grid-template-columns: 1fr;
+            }
+
+            .brand {
+                order: -1;
+
+                padding: 0 24px 28px;
+
+                gap: 24px;
+            }
+
+            .awning {
+                margin: 0 -24px 24px;
+            }
+
+            .pitch h2 {
+                font-size: 1.9rem;
+            }
+
+            .perks {
+                display: none;
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .password-row {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (prefers-reduced-motion: reduce) {
+
+            * {
+                transition: none !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <main class="page">
+
+
+        <!-- Registration form -->
+
+        <section class="form-side">
+
+            <div class="card">
+
+                <h1>
+                    Create your seller account
+                </h1>
+
+                <p class="sub">
+                    Start your store and begin selling your products.
+                </p>
+
+
+                {% if error %}
+
+                    <div
+                        class="alert"
+                        role="alert"
+                    >
+                        {{ error }}
+                    </div>
+
+                {% endif %}
+
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+
+                    <div class="field">
+
+                        <label for="id_email">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="id_email"
+                            name="email"
+                            autocomplete="email"
+                            autofocus
+                            required
+                            placeholder="Enter your email"
+                            value="{{ request.POST.email|default:'' }}"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="id_store_name">
+                            Store name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="id_store_name"
+                            name="store_name"
+                            autocomplete="organization"
+                            required
+                            placeholder="Enter your store name"
+                            value="{{ request.POST.store_name|default:'' }}"
+                        >
+
+                        <p class="hint">
+                            Customers will see this name on your store.
+                        </p>
+
+                    </div>
+
+
+                    <div class="password-row">
+
+                        <div class="field">
+
+                            <label for="id_password">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="id_password"
+                                name="password"
+                                autocomplete="new-password"
+                                required
+                                placeholder="Create a password"
+                            >
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="id_confirm_password">
+                                Confirm password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="id_confirm_password"
+                                name="confirm_password"
+                                autocomplete="new-password"
+                                required
+                                placeholder="Confirm password"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <p class="hint" style="margin: -8px 0 12px;">
+                        Use at least 8 characters.
+                    </p>
+
+
+                    <label class="show-pw">
+
+                        <input
+                            type="checkbox"
+                            id="show-pw"
+                        >
+
+                        Show passwords
+
+                    </label>
+
+
+                    <button
+                        type="submit"
+                        class="submit"
+                    >
+                        Create Seller Account
+                    </button>
+
+
+                    <p class="terms">
+
+                        By creating an account, you agree to our
+                        <a href="#">Terms</a>
+                        and
+                        <a href="#">Privacy Policy</a>.
+
+                    </p>
+
+                </form>
+
+
+                <div class="alt">
+
+                    <p>
+
+                        Already have a seller account?
+
+                        <a href="{% url 'seller_login' %}">
+                            Sign in
+                        </a>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Seller branding -->
+
+        <section class="brand">
+
+            <div>
+
+                <div
+                    class="awning"
+                    aria-hidden="true"
+                ></div>
+
+                <div class="logo">
+                    Shop<span>Hub</span> Seller
+                </div>
+
+            </div>
+
+
+            <div class="pitch">
+
+                <h2>
+                    Turn your products into your business.
+                </h2>
+
+                <p>
+                    Create your seller account and manage
+                    your store, products, inventory, and orders
+                    from one place.
+                </p>
+
+            </div>
+
+
+            
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        (function () {
+
+            var checkbox =
+                document.getElementById('show-pw');
+
+            var password =
+                document.getElementById('id_password');
+
+            var confirmPassword =
+                document.getElementById('id_confirm_password');
+
+
+            checkbox.addEventListener(
+                'change',
+                function () {
+
+                    var type =
+                        checkbox.checked
+                            ? 'text'
+                            : 'password';
+
+                    password.type = type;
+
+                    confirmPassword.type = type;
+
+                }
+            );
+
+        })();
+
+    </script>
+
+</body>
+
+</html>

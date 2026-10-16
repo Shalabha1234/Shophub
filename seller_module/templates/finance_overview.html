@@ -1,0 +1,609 @@
+{% extends "seller_base.html" %}
+
+{% block title %}Finance Management{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-7xl space-y-8">
+
+    <!-- Page Header -->
+    <div>
+        <p class="text-sm font-semibold uppercase tracking-wider text-teal-700">
+            Seller Finance
+        </p>
+
+        <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+            Finance Overview
+        </h1>
+
+        <p class="mt-2 text-sm text-slate-500">
+            Monitor your sales, earnings, commissions and payouts.
+        </p>
+    </div>
+
+
+    <!-- Finance Summary Cards -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+
+        <!-- Total Sales -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-slate-500">Total Sales</p>
+
+                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="1.8"
+                              d="M3 3v18h18M7 14l4-4 4 4 6-7"/>
+                    </svg>
+                </span>
+            </div>
+
+            <p class="mt-5 text-3xl font-bold text-slate-900">
+                ₹{{ total_sales|floatformat:2 }}
+            </p>
+
+            <p class="mt-2 text-xs text-slate-500">
+                Delivered sales after refunds
+            </p>
+        </div>
+
+
+        <!-- Seller Earnings -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-slate-500">Seller Earnings</p>
+
+                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="1.8"
+                              d="M12 8c-2.2 0-4 1.1-4 2.5S9.8 13 12 13s4 1.1 4 2.5S14.2 18 12 18m0-12v2m0 10v2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                    </svg>
+                </span>
+            </div>
+
+            <p class="mt-5 text-3xl font-bold text-emerald-700">
+                ₹{{ seller_earnings|floatformat:2 }}
+            </p>
+
+            <p class="mt-2 text-xs text-slate-500">
+                Earnings after commission
+            </p>
+        </div>
+
+
+        <!-- Pending Payout -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-slate-500">Pending Payout</p>
+
+                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="1.8"
+                              d="M12 6v6l4 2m5-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                    </svg>
+                </span>
+            </div>
+
+            <p class="mt-5 text-3xl font-bold text-amber-700">
+                ₹{{ pending_payout|floatformat:2 }}
+            </p>
+
+            <p class="mt-2 text-xs text-slate-500">
+                Payout amount awaiting completion
+            </p>
+        </div>
+
+
+        <!-- Available Balance -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-slate-500">Available Balance</p>
+
+                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="1.8"
+                              d="M3 7h18v12H3zM3 7l2-3h14l2 3M16 13h2"/>
+                    </svg>
+                </span>
+            </div>
+
+            {% if balance_owed %}
+
+                <p class="mt-5 text-3xl font-bold text-rose-700">
+                    −₹{{ balance_owed|floatformat:2 }}
+                </p>
+
+                <p class="mt-2 text-xs text-rose-700">
+                    Refunds were larger than your earnings. This amount
+                    will be deducted from your future earnings.
+                </p>
+
+            {% else %}
+
+                <p class="mt-5 text-3xl font-bold text-teal-800">
+                    ₹{{ available_balance|floatformat:2 }}
+                </p>
+
+                <p class="mt-2 text-xs text-slate-500">
+                    Balance available to request
+                </p>
+
+            {% endif %}
+        </div>
+
+    </div>
+
+
+    <!-- Request Payout -->
+    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+        <div class="border-b border-slate-200 px-6 py-5">
+            <h2 class="text-xl font-bold text-slate-900">
+                Request Payout
+            </h2>
+
+            <p class="mt-1 text-sm text-slate-500">
+                Request a withdrawal from your available seller balance.
+            </p>
+        </div>
+
+        <div class="p-6">
+
+            {% if balance_owed %}
+
+                <div class="rounded-xl border border-rose-200 bg-rose-50 p-4">
+                    <p class="text-sm font-medium text-rose-800">
+                        You cannot request a payout right now. Refunds on
+                        orders that were already paid out have left your
+                        balance at −₹{{ balance_owed|floatformat:2 }}. New
+                        earnings will first make up this amount.
+                    </p>
+                </div>
+
+            {% elif bank_details_missing %}
+
+                <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                    <p class="text-sm font-medium text-amber-800">
+                        Add your bank details before requesting a payout.
+                    </p>
+
+                    <a href="{% url 'bank_details' %}"
+                       class="mt-2 inline-block text-sm font-semibold text-amber-900 underline">
+                        Go to bank details
+                    </a>
+                </div>
+
+            {% elif available_balance > 0 %}
+
+                <form method="POST"
+                      action="{% url 'request_payout' %}"
+                      class="flex flex-col gap-4 sm:flex-row sm:items-end">
+
+                    {% csrf_token %}
+
+                    <div class="flex-1">
+                        <label for="payout-amount"
+                               class="mb-2 block text-sm font-semibold text-slate-700">
+                            Payout Amount (₹)
+                        </label>
+
+                        <input
+                            id="payout-amount"
+                            type="number"
+                            name="amount"
+                            step="0.01"
+                            min="0.01"
+                            max="{{ available_balance }}"
+                            placeholder="Enter amount"
+                            required
+                            class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-teal-700 focus:ring-2 focus:ring-teal-100"
+                        >
+
+                        <p class="mt-2 text-xs text-slate-500">
+                            Available balance:
+                            <span class="font-semibold text-teal-800">
+                                ₹{{ available_balance|floatformat:2 }}
+                            </span>
+                        </p>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="rounded-xl bg-teal-800 px-6 py-3 text-sm font-semibold text-white transition hover:bg-teal-900 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-2">
+                        Request Payout
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                    <p class="text-sm font-medium text-amber-800">
+                        You currently have no available balance to withdraw.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </div>
+    </section>
+
+
+    <!-- Transaction History -->
+    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+        <div class="border-b border-slate-200 px-6 py-5">
+            <h2 class="text-xl font-bold text-slate-900">
+                Recent Transactions
+            </h2>
+
+            <p class="mt-1 text-sm text-slate-500">
+                Review your sales, commissions, payouts and refunds.
+            </p>
+        </div>
+
+
+        <!-- Transaction Filters -->
+        <div class="flex flex-wrap gap-2 border-b border-slate-200 px-6 py-4">
+
+            <a href="{% url 'finance_overview' %}"
+               class="rounded-lg px-4 py-2 text-sm font-semibold transition
+               {% if not transaction_type %}bg-teal-800 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">
+                All
+            </a>
+
+            <a href="{% url 'finance_overview' %}?type=SALE"
+               class="rounded-lg px-4 py-2 text-sm font-semibold transition
+               {% if transaction_type == 'SALE' %}bg-teal-800 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">
+                Sales
+            </a>
+
+            <a href="{% url 'finance_overview' %}?type=COMMISSION"
+               class="rounded-lg px-4 py-2 text-sm font-semibold transition
+               {% if transaction_type == 'COMMISSION' %}bg-teal-800 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">
+                Commission
+            </a>
+
+            <a href="{% url 'finance_overview' %}?type=PAYOUT"
+               class="rounded-lg px-4 py-2 text-sm font-semibold transition
+               {% if transaction_type == 'PAYOUT' %}bg-teal-800 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">
+                Payouts
+            </a>
+
+            <a href="{% url 'finance_overview' %}?type=REFUND"
+               class="rounded-lg px-4 py-2 text-sm font-semibold transition
+               {% if transaction_type == 'REFUND' %}bg-teal-800 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">
+                Refunds
+            </a>
+
+        </div>
+
+
+        <!-- Transaction List -->
+        <div class="px-6">
+
+            {% if transactions %}
+
+                {% for transaction in transactions %}
+
+                    <div class="flex flex-col gap-4 border-b border-slate-100 py-5 last:border-b-0 sm:flex-row sm:items-center sm:justify-between">
+
+                        <div class="flex min-w-0 items-start gap-4">
+
+                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl
+                                {% if transaction.is_debit %}
+                                    bg-rose-50 text-rose-700
+                                {% else %}
+                                    bg-emerald-50 text-emerald-700
+                                {% endif %}">
+
+                                {% if transaction.is_debit %}
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2"
+                                              d="M19 12H5m7 7-7-7 7-7"/>
+                                    </svg>
+                                {% else %}
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor"
+                                         viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2"
+                                              d="M5 12h14m-7-7 7 7-7 7"/>
+                                    </svg>
+                                {% endif %}
+
+                            </div>
+
+                            <div class="min-w-0">
+                                <p class="font-semibold text-slate-900">
+                                    {{ transaction.get_transaction_type_display }}
+                                </p>
+
+                                <p class="mt-1 break-words text-sm text-slate-500">
+                                    {{ transaction.description|default:"—" }}
+                                </p>
+
+                                <p class="mt-1 text-xs text-slate-400">
+                                    {{ transaction.created_at|date:"d M Y" }}
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="flex shrink-0 flex-row items-center justify-between gap-4 sm:flex-col sm:items-end">
+
+                            <p class="text-lg font-bold
+                                {% if transaction.is_debit %}
+                                    text-rose-700
+                                {% else %}
+                                    text-emerald-700
+                                {% endif %}">
+
+                                {% if transaction.is_debit %}
+                                    −
+                                {% else %}
+                                    +
+                                {% endif %}
+
+                                ₹{{ transaction.amount|floatformat:2 }}
+                            </p>
+
+                            <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold
+                                {% if transaction.status == 'COMPLETED' or transaction.status == 'SUCCESS' %}
+                                    bg-emerald-50 text-emerald-700
+                                {% elif transaction.status == 'PENDING' or transaction.status == 'PROCESSING' %}
+                                    bg-amber-50 text-amber-700
+                                {% elif transaction.status == 'FAILED' %}
+                                    bg-rose-50 text-rose-700
+                                {% else %}
+                                    bg-slate-100 text-slate-600
+                                {% endif %}">
+
+                                {{ transaction.get_status_display }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+                {% if transactions_truncated %}
+                    <p class="border-t border-slate-100 py-4 text-center text-xs text-slate-400">
+                        Showing the latest {{ transaction_limit }} transactions.
+                    </p>
+                {% endif %}
+
+            {% else %}
+
+                <div class="py-12 text-center">
+                    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+                        <svg class="h-7 w-7" fill="none" stroke="currentColor"
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="1.7"
+                                  d="M4 5h16v14H4zM8 9h8M8 13h5"/>
+                        </svg>
+                    </div>
+
+                    <h3 class="mt-4 font-semibold text-slate-900">
+                        No transactions found
+                    </h3>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Transactions will appear here when available.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </div>
+    </section>
+
+
+    <!-- Payout History -->
+    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+        <div class="border-b border-slate-200 px-6 py-5">
+            <h2 class="text-xl font-bold text-slate-900">
+                Payout History
+            </h2>
+
+            <p class="mt-1 text-sm text-slate-500">
+                Track the status of your withdrawal requests.
+            </p>
+        </div>
+
+
+        <div class="px-6">
+
+            {% if payouts %}
+
+                {% for payout in payouts %}
+
+                    <div class="grid grid-cols-1 gap-4 border-b border-slate-100 py-5 last:border-b-0 sm:grid-cols-2 lg:grid-cols-5 lg:items-center">
+
+                        <div>
+                            <p class="text-xs font-medium text-slate-400">
+                                Payout
+                            </p>
+
+                            <p class="mt-1 text-sm font-semibold text-slate-900">
+                                #{{ payout.id }}
+                            </p>
+                        </div>
+
+
+                        <div>
+                            <p class="text-xs font-medium text-slate-400">
+                                Amount
+                            </p>
+
+                            <p class="mt-1 text-lg font-bold text-slate-900">
+                                ₹{{ payout.amount|floatformat:2 }}
+                            </p>
+                        </div>
+
+
+                        <div>
+                            <p class="text-xs font-medium text-slate-400">
+                                Requested On
+                            </p>
+
+                            <p class="mt-1 text-sm text-slate-700">
+                                {{ payout.created_at|date:"d M Y" }}
+                            </p>
+                        </div>
+
+
+                        <div>
+                            <p class="text-xs font-medium text-slate-400">
+                                Transaction ID
+                            </p>
+
+                            <p class="mt-1 break-words text-sm text-slate-700">
+                                {{ payout.transaction_id|default:"—" }}
+                            </p>
+                        </div>
+
+
+                        <div class="lg:text-right">
+                            <p class="text-xs font-medium text-slate-400">
+                                Status
+                            </p>
+
+                            <span class="mt-2 inline-flex rounded-full px-3 py-1 text-xs font-semibold
+                                {% if payout.status == 'PAID' %}
+                                    bg-emerald-50 text-emerald-700
+                                {% elif payout.status == 'PENDING' or payout.status == 'PROCESSING' %}
+                                    bg-amber-50 text-amber-700
+                                {% elif payout.status == 'FAILED' %}
+                                    bg-rose-50 text-rose-700
+                                {% else %}
+                                    bg-slate-100 text-slate-600
+                                {% endif %}">
+
+                                {{ payout.get_status_display }}
+
+                            </span>
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="py-10 text-center">
+                    <p class="font-semibold text-slate-800">
+                        No payout history yet
+                    </p>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Your payout requests will appear here.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </div>
+    </section>
+
+</div>
+
+
+
+<script>
+(function () {
+    const storageKey = "shophubFinanceScrollY";
+
+    function saveScrollPosition() {
+        try {
+            sessionStorage.setItem(storageKey, String(window.scrollY));
+        } catch (error) {
+            // Storage can be unavailable (for example private mode).
+        }
+    }
+
+    function restoreScrollPosition() {
+        let savedPosition = null;
+
+        try {
+            savedPosition = sessionStorage.getItem(storageKey);
+            sessionStorage.removeItem(storageKey);
+        } catch (error) {
+            return;
+        }
+
+        if (savedPosition === null) {
+            return;
+        }
+
+        // After a payout request the page shows a success or error
+        // message at the top. Bring that message into view instead of
+        // returning to the old position, so it is never missed.
+        const message = document.querySelector('[role="status"]');
+
+        if (message) {
+            requestAnimationFrame(function () {
+                message.scrollIntoView({ block: "center" });
+            });
+            return;
+        }
+
+        // Filter links: return to where the visitor was.
+        const position = Number(savedPosition);
+
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                window.scrollTo(0, position);
+            });
+        });
+    }
+
+    // Restore after a page load or browser navigation.
+    window.addEventListener("pageshow", restoreScrollPosition);
+
+    // Save the position before the payout form is submitted.
+    document.addEventListener("submit", function (event) {
+        if (event.target.matches("form")) {
+            saveScrollPosition();
+        }
+    }, true);
+
+    // Save the position before a filter link on this page is clicked.
+    document.addEventListener("click", function (event) {
+        const link = event.target.closest("a");
+
+        if (!link || !link.href) {
+            return;
+        }
+
+        try {
+            const targetUrl = new URL(link.href);
+
+            if (
+                targetUrl.origin === window.location.origin &&
+                targetUrl.pathname === window.location.pathname
+            ) {
+                saveScrollPosition();
+            }
+        } catch (error) {
+            // Ignore invalid links.
+        }
+    }, true);
+})();
+</script>
+
+{% endblock %}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout</title>
+</head>
+<body>
+
+    {% if message %}
+        <h2>{{ message }}</h2>
+    {% endif %}
+
+    {% if order %}
+    <h2>Order placed successfully!</h2>
+
+    <p>Order ID: {{ order.id }}</p>
+    <p>Total Amount: ₹{{ order.total_amount }}</p>
+    <p>Status: {{ order.status }}</p>
+
+    <a href="{% url 'payment' order.id %}">
+        Proceed to Payment
+    </a>
+{% endif %}
+
+{% if not order and not message %}
+
+    <h2>Delivery Address</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Full Name:</label>
+        <input type="text" name="full_name" required>
+        <br><br>
+
+        <label>Phone:</label>
+        <input type="text" name="phone" required>
+        <br><br>
+
+        <label>Address:</label>
+        <textarea name="address" required></textarea>
+        <br><br>
+
+        <label>City:</label>
+        <input type="text" name="city" required>
+        <br><br>
+
+        <label>State:</label>
+        <input type="text" name="state" required>
+        <br><br>
+
+        <label>Postal Code:</label>
+        <input type="text" name="postal_code" required>
+        <br><br>
+
+        <button type="submit">Place Order</button>
+
+    </form>
+
+{% endif %}
+
+</body>
+</html>

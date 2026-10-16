@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | ShopHub</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Bricolage Grotesque', sans-serif;
+        }
+
+        body {
+            background: #f8faf9;
+        }
+
+        .dark-teal {
+            background: #123f3a;
+        }
+
+        .text-dark-teal {
+            color: #123f3a;
+        }
+
+        .brand-yellow {
+            color: #f4c542;
+        }
+
+        .bg-brand-yellow {
+            background: #f4c542;
+        }
+
+        .decor-circle {
+            position: absolute;
+            border-radius: 9999px;
+            pointer-events: none;
+        }
+
+        .input-field {
+            transition: all 0.2s ease;
+        }
+
+        .input-field:focus {
+            border-color: #123f3a;
+            box-shadow: 0 0 0 3px rgba(18, 63, 58, 0.08);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+<div class="min-h-screen flex">
+
+    <!-- =====================================
+         LEFT SIDE
+    ====================================== -->
+
+    <div class="hidden lg:flex lg:w-1/2 dark-teal relative overflow-hidden">
+
+        <!-- Decorative circles -->
+
+        <div class="decor-circle w-72 h-72
+                    bg-yellow-300/10
+                    -top-24 -left-24">
+        </div>
+
+        <div class="decor-circle w-96 h-96
+                    bg-white/5
+                    -bottom-48 -right-40">
+        </div>
+
+        <div class="decor-circle w-44 h-44
+                    bg-yellow-300/10
+                    top-1/2 right-16">
+        </div>
+
+
+        <div class="relative z-10
+                    flex flex-col justify-between
+                    w-full p-12 xl:p-16">
+
+            <!-- LOGO -->
+
+            <a href="{% url 'customer_home' %}"
+               class="flex items-center gap-3 w-fit">
+
+                <div class="w-11 h-11
+                            rounded-xl
+                            bg-brand-yellow
+                            flex items-center justify-center
+                            text-dark-teal
+                            font-extrabold
+                            text-xl">
+
+                    S
+
+                </div>
+
+                <div>
+
+                    <div class="text-white
+                                text-2xl
+                                font-bold
+                                leading-none">
+
+                        ShopHub
+
+                    </div>
+
+                    <div class="text-white/50
+                                text-xs
+                                mt-1">
+
+                        Everything in one place
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- MAIN CONTENT -->
+
+            <div class="max-w-lg">
+
+                <div class="inline-flex
+                            items-center
+                            gap-2
+                            px-4 py-2
+                            rounded-full
+                            bg-white/10
+                            border border-white/10
+                            text-white/80
+                            text-sm
+                            mb-7">
+
+                    
+
+                  
+
+                </div>
+
+
+                <h1 class="text-5xl xl:text-6xl
+                           font-extrabold
+                           text-white
+                           leading-tight">
+
+                    Everything you need.
+                    <span class="brand-yellow">
+                        One place.
+                    </span>
+
+                </h1>
+
+
+                <p class="text-white/60
+                          text-lg
+                          leading-relaxed
+                          mt-6
+                          max-w-md">
+
+                    Your favourite products, your wishlist,
+                    your orders and everything you love —
+                    all waiting for you.
+
+                </p>
+
+
+                <!-- FEATURE CARDS -->
+
+                <div class="grid grid-cols-2
+                            gap-4
+                            mt-10">
+
+                    <div class="bg-white/10
+                                border border-white/10
+                                rounded-2xl
+                                p-5">
+
+                        <div class="text-2xl mb-3">
+                            🛍️
+                        </div>
+
+                        <div class="text-white
+                                    font-semibold">
+
+                            Shop Easily
+
+                        </div>
+
+                        <div class="text-white/50
+                                    text-sm
+                                    mt-1">
+
+                            Find everything you need
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="bg-white/10
+                                border border-white/10
+                                rounded-2xl
+                                p-5">
+
+                        <div class="text-2xl mb-3">
+                            ❤️
+                        </div>
+
+                        <div class="text-white
+                                    font-semibold">
+
+                            Save Favourites
+
+                        </div>
+
+                        <div class="text-white/50
+                                    text-sm
+                                    mt-1">
+
+                            Keep products you love
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOTER -->
+
+            <div class="text-white/40
+                        text-sm">
+
+                © 2026 ShopHub. All rights reserved.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         RIGHT SIDE
+    ====================================== -->
+
+    <div class="w-full lg:w-1/2
+                flex items-center justify-center
+                px-6 py-10
+                sm:px-10
+                lg:px-16">
+
+        <div class="w-full max-w-md">
+
+
+            <!-- MOBILE LOGO -->
+
+            <a href="{% url 'customer_home' %}"
+               class="lg:hidden
+                      flex items-center
+                      gap-3
+                      mb-10
+                      w-fit">
+
+                <div class="w-11 h-11
+                            rounded-xl
+                            bg-brand-yellow
+                            flex items-center justify-center
+                            text-dark-teal
+                            font-extrabold
+                            text-xl">
+
+                    S
+
+                </div>
+
+                <div>
+
+                    <div class="text-dark-teal
+                                text-2xl
+                                font-bold">
+
+                        ShopHub
+
+                    </div>
+
+                    <div class="text-gray-400
+                                text-xs">
+
+                        Everything in one place
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- HEADING -->
+
+            <div class="mb-8">
+
+                
+
+
+                <h2 class="text-4xl
+                           font-extrabold
+                           text-gray-900">
+
+                    Welcome back
+
+                </h2>
+
+
+                <p class="text-gray-500
+                          mt-2">
+
+                    Sign in to continue shopping.
+
+                </p>
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            {% if error %}
+
+                <div class="mb-5
+                            px-4 py-3
+                            rounded-xl
+                            bg-red-50
+                            border border-red-100
+                            text-red-600
+                            text-sm">
+
+                    {{ error }}
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- LOGIN FORM -->
+
+            <form method="POST"
+                  class="space-y-5">
+
+                {% csrf_token %}
+
+
+                <!-- EMAIL -->
+
+                <div>
+
+                    <label for="email"
+                           class="block
+                                  text-sm
+                                  font-semibold
+                                  text-gray-700
+                                  mb-2">
+
+                        Email Address
+
+                    </label>
+
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        required
+                        autocomplete="email"
+                        class="input-field
+                               w-full
+                               px-4 py-3.5
+                               border border-gray-200
+                               rounded-xl
+                               outline-none
+                               text-gray-800
+                               placeholder-gray-400
+                               bg-white"
+                    >
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div>
+
+                    <div class="flex
+                                items-center
+                                justify-between
+                                mb-2">
+
+                        <label for="password"
+                               class="block
+                                      text-sm
+                                      font-semibold
+                                      text-gray-700">
+
+                            Password
+
+                        </label>
+
+                        <a href="#"
+                           class="text-sm
+                                  font-medium
+                                  text-dark-teal
+                                  hover:underline">
+
+                            Forgot password?
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="relative">
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                            autocomplete="current-password"
+                            class="input-field
+                                   w-full
+                                   px-4 py-3.5
+                                   pr-12
+                                   border border-gray-200
+                                   rounded-xl
+                                   outline-none
+                                   text-gray-800
+                                   placeholder-gray-400
+                                   bg-white"
+                        >
+
+
+                        <button
+                            type="button"
+                            onclick="togglePassword()"
+                            class="absolute
+                                   right-4
+                                   top-1/2
+                                   -translate-y-1/2
+                                   text-gray-400
+                                   hover:text-dark-teal">
+
+                            <svg id="eyeIcon"
+                                 class="w-5 h-5"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 viewBox="0 0 24 24">
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="1.8"
+                                    d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/>
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="2.5"
+                                    stroke-width="1.8"/>
+
+                            </svg>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- REMEMBER ME -->
+
+                <label class="flex
+                              items-center
+                              gap-2
+                              cursor-pointer">
+
+                    <input
+                        type="checkbox"
+                        name="remember"
+                        class="w-4 h-4
+                               rounded
+                               border-gray-300
+                               text-dark-teal
+                               focus:ring-dark-teal"
+                    >
+
+                    <span class="text-sm
+                                 text-gray-500">
+
+                        Remember me
+
+                    </span>
+
+                </label>
+
+
+                <!-- BUTTON -->
+
+                <button
+                    type="submit"
+                            class="w-full
+                                   py-3.5
+                                   rounded-xl
+                                   bg-[#123f3a]
+                                   text-white
+                                   font-bold
+                                   shadow-lg
+                                   shadow-[#123f3a]/20
+                                   hover:bg-[#0e322e]
+                                   hover:-translate-y-0.5
+                                   transition">
+
+                    Sign In
+
+                </button>
+
+            </form>
+
+
+            <!-- DIVIDER -->
+
+            <div class="flex
+                        items-center
+                        gap-4
+                        my-7">
+
+                <div class="flex-1
+                            h-px
+                            bg-gray-200">
+                </div>
+
+                <span class="text-xs
+                             text-gray-400
+                             font-medium">
+
+                    OR
+
+                </span>
+
+                <div class="flex-1
+                            h-px
+                            bg-gray-200">
+                </div>
+
+            </div>
+
+
+            <!-- REGISTER -->
+
+            <div class="text-center">
+
+                <p class="text-gray-500
+                          text-sm">
+
+                    Don't have an account?
+
+                    <a href="{% url 'customer_register' %}"
+                       class="text-dark-teal
+                              font-bold
+                              hover:underline">
+
+                        Create one
+
+                    </a>
+
+                </p>
+
+            </div>
+
+
+            <!-- BACK -->
+
+            <div class="text-center
+                        mt-7">
+
+                <a href="{% url 'customer_home' %}"
+                   class="text-sm
+                          text-gray-400
+                          hover:text-dark-teal
+                          transition">
+
+                    ← Back to ShopHub
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function togglePassword() {
+
+    const passwordInput =
+        document.getElementById('password');
+
+    if (passwordInput.type === 'password') {
+
+        passwordInput.type = 'text';
+
+    } else {
+
+        passwordInput.type = 'password';
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>

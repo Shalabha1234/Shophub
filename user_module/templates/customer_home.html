@@ -1,0 +1,840 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ShopHub - Your Everyday Marketplace</title>
+
+    <!-- Development only. For production, build Tailwind instead of using the CDN. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+        body {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            background: #f8faf9;
+            color: #172b28;
+        }
+
+        /* Shared style for the inline SVG icons */
+        .icon {
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .hero-section {
+            background:
+                radial-gradient(circle at 85% 20%, rgba(244, 197, 66, 0.18), transparent 30%),
+                linear-gradient(135deg, #123f3a 0%, #16504a 60%, #1d6258 100%);
+        }
+
+        .hero-decoration {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+        }
+
+        .product-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 30px rgba(18, 63, 58, 0.10);
+        }
+
+        .product-image {
+            transition: transform 0.4s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .soft-shadow {
+            box-shadow: 0 10px 30px rgba(18, 63, 58, 0.06);
+        }
+
+        .section-label {
+            letter-spacing: 0.16em;
+        }
+
+        #categories,
+        #products,
+        #why-shophub {
+            scroll-margin-top: 100px;
+        }
+
+        .wishlist-button {
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+
+        .wishlist-button:hover {
+            transform: scale(1.08);
+        }
+
+        .wishlist-button.is-added {
+            color: #e11d48;
+        }
+
+        .wishlist-button.is-not-added {
+            color: #9ca3af;
+        }
+
+        .wishlist-button.is-not-added:hover {
+            color: #e11d48;
+        }
+
+        .wishlist-button:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+
+        .nav-wishlist {
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ICON SPRITE (Lucide-style icons, used with <svg class="icon"><use href="#i-name"/></svg>) -->
+    <svg class="absolute h-0 w-0 overflow-hidden" aria-hidden="true" focusable="false">
+        <symbol id="i-search" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="7"/>
+            <path d="m21 21-4.3-4.3"/>
+        </symbol>
+        <symbol id="i-cart" viewBox="0 0 24 24">
+            <circle cx="8" cy="21" r="1"/>
+            <circle cx="19" cy="21" r="1"/>
+            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+        </symbol>
+        <symbol id="i-package" viewBox="0 0 24 24">
+            <path d="m7.5 4.27 9 5.15"/>
+            <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+            <path d="m3.3 7 8.7 5 8.7-5"/>
+            <path d="M12 22V12"/>
+        </symbol>
+        <symbol id="i-bag" viewBox="0 0 24 24">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+            <path d="M3 6h18"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+        </symbol>
+        <symbol id="i-heart" viewBox="0 0 24 24">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+        </symbol>
+        <symbol id="i-sparkles" viewBox="0 0 24 24">
+            <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>
+        </symbol>
+        <symbol id="i-shirt" viewBox="0 0 24 24">
+            <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>
+        </symbol>
+        <symbol id="i-home" viewBox="0 0 24 24">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <path d="M9 22V12h6v10"/>
+        </symbol>
+    </svg>
+
+    <!-- NAVIGATION -->
+    <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
+        <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:flex-nowrap lg:gap-5 lg:px-8">
+
+            <!-- LOGO -->
+            <a href="{% url 'customer_home' %}" class="flex flex-shrink-0 items-center gap-2">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#123f3a] text-xl font-extrabold text-[#f4c542]">
+                    S
+                </div>
+
+                <div>
+                    <span class="block text-xl font-extrabold leading-tight tracking-tight text-[#123f3a] sm:text-2xl">
+                        ShopHub
+                    </span>
+
+                    <span class="hidden text-[10px] font-semibold tracking-widest text-gray-500 sm:block">
+                        YOUR EVERYDAY MARKETPLACE
+                    </span>
+                </div>
+            </a>
+
+            <!-- NAVIGATION LINKS -->
+            <nav class="hidden items-center gap-5 md:flex lg:gap-6">
+                <a href="{% url 'customer_home' %}"
+                   class="text-sm font-bold text-[#123f3a] transition hover:text-[#16504a]">
+                    Home
+                </a>
+
+                <a href="{% url 'customer_home' %}#categories"
+                   class="text-sm font-medium text-gray-600 transition hover:text-[#123f3a]">
+                    Categories
+                </a>
+
+                <a href="{% url 'customer_home' %}#products"
+                   class="text-sm font-medium text-gray-600 transition hover:text-[#123f3a]">
+                    Products
+                </a>
+
+                <a href="{% url 'customer_home' %}#why-shophub"
+                   class="text-sm font-medium text-gray-600 transition hover:text-[#123f3a]">
+                    About Us
+                </a>
+            </nav>
+
+            <!-- NAVBAR SEARCH (the only search bar on this page). Results open on the search results page. -->
+            <form method="get"
+                  action="{% url 'customer_product_list' %}"
+                  role="search"
+                  class="order-last flex w-full basis-full items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-1.5 focus-within:border-[#123f3a] focus-within:ring-2 focus-within:ring-emerald-100 lg:order-none lg:max-w-sm lg:flex-1 lg:basis-auto">
+
+                <svg class="icon h-4 w-4 flex-shrink-0 text-gray-400" aria-hidden="true"><use href="#i-search"/></svg>
+
+                <input
+                    type="search"
+                    name="q"
+                    placeholder="Search products..."
+                    aria-label="Search products"
+                    class="min-w-0 w-full bg-transparent py-1.5 text-sm text-gray-800 outline-none"
+                >
+
+                <button
+                    type="submit"
+                    class="flex-shrink-0 rounded-lg bg-[#123f3a] px-3 py-2 text-xs font-bold text-white transition hover:bg-[#16504a]">
+                    Search
+                </button>
+            </form>
+
+            <!-- NAVIGATION ACTIONS -->
+            <div class="flex flex-shrink-0 items-center gap-2 sm:gap-3">
+
+                <!-- WISHLIST -->
+                <a href="{% url 'wishlist' %}"
+                   id="wishlist-nav-link"
+                   aria-label="My Wishlist"
+                   title="My Wishlist"
+                   class="nav-wishlist flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-2xl {% if wishlist_product_ids %}bg-rose-50 text-rose-600{% else %}text-gray-500 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600{% endif %}">
+
+                    <span id="wishlist-nav-heart">
+                        {% if wishlist_product_ids %}♥{% else %}♡{% endif %}
+                    </span>
+                </a>
+
+                <!-- CART -->
+                <a href="{% url 'customer_cart' %}"
+                   aria-label="Shopping cart"
+                   title="Shopping cart"
+                   class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-[#123f3a] transition hover:border-[#123f3a] hover:bg-emerald-50">
+                    <svg class="icon h-5 w-5" aria-hidden="true"><use href="#i-cart"/></svg>
+                </a>
+
+                <!-- ACCOUNT -->
+                <a href="{% url 'customer_dashboard' %}"
+                   class="inline-flex items-center justify-center rounded-xl bg-[#123f3a] px-3 py-2.5 text-sm font-bold text-white transition hover:bg-[#16504a] sm:px-5">
+                    <span class="hidden sm:inline">My Account</span>
+                    <span class="sm:hidden">Account</span>
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+    <main>
+
+        <!-- HERO -->
+        <section class="hero-section relative overflow-hidden">
+            <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full border-[35px] border-white/5"></div>
+            <div class="pointer-events-none absolute -bottom-24 right-1/3 h-72 w-72 rounded-full bg-white/[0.03]"></div>
+
+            <div class="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-14 lg:grid-cols-2 lg:px-8 lg:py-16">
+
+                <div class="relative z-10">
+                    <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white">
+                        <span class="h-2 w-2 rounded-full bg-[#f4c542]"></span>
+                        Welcome to your marketplace
+                    </div>
+
+                    <h1 class="max-w-2xl text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
+                        Everything You Love,
+                        <span class="text-[#f4c542]">All in One Place.</span>
+                    </h1>
+
+                    <p class="mt-6 max-w-xl text-base leading-7 text-emerald-50/85 sm:text-lg">
+                        Discover everyday essentials, explore exciting categories, and find products you'll love — all in one convenient marketplace.
+                    </p>
+
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <a href="#products"
+                           class="inline-flex items-center gap-2 rounded-xl bg-[#f4c542] px-6 py-3.5 text-sm font-extrabold text-[#123f3a] shadow-lg transition hover:-translate-y-0.5 hover:bg-yellow-300">
+                            Start Shopping →
+                        </a>
+
+                        
+                    </div>
+
+                    <div class="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-emerald-50/90">
+                        <span><span class="text-[#f4c542]">✓</span> Multiple Categories</span>
+                        <span><span class="text-[#f4c542]">✓</span> Easy Shopping</span>
+                        <span><span class="text-[#f4c542]">✓</span> Everyday Essentials</span>
+                    </div>
+                </div>
+
+                <div class="relative mx-auto w-full max-w-lg">
+                    <div class="hero-decoration relative overflow-hidden rounded-[2rem] p-5 sm:p-7">
+                        <div class="relative rounded-[1.5rem] bg-[#f5f7ef] p-5 sm:p-7">
+
+                            <div class="mb-5 flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs font-bold uppercase tracking-widest text-gray-500">The ShopHub Edit</p>
+                                    <h2 class="mt-1 text-xl font-extrabold text-[#123f3a] sm:text-2xl">Your daily finds</h2>
+                                </div>
+
+                                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f4c542] text-[#123f3a]">
+                                    <svg class="icon h-6 w-6" aria-hidden="true"><use href="#i-sparkles"/></svg>
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="flex min-h-32 flex-col justify-between rounded-2xl bg-[#e5eee5] p-4 sm:min-h-40">
+                                    <svg class="icon h-9 w-9 text-[#123f3a]" aria-hidden="true"><use href="#i-shirt"/></svg>
+                                    <div>
+                                        <p class="font-extrabold text-[#123f3a]">Fashion</p>
+                                        <p class="text-xs text-gray-600">Find your style</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5 flex min-h-32 flex-col justify-between rounded-2xl bg-[#fbe9b2] p-4 sm:min-h-40">
+                                    <svg class="icon h-9 w-9 text-[#123f3a]" aria-hidden="true"><use href="#i-home"/></svg>
+                                    <div>
+                                        <p class="font-extrabold text-[#123f3a]">Home</p>
+                                        <p class="text-xs text-gray-600">Make it yours</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex min-h-32 flex-col justify-between rounded-2xl bg-[#f4e5e4] p-4 sm:min-h-40">
+                                    <svg class="icon h-9 w-9 text-[#123f3a]" aria-hidden="true"><use href="#i-sparkles"/></svg>
+                                    <div>
+                                        <p class="font-extrabold text-[#123f3a]">Beauty</p>
+                                        <p class="text-xs text-gray-600">Your daily glow</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-5 flex min-h-32 flex-col justify-between rounded-2xl bg-[#e3eaf6] p-4 sm:min-h-40">
+                                    <svg class="icon h-9 w-9 text-[#123f3a]" aria-hidden="true"><use href="#i-bag"/></svg>
+                                    <div>
+                                        <p class="font-extrabold text-[#123f3a]">And more</p>
+                                        <p class="text-xs text-gray-600">Explore ShopHub</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-5 flex items-center justify-between rounded-xl bg-white px-4 py-3">
+                                <div>
+                                    <p class="text-xs text-gray-500">Your marketplace</p>
+                                    <p class="font-extrabold text-[#123f3a]">All in one place</p>
+                                </div>
+                                <svg class="icon h-6 w-6 text-[#123f3a]" aria-hidden="true"><use href="#i-heart"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- QUICK BENEFITS -->
+        <section class="border-b border-gray-100 bg-white">
+            <div class="mx-auto grid max-w-7xl grid-cols-2 gap-5 px-4 py-6 sm:px-6 md:grid-cols-4 lg:px-8">
+
+                <div class="flex items-center gap-3">
+                    <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-[#123f3a]">
+                        <svg class="icon h-5 w-5" aria-hidden="true"><use href="#i-bag"/></svg>
+                    </span>
+                    <div>
+                        <p class="text-sm font-extrabold text-[#123f3a]">Wide Selection</p>
+                        <p class="text-xs text-gray-500">Explore more choices</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-amber-50 text-[#123f3a]">
+                        <svg class="icon h-5 w-5" aria-hidden="true"><use href="#i-search"/></svg>
+                    </span>
+                    <div>
+                        <p class="text-sm font-extrabold text-[#123f3a]">Easy Discovery</p>
+                        <p class="text-xs text-gray-500">Find your favourites</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-rose-50 text-[#123f3a]">
+                        <svg class="icon h-5 w-5" aria-hidden="true"><use href="#i-heart"/></svg>
+                    </span>
+                    <div>
+                        <p class="text-sm font-extrabold text-[#123f3a]">Customer Focus</p>
+                        <p class="text-xs text-gray-500">A simpler experience</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#123f3a]">
+                        <svg class="icon h-5 w-5" aria-hidden="true"><use href="#i-package"/></svg>
+                    </span>
+                    <div>
+                        <p class="text-sm font-extrabold text-[#123f3a]">Order Tracking</p>
+                        <p class="text-xs text-gray-500">Keep up with orders</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CATEGORY CAROUSEL (dark brand green, so the carousel's light text stays readable) -->
+        <section id="categories" class="bg-[#123f3a] py-12 sm:py-16">
+            {% include "components/category_carousel.html" %}
+        </section>
+
+        <!-- FEATURED PRODUCTS -->
+        <section id="products" class="bg-[#f8faf9] py-12 sm:py-16">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+                <!-- HEADING -->
+                <div class="mb-8">
+                    <p class="section-label mb-2 text-xs font-extrabold uppercase text-amber-600">
+                        Handpicked for you
+                    </p>
+
+                    <h2 class="text-2xl font-extrabold tracking-tight text-[#123f3a] sm:text-3xl">
+                        Featured Products
+                    </h2>
+
+                    <p class="mt-2 text-sm text-gray-500 sm:text-base">
+                        Take a look at what's available on ShopHub.
+                    </p>
+                </div>
+
+                <!-- PRODUCT GRID -->
+                <div class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+
+                    {% for product in products %}
+
+                        <article class="product-card flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+                            <!-- PRODUCT IMAGE -->
+                            <div class="relative">
+
+                                <a href="{% url 'customer_product_detail' product.id %}"
+                                   class="block overflow-hidden bg-gray-50">
+
+                                    <div class="flex h-40 items-center justify-center overflow-hidden sm:h-56 {% if product.inventory.quantity > 0 %}{% else %}opacity-60{% endif %}">
+
+                                        {% if product.image %}
+                                            <img
+                                                src="{{ product.image.url }}"
+                                                alt="{{ product.name }}"
+                                                loading="lazy"
+                                                class="product-image h-full w-full object-cover">
+                                        {% else %}
+                                            <div class="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-gray-50 to-emerald-50 text-gray-400">
+                                                <svg class="icon h-10 w-10" aria-hidden="true"><use href="#i-package"/></svg>
+                                                <span class="text-xs">No image available</span>
+                                            </div>
+                                        {% endif %}
+
+                                    </div>
+                                </a>
+
+                                <!-- AJAX WISHLIST TOGGLE -->
+                                <form method="post"
+                                      action="{% url 'toggle_wishlist' product.id %}"
+                                      class="wishlist-form absolute right-3 top-3 z-10">
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="wishlist-button {% if product.id in wishlist_product_ids %}is-added border-rose-100 bg-rose-50{% else %}is-not-added border-gray-100 bg-white{% endif %} flex h-10 w-10 items-center justify-center rounded-full border text-2xl shadow-md"
+                                        data-added="{% if product.id in wishlist_product_ids %}true{% else %}false{% endif %}"
+                                        aria-label="{% if product.id in wishlist_product_ids %}Remove {{ product.name }} from wishlist{% else %}Add {{ product.name }} to wishlist{% endif %}"
+                                        title="{% if product.id in wishlist_product_ids %}Remove from Wishlist{% else %}Add to Wishlist{% endif %}">
+
+                                        {% if product.id in wishlist_product_ids %}♥{% else %}♡{% endif %}
+
+                                    </button>
+                                </form>
+
+                            </div>
+
+                            <!-- PRODUCT DETAILS -->
+                            <div class="flex flex-1 flex-col p-3 sm:p-4">
+
+                                {% if product.store.store_name %}
+                                    <p class="mb-1 truncate text-[11px] font-semibold uppercase tracking-wider text-gray-400">
+                                        Sold by {{ product.store.store_name }}
+                                    </p>
+                                {% endif %}
+
+                                <h3 class="line-clamp-2 min-h-10 text-sm font-bold text-gray-800 sm:text-base">
+                                    <a href="{% url 'customer_product_detail' product.id %}"
+                                       class="transition hover:text-[#16504f]">
+                                        {{ product.name }}
+                                    </a>
+                                </h3>
+
+                                <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+
+                                    <p class="text-base font-extrabold text-[#123f3a] sm:text-lg">
+                                        ₹{{ product.price }}
+                                    </p>
+
+                                    {% if product.inventory.quantity > 0 %}
+                                        <span class="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700 sm:text-xs">
+                                            In Stock
+                                        </span>
+                                    {% else %}
+                                        <span class="rounded-full bg-red-50 px-2 py-1 text-[10px] font-bold text-red-600 sm:text-xs">
+                                            Out of Stock
+                                        </span>
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="mt-auto pt-4">
+
+                                    {% if product.inventory.quantity > 0 %}
+                                        <form method="post" action="{% url 'add_to_cart' product.id %}">
+                                            {% csrf_token %}
+                                            <button
+                                                type="submit"
+                                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#123f3a] px-3 py-2.5 text-xs font-bold text-white transition hover:bg-[#16504f] sm:text-sm">
+                                                <svg class="icon h-4 w-4" aria-hidden="true"><use href="#i-cart"/></svg>
+                                                Add to Cart
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <button
+                                            type="button"
+                                            disabled
+                                            class="flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-gray-200 px-3 py-2.5 text-xs font-bold text-gray-500 sm:text-sm">
+                                            Out of Stock
+                                        </button>
+                                    {% endif %}
+
+                                    <a href="{% url 'customer_product_detail' product.id %}"
+                                       class="mt-2 block text-center text-xs font-semibold text-[#123f3a] hover:underline sm:text-sm">
+                                        View details
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    {% empty %}
+
+                        <div class="col-span-full rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-12 text-center">
+
+                            <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-[#123f3a]">
+                                <svg class="icon h-7 w-7" aria-hidden="true"><use href="#i-bag"/></svg>
+                            </div>
+
+                            <h3 class="font-extrabold text-gray-700">
+                                Products are coming soon
+                            </h3>
+
+                            <p class="mt-2 text-sm text-gray-500">
+                                Check back later to discover products on ShopHub.
+                            </p>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <!-- PAGINATION -->
+                {% if products.has_other_pages %}
+                    <nav class="mt-10 flex items-center justify-center gap-3" aria-label="Product pages">
+
+                        {% if products.has_previous %}
+                            <a href="?page={{ products.previous_page_number }}#products"
+                               class="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-[#123f3a] transition hover:bg-emerald-50">
+                                ← Previous
+                            </a>
+                        {% endif %}
+
+                        <span class="text-sm text-gray-500">
+                            Page {{ products.number }} of {{ products.paginator.num_pages }}
+                        </span>
+
+                        {% if products.has_next %}
+                            <a href="?page={{ products.next_page_number }}#products"
+                               class="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-[#123f3a] transition hover:bg-emerald-50">
+                                Next →
+                            </a>
+                        {% endif %}
+
+                    </nav>
+                {% endif %}
+
+            </div>
+        </section>
+
+        <!-- WHY SHOPHUB -->
+        <section id="why-shophub" class="bg-[#f1f5f2] py-12 sm:py-16">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+                <div class="mx-auto mb-10 max-w-2xl text-center">
+                    <p class="section-label mb-2 text-xs font-extrabold uppercase text-amber-600">
+                        The ShopHub Difference
+                    </p>
+
+                    <h2 class="text-2xl font-extrabold text-[#123f3a] sm:text-3xl">
+                        Shopping That Fits Your Everyday Life
+                    </h2>
+
+                    <p class="mt-3 text-sm leading-6 text-gray-500 sm:text-base">
+                        Discover products across categories and enjoy a convenient way to shop.
+                    </p>
+                </div>
+
+                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+
+                    <div class="rounded-2xl border border-gray-100 bg-white p-6 soft-shadow">
+                        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-[#123f3a]">
+                            <svg class="icon h-6 w-6" aria-hidden="true"><use href="#i-cart"/></svg>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-[#123f3a]">Convenient Shopping</h3>
+                        <p class="mt-2 text-sm leading-6 text-gray-500">
+                            Browse available products, add your favourites to your cart, and continue to checkout.
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl border border-gray-100 bg-white p-6 soft-shadow">
+                        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-[#123f3a]">
+                            <svg class="icon h-6 w-6" aria-hidden="true"><use href="#i-bag"/></svg>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-[#123f3a]">Explore More Choices</h3>
+                        <p class="mt-2 text-sm leading-6 text-gray-500">
+                            Explore categories and discover products offered by sellers in the marketplace.
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl border border-gray-100 bg-white p-6 soft-shadow sm:col-span-2 lg:col-span-1">
+                        <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-[#123f3a]">
+                            <svg class="icon h-6 w-6" aria-hidden="true"><use href="#i-package"/></svg>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-[#123f3a]">Stay Updated</h3>
+                        <p class="mt-2 text-sm leading-6 text-gray-500">
+                            Use your customer account to access your shopping experience and keep track of your orders.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- CALL TO ACTION -->
+        <section class="bg-white px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+            <div class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 overflow-hidden rounded-3xl bg-[#123f3a] px-6 py-8 sm:px-10 sm:py-10 md:flex-row md:items-center">
+
+                <div class="max-w-2xl">
+                    <p class="section-label text-xs font-extrabold uppercase text-[#f4c542]">
+                        Your next favourite find
+                    </p>
+
+                    <h2 class="mt-3 text-2xl font-extrabold text-white sm:text-3xl">
+                        Ready to explore ShopHub?
+                    </h2>
+
+                    <p class="mt-3 text-sm leading-6 text-emerald-50/80 sm:text-base">
+                        Browse the marketplace and discover products for your everyday needs.
+                    </p>
+                </div>
+
+                <a href="#products"
+                   class="inline-flex flex-shrink-0 items-center gap-2 rounded-xl bg-[#f4c542] px-6 py-3.5 text-sm font-extrabold text-[#123f3a] transition hover:-translate-y-0.5 hover:bg-yellow-300">
+                    Browse Products →
+                </a>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#102f2c] text-white">
+        <div class="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 md:grid-cols-3 lg:px-8">
+
+            <div>
+                <a href="{% url 'customer_home' %}" class="inline-flex items-center gap-2">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f4c542] text-xl font-extrabold text-[#123f3a]">S</span>
+                    <span class="text-2xl font-extrabold">ShopHub</span>
+                </a>
+
+                <p class="mt-4 max-w-sm text-sm leading-6 text-emerald-50/70">
+                    Your everyday marketplace for discovering products across categories in one convenient place.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="text-sm font-extrabold uppercase tracking-widest text-[#f4c542]">
+                    Quick Links
+                </h3>
+
+                <div class="mt-4 flex flex-col items-start gap-3 text-sm text-emerald-50/75">
+                    <a href="{% url 'customer_home' %}" class="transition hover:text-white">Home</a>
+                    <a href="{% url 'customer_home' %}#categories" class="transition hover:text-white">Categories</a>
+                    <a href="{% url 'customer_home' %}#products" class="transition hover:text-white">Products</a>
+                    <a href="{% url 'wishlist' %}" class="transition hover:text-white">My Wishlist</a>
+                    <a href="{% url 'customer_cart' %}" class="transition hover:text-white">My Cart</a>
+                    <a href="{% url 'customer_dashboard' %}" class="transition hover:text-white">My Account</a>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-sm font-extrabold uppercase tracking-widest text-[#f4c542]">
+                    Your Shopping
+                </h3>
+
+                <p class="mt-4 text-sm leading-6 text-emerald-50/70">
+                    Discover products, save your favourites, manage your cart, and access your account.
+                </p>
+
+                <a href="{% url 'customer_home' %}#products"
+                   class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#f4c542] transition hover:text-yellow-200">
+                    Start exploring →
+                </a>
+            </div>
+
+        </div>
+
+        <div class="border-t border-white/10">
+            <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-center text-xs text-emerald-50/60 sm:px-6 md:flex-row md:items-center md:justify-between md:text-left lg:px-8">
+                <p>© {% now "Y" %} ShopHub. All rights reserved.</p>
+                <p>Your Everyday Marketplace</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AJAX WISHLIST SCRIPT -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const wishlistForms = document.querySelectorAll(".wishlist-form");
+            const navbarLink = document.getElementById("wishlist-nav-link");
+            const navbarHeart = document.getElementById("wishlist-nav-heart");
+
+            wishlistForms.forEach(function (form) {
+                form.addEventListener("submit", async function (event) {
+                    event.preventDefault();
+
+                    const button = form.querySelector(".wishlist-button");
+
+                    if (!button || button.disabled) {
+                        return;
+                    }
+
+                    button.disabled = true;
+
+                    try {
+                        const response = await fetch(form.action, {
+                            method: "POST",
+                            body: new FormData(form),
+                            headers: {
+                                "X-Requested-With": "XMLHttpRequest",
+                                "Accept": "application/json"
+                            },
+                            credentials: "same-origin"
+                        });
+
+                        const data = await response.json();
+
+                        if (response.status === 401) {
+                            alert("Please log in to use your wishlist.");
+                            return;
+                        }
+
+                        if (!response.ok || !data.success) {
+                            throw new Error(
+                                data.message || "Unable to update your wishlist."
+                            );
+                        }
+
+                        // Update the product heart.
+                        button.textContent = data.added ? "♥" : "♡";
+
+                        button.classList.toggle("is-added", data.added);
+                        button.classList.toggle("is-not-added", !data.added);
+                        button.classList.toggle("border-rose-100", data.added);
+                        button.classList.toggle("bg-rose-50", data.added);
+                        button.classList.toggle("border-gray-100", !data.added);
+                        button.classList.toggle("bg-white", !data.added);
+
+                        const productName = form.closest(".product-card")
+                            ?.querySelector("h3 a")
+                            ?.textContent.trim() || "product";
+
+                        button.setAttribute(
+                            "aria-label",
+                            data.added
+                                ? "Remove " + productName + " from wishlist"
+                                : "Add " + productName + " to wishlist"
+                        );
+
+                        button.setAttribute(
+                            "title",
+                            data.added ? "Remove from Wishlist" : "Add to Wishlist"
+                        );
+
+                        button.setAttribute("data-added", String(data.added));
+
+                        // Update the navbar heart without refreshing.
+                        if (navbarHeart && navbarLink &&
+                            typeof data.wishlist_count !== "undefined") {
+
+                            const hasItems = data.wishlist_count > 0;
+
+                            navbarHeart.textContent = hasItems ? "♥" : "♡";
+
+                            navbarLink.classList.toggle("bg-rose-50", hasItems);
+                            navbarLink.classList.toggle("text-rose-600", hasItems);
+                            navbarLink.classList.toggle("text-gray-500", !hasItems);
+                        }
+
+                    } catch (error) {
+                        console.error("Wishlist update failed:", error);
+
+                        alert(
+                            error.message ||
+                            "Something went wrong. Please try again."
+                        );
+                    } finally {
+                        button.disabled = false;
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

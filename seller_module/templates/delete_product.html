@@ -1,0 +1,42 @@
+
+{% extends "seller_base.html" %}
+
+{% block title %}Delete Product{% endblock %}
+
+{% block content %}
+<div class="mx-auto mt-10 max-w-lg rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+
+    <h1 class="text-2xl font-bold text-[#123f3a]">
+        Delete Product
+    </h1>
+
+    <p class="mt-4 text-gray-600">
+        Are you sure you want to delete
+        <strong>{{ product.name }}</strong>?
+    </p>
+
+    <p class="mt-2 text-sm text-red-600">
+        This action cannot be undone. Products linked to orders or financial
+        records should generally be deactivated instead.
+    </p>
+
+    <form method="POST" class="mt-6 flex gap-3">
+        {% csrf_token %}
+
+        <button
+            type="submit"
+            class="rounded-lg bg-red-600 px-5 py-3 font-semibold text-white hover:bg-red-700"
+        >
+            Confirm Delete
+        </button>
+
+        <a
+            href="{% url 'seller_products' %}"
+            class="rounded-lg border border-gray-300 px-5 py-3 font-semibold text-gray-700 hover:bg-gray-50"
+        >
+            Cancel
+        </a>
+    </form>
+
+</div>
+{% endblock %}

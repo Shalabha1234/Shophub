@@ -1,0 +1,503 @@
+
+{% extends "seller_base.html" %}
+
+{% block title %}
+My Products
+{% endblock %}
+
+{% block products_active %}
+active
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-7">
+
+    <div>
+        <h1 class="text-3xl font-bold tracking-tight text-[#123f3a]">
+            My Products
+        </h1>
+
+        <p class="text-sm text-gray-500 mt-2">
+            {{ products|length }}
+            product{{ products|length|pluralize }}
+            in your store
+        </p>
+    </div>
+
+    <a
+        href="{% url 'add_product' %}"
+        class="inline-flex items-center justify-center bg-[#123f3a] text-white px-5 py-3 rounded-xl text-sm font-bold hover:bg-[#16504f] transition"
+    >
+        + Add Product
+    </a>
+
+</div>
+
+
+<!-- PRODUCTS CARD -->
+<div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+
+    {% if products %}
+
+        <!-- TOOLBAR -->
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 p-5 border-b border-gray-100">
+
+            <!-- FILTER TABS -->
+            <div
+                class="flex items-center gap-1 bg-gray-100 rounded-xl p-1"
+                role="group"
+                aria-label="Filter by status"
+            >
+
+                <button
+                    type="button"
+                    data-filter="ALL"
+                    aria-pressed="true"
+                    class="filter-btn px-4 py-2 rounded-lg text-sm font-semibold bg-[#123f3a] text-white transition"
+                >
+                    All
+                </button>
+
+                <button
+                    type="button"
+                    data-filter="ACTIVE"
+                    aria-pressed="false"
+                    class="filter-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:text-[#123f3a] transition"
+                >
+                    Active
+                </button>
+
+                <button
+                    type="button"
+                    data-filter="INACTIVE"
+                    aria-pressed="false"
+                    class="filter-btn px-4 py-2 rounded-lg text-sm font-semibold text-gray-500 hover:text-[#123f3a] transition"
+                >
+                    Inactive
+                </button>
+
+            </div>
+
+
+            <!-- SEARCH -->
+            <input
+                id="search"
+                type="search"
+                placeholder="Search by name or category"
+                aria-label="Search products"
+                class="w-full lg:w-72 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-700 outline-none focus:border-[#123f3a] focus:ring-4 focus:ring-[#123f3a]/10"
+            >
+
+        </div>
+
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+
+            <table class="w-full text-sm">
+
+                <!-- TABLE HEADER -->
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th class="text-left text-gray-500 font-semibold px-6 py-4 whitespace-nowrap">
+                            Product
+                        </th>
+
+                        <th class="text-left text-gray-500 font-semibold px-6 py-4 whitespace-nowrap">
+                            Category
+                        </th>
+
+                        <th class="text-left text-gray-500 font-semibold px-6 py-4 whitespace-nowrap">
+                            Price
+                        </th>
+
+                        <th class="text-left text-gray-500 font-semibold px-6 py-4 whitespace-nowrap">
+                            Stock
+                        </th>
+
+                        <th class="text-left text-gray-500 font-semibold px-6 py-4 whitespace-nowrap">
+                            Status
+                        </th>
+
+                        <th class="text-right text-gray-500 font-semibold px-6 py-4 whitespace-nowrap">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <!-- TABLE BODY -->
+                <tbody id="rows" class="divide-y divide-gray-100">
+
+                    {% for product in products %}
+
+                        <tr
+                            data-status="{{ product.status }}"
+                            data-text="{{ product.name|lower }} {{ product.category.name|lower }}"
+                            class="hover:bg-gray-50 transition"
+                        >
+
+                            <!-- PRODUCT -->
+                            <td class="px-6 py-4">
+
+                                <div class="flex items-center gap-3 min-w-[250px]">
+
+                                    <!-- PRODUCT IMAGE -->
+                                    {% if product.image %}
+
+                                        <img
+                                            src="{{ product.image.url }}"
+                                            alt="{{ product.name }}"
+                                            class="w-12 h-12 rounded-xl object-cover border border-gray-100"
+                                        >
+
+                                    {% else %}
+
+                                        <!-- FALLBACK WHEN NO IMAGE -->
+                                        <div
+                                            class="w-12 h-12 rounded-xl bg-[#e3f2ef] text-[#123f3a] flex items-center justify-center font-bold text-lg"
+                                        >
+                                            {{ product.name|first|upper }}
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <!-- PRODUCT INFORMATION -->
+                                    <div class="min-w-0">
+
+                                        <p class="font-semibold text-gray-900">
+                                            {{ product.name }}
+                                        </p>
+
+                                        <p class="text-xs text-gray-500 mt-1 max-w-xs truncate">
+                                            {{ product.description|default:"No description" }}
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- CATEGORY -->
+                            <td class="px-6 py-4 text-gray-600 whitespace-nowrap">
+
+                                {% if product.category %}
+                                    {{ product.category.name }}
+                                {% else %}
+                                    -
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- PRICE -->
+                            <td class="px-6 py-4 font-semibold text-gray-800 whitespace-nowrap">
+
+                                ₹{{ product.price }}
+
+                            </td>
+
+
+                            <!-- STOCK -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+
+                                {% if product.inventory.quantity == 0 %}
+
+                                    <span class="text-red-600 font-semibold">
+                                        Out of stock
+                                    </span>
+
+                                {% elif product.inventory.quantity <= 5 %}
+
+                                    <span class="text-amber-600 font-semibold">
+                                        {{ product.inventory.quantity }} left
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="text-gray-700">
+                                        {{ product.inventory.quantity }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- STATUS -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+
+                                {% if product.status == 'ACTIVE' %}
+
+                                    <span class="inline-flex items-center bg-[#e3f2ef] text-[#123f3a] px-3 py-1 rounded-full text-xs font-semibold">
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="inline-flex items-center bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-xs font-semibold">
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- ACTIONS -->
+                            <td class="px-6 py-4">
+
+                                <div class="flex items-center justify-end gap-2 whitespace-nowrap">
+
+                                    <!-- EDIT -->
+                                    <a
+                                        href="{% url 'edit_product' product.id %}"
+                                        class="px-3 py-2 rounded-lg border border-gray-200 text-[#123f3a] text-xs font-semibold hover:border-[#123f3a] hover:bg-gray-50 transition"
+                                    >
+                                        Edit
+                                    </a>
+
+                                    <a
+                                            href="{% url 'delete_product' product.id %}"
+                                            class="text-sm font-semibold text-red-600 hover:text-red-800"
+                                        >
+                                            Delete
+                                        </a>
+
+
+                                    <!-- DEACTIVATE -->
+                                    {% if product.status == 'ACTIVE' %}
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'deactivate_product' product.id %}"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="px-3 py-2 rounded-lg border border-gray-200 text-red-600 text-xs font-semibold hover:border-red-300 hover:bg-red-50 transition"
+                                            >
+                                                Deactivate
+                                            </button>
+
+                                        </form>
+
+                                    {% else %}
+
+                                        <!-- ACTIVATE -->
+                                        <form
+                                            method="post"
+                                            action="{% url 'activate_product' product.id %}"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="px-3 py-2 rounded-lg border border-gray-200 text-[#123f3a] text-xs font-semibold hover:border-[#123f3a] hover:bg-gray-50 transition"
+                                            >
+                                                Activate
+                                            </button>
+
+                                        </form>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- NO SEARCH RESULTS -->
+        <div
+            id="no-match"
+            class="hidden text-center py-14 text-gray-500"
+        >
+            No products match your search.
+        </div>
+
+
+    {% else %}
+
+        <!-- EMPTY STATE -->
+        <div class="text-center py-16 px-6">
+
+            <div class="text-5xl mb-4">
+                📦
+            </div>
+
+            <h2 class="text-xl font-bold text-gray-900">
+                No products yet
+            </h2>
+
+            <p class="text-sm text-gray-500 mt-2">
+                You haven't added any products to your store yet.
+            </p>
+
+            <a
+                href="{% url 'add_product' %}"
+                class="inline-flex items-center justify-center mt-6 bg-[#123f3a] text-white px-5 py-3 rounded-xl text-sm font-bold hover:bg-[#16504f] transition"
+            >
+                Add Your First Product
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+    (function () {
+
+        var rows = document.querySelectorAll('#rows tr');
+
+        if (!rows.length) {
+            return;
+        }
+
+
+        var search = document.getElementById('search');
+
+        var tabs = document.querySelectorAll('.filter-btn');
+
+        var noMatch = document.getElementById('no-match');
+
+        var filter = 'ALL';
+
+
+        function apply() {
+
+            var q = search.value.trim().toLowerCase();
+
+            var shown = 0;
+
+
+            rows.forEach(function (row) {
+
+                var matchesFilter =
+                    filter === 'ALL' ||
+                    row.dataset.status === filter;
+
+
+                var matchesSearch =
+                    row.dataset.text.indexOf(q) !== -1;
+
+
+                var shouldShow =
+                    matchesFilter &&
+                    matchesSearch;
+
+
+                row.style.display =
+                    shouldShow ? '' : 'none';
+
+
+                if (shouldShow) {
+                    shown++;
+                }
+
+            });
+
+
+            noMatch.style.display =
+                shown ? 'none' : 'block';
+
+        }
+
+
+        tabs.forEach(function (tab) {
+
+            tab.addEventListener(
+                'click',
+                function () {
+
+                    filter =
+                        tab.dataset.filter;
+
+
+                    tabs.forEach(function (button) {
+
+                        var active =
+                            button === tab;
+
+
+                        button.setAttribute(
+                            'aria-pressed',
+                            active
+                        );
+
+
+                        if (active) {
+
+                            button.classList.add(
+                                'bg-[#123f3a]',
+                                'text-white'
+                            );
+
+                            button.classList.remove(
+                                'text-gray-500'
+                            );
+
+                        } else {
+
+                            button.classList.remove(
+                                'bg-[#123f3a]',
+                                'text-white'
+                            );
+
+                            button.classList.add(
+                                'text-gray-500'
+                            );
+
+                        }
+
+                    });
+
+
+                    apply();
+
+                }
+            );
+
+        });
+
+
+        search.addEventListener(
+            'input',
+            apply
+        );
+
+    })();
+
+</script>
+
+{% endblock %}
+

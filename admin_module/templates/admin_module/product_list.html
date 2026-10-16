@@ -1,0 +1,480 @@
+{% extends "admin_module/admin_base.html" %}
+
+{% block title %}
+Product Management
+{% endblock %}
+
+{% block content %}
+
+<div class="space-y-6 p-4 sm:p-6">
+
+    <!-- HEADER -->
+
+    <div>
+
+        <h1 class="text-2xl font-extrabold tracking-tight text-[#123f3a]">
+            Product Management
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500">
+            View and manage products across all sellers.
+        </p>
+
+    </div>
+
+
+    <!-- PRODUCT CARD -->
+
+    <section class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+        <div class="border-b border-gray-200 px-5 py-5 sm:px-6">
+
+            <h2 class="text-lg font-bold text-gray-900">
+                All Products
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-500">
+                Products listed by sellers across the marketplace.
+            </p>
+
+        </div>
+
+
+        {% if products %}
+
+
+        <!-- ================================= -->
+        <!-- DESKTOP TABLE -->
+        <!-- ================================= -->
+
+        <div class="hidden md:block">
+
+            <div class="overflow-x-auto">
+
+                <table class="min-w-full divide-y divide-gray-200">
+
+                    <thead class="bg-gray-50">
+
+                        <tr>
+
+                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 sm:px-6">
+                                Product
+                            </th>
+
+                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 sm:px-6">
+                                Seller / Store
+                            </th>
+
+                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 sm:px-6">
+                                Category
+                            </th>
+
+                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 sm:px-6">
+                                Price
+                            </th>
+
+                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 sm:px-6">
+                                Stock
+                            </th>
+
+                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 sm:px-6">
+                                Status
+                            </th>
+
+                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody class="divide-y divide-gray-100 bg-white">
+
+                        {% for product in products %}
+
+                        <tr class="transition hover:bg-gray-50">
+
+
+                            <!-- PRODUCT -->
+
+                            <td class="px-5 py-4 sm:px-6">
+
+                                <div class="flex items-center gap-3">
+
+                                    {% if product.image %}
+
+                                        <img
+                                            src="{{ product.image.url }}"
+                                            alt="{{ product.name }}"
+                                            class="h-12 w-12 rounded-xl object-cover"
+                                        >
+
+                                    {% else %}
+
+                                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 text-xs font-bold text-gray-400">
+                                            No Image
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <div>
+
+                                        <p class="font-semibold text-gray-900">
+                                            {{ product.name }}
+                                        </p>
+
+                                        <p class="text-xs text-gray-400">
+                                            Product #{{ product.id }}
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- SELLER / STORE -->
+
+                            <td class="px-5 py-4 sm:px-6">
+
+                                <p class="font-semibold text-gray-900">
+                                    {{ product.store.store_name }}
+                                </p>
+
+                                <p class="text-xs text-gray-500">
+                                    {{ product.store.seller.user.email }}
+                                </p>
+
+                            </td>
+
+
+                            <!-- CATEGORY -->
+
+                            <td class="px-5 py-4 sm:px-6">
+
+                                {% if product.category %}
+
+                                    <span class="inline-flex items-center rounded-full bg-[#e3f2ef] px-3 py-1 text-xs font-bold text-[#123f3a]">
+                                        {{ product.category.name }}
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="text-sm text-gray-400">
+                                        No category
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- PRICE -->
+
+                            <td class="px-5 py-4 sm:px-6">
+
+                                <span class="font-semibold text-gray-900">
+                                    ₹{{ product.price|floatformat:2 }}
+                                </span>
+
+                            </td>
+
+
+                            <!-- STOCK -->
+
+                            <td class="px-5 py-4 sm:px-6">
+
+                                {% if product.inventory.quantity > 0 %}
+
+                                    <span class="font-semibold text-gray-700">
+                                        {{ product.inventory.quantity }}
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="inline-flex items-center rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-600">
+                                        Out of Stock
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- STATUS -->
+
+                            <td class="px-5 py-4 sm:px-6">
+
+                                {% if product.status == 'ACTIVE' %}
+
+                                    <span class="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-600">
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-600">
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- ACTION -->
+
+                            <td class="px-5 py-4">
+
+                                <a
+                                    href="{% url 'admin_product_detail' product.id %}"
+                                    class="rounded-lg bg-teal-700 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-800"
+                                >
+                                    View
+                                </a>
+
+                            </td>
+
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- MOBILE CARDS -->
+        <!-- ================================= -->
+
+        <div class="space-y-4 p-4 md:hidden">
+
+            {% for product in products %}
+
+            <div class="rounded-xl border border-gray-100 bg-gray-50 p-5">
+
+
+         <!-- PRODUCT HEADER -->
+
+<div>
+
+    <!-- Image + Product Name -->
+
+    <div class="flex items-start gap-4">
+
+        {% if product.image %}
+
+            <img
+                src="{{ product.image.url }}"
+                alt="{{ product.name }}"
+                class="h-16 w-16 shrink-0 rounded-xl object-cover"
+            >
+
+        {% else %}
+
+            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-gray-200 text-center text-xs font-bold text-gray-400">
+                No Image
+            </div>
+
+        {% endif %}
+
+
+        <!-- Product Details -->
+
+        <div class="min-w-0 flex-1">
+
+            <h3 class="break-words text-base font-semibold leading-6 text-gray-900">
+                {{ product.name }}
+            </h3>
+
+            <p class="mt-1 text-xs text-gray-400">
+                Product #{{ product.id }}
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Status -->
+
+    <div class="mt-4">
+
+        {% if product.status == 'ACTIVE' %}
+
+            <span class="inline-flex rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-600">
+                Active
+            </span>
+
+        {% else %}
+
+            <span class="inline-flex rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-600">
+                Inactive
+            </span>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+                <!-- PRODUCT INFORMATION -->
+
+                <div class="mt-5 space-y-4 border-t border-gray-200 pt-4">
+
+
+                    <!-- SELLER -->
+
+                    <div>
+
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                            Seller / Store
+                        </p>
+
+                        <p class="mt-1 font-semibold text-gray-900">
+                            {{ product.store.store_name }}
+                        </p>
+
+                        <p class="mt-1 break-all text-sm text-gray-500">
+                            {{ product.store.seller.user.email }}
+                        </p>
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div>
+
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                            Category
+                        </p>
+
+                        <div class="mt-1">
+
+                            {% if product.category %}
+
+                                <span class="inline-flex items-center rounded-full bg-[#e3f2ef] px-3 py-1 text-xs font-bold text-[#123f3a]">
+                                    {{ product.category.name }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="text-sm text-gray-400">
+                                    No category
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PRICE -->
+
+                    <div>
+
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                            Price
+                        </p>
+
+                        <p class="mt-1 font-semibold text-gray-900">
+                            ₹{{ product.price|floatformat:2 }}
+                        </p>
+
+                    </div>
+
+
+                    <!-- STOCK -->
+
+                    <div>
+
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                            Stock
+                        </p>
+
+                        <div class="mt-1">
+
+                            {% if product.inventory.quantity > 0 %}
+
+                                <span class="font-semibold text-gray-700">
+                                    {{ product.inventory.quantity }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="inline-flex items-center rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-600">
+                                    Out of Stock
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ACTION -->
+
+                <div class="mt-5 border-t border-gray-200 pt-4">
+
+                    <a
+                        href="{% url 'admin_product_detail' product.id %}"
+                        class="block w-full rounded-lg bg-[#0f3d3e] px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#16504f]"
+                    >
+                        View Product
+                    </a>
+
+                </div>
+
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        {% else %}
+
+
+        <!-- EMPTY STATE -->
+
+        <div class="px-6 py-16 text-center">
+
+            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#e3f2ef] text-xl font-bold text-[#123f3a]">
+                P
+            </div>
+
+            <h3 class="mt-4 text-base font-bold text-gray-900">
+                No products found
+            </h3>
+
+            <p class="mt-1 text-sm text-gray-500">
+                There are currently no products in the marketplace.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}

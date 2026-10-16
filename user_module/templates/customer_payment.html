@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Payment - ShopHub</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- HEADER -->
+    <header class="bg-teal-900 text-white">
+
+        <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+
+            <a
+                href="{% url 'customer_home' %}"
+                class="text-2xl font-bold">
+                ShopHub
+            </a>
+
+            <span class="text-sm text-teal-100">
+                Secure Checkout
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-6xl mx-auto px-6 py-10">
+
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">
+            Payment
+        </h1>
+
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+
+            <!-- LEFT SIDE -->
+            <div class="lg:col-span-2 space-y-6">
+
+
+                <!-- DELIVERY ADDRESS -->
+                <section class="bg-white rounded-2xl shadow-sm p-6">
+
+                    <div class="flex items-center justify-between mb-5">
+
+                        <h2 class="text-xl font-semibold text-gray-800">
+                            Delivery Address
+                        </h2>
+
+                        <a
+                            href="{% url 'customer_checkout' %}"
+                            class="text-teal-700 hover:text-teal-900 text-sm font-medium">
+
+                            Change
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="border border-gray-200 rounded-xl p-5">
+
+                        <div class="flex items-center gap-3 mb-3">
+
+                            <span
+                                class="bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full">
+
+                                {{ selected_address.get_address_type_display }}
+
+                            </span>
+
+                        </div>
+
+
+                        <p class="font-semibold text-gray-800">
+                            {{ selected_address.full_name }}
+                        </p>
+
+
+                        <p class="text-gray-600 mt-1">
+                            {{ selected_address.house_name }},
+                            {{ selected_address.street }}
+                        </p>
+
+
+                        <p class="text-gray-600">
+                            {{ selected_address.city }},
+                            {{ selected_address.state }}
+                            - {{ selected_address.pincode }}
+                        </p>
+
+
+                        <p class="text-gray-600 mt-2">
+                            Phone: {{ selected_address.phone }}
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- PAYMENT METHOD -->
+                <section class="bg-white rounded-2xl shadow-sm p-6">
+
+                    <h2 class="text-xl font-semibold text-gray-800 mb-6">
+                        Payment Method
+                    </h2>
+
+
+                    <form
+                        method="POST"
+                        action="{% url 'customer_payment' %}"
+                        id="paymentForm">
+
+                        {% csrf_token %}
+
+
+                        <div class="space-y-4">
+
+
+                            <!-- UPI -->
+                            <label
+                                class="flex items-center gap-4 border border-gray-200 rounded-xl p-4 cursor-pointer hover:border-teal-500">
+
+                                <input
+                                    type="radio"
+                                    name="payment_method"
+                                    value="UPI"
+                                    class="w-5 h-5 text-teal-700">
+
+                                <div>
+
+                                    <p class="font-medium text-gray-800">
+                                        UPI
+                                    </p>
+
+                                    <p class="text-sm text-gray-500">
+                                        Pay using Google Pay, PhonePe, Paytm, etc.
+                                    </p>
+
+                                </div>
+
+                            </label>
+
+
+
+                            <!-- CARD -->
+                            <label
+                                class="flex items-center gap-4 border border-gray-200 rounded-xl p-4 cursor-pointer hover:border-teal-500">
+
+                                <input
+                                    type="radio"
+                                    name="payment_method"
+                                    value="CARD"
+                                    class="w-5 h-5 text-teal-700">
+
+                                <div>
+
+                                    <p class="font-medium text-gray-800">
+                                        Credit / Debit Card
+                                    </p>
+
+                                    <p class="text-sm text-gray-500">
+                                        Pay securely using your card.
+                                    </p>
+
+                                </div>
+
+                            </label>
+
+
+
+                            <!-- COD -->
+                            <label
+                                class="flex items-center gap-4 border border-gray-200 rounded-xl p-4 cursor-pointer hover:border-teal-500">
+
+                                <input
+                                    type="radio"
+                                    name="payment_method"
+                                    value="COD"
+                                    class="w-5 h-5 text-teal-700">
+
+                                <div>
+
+                                    <p class="font-medium text-gray-800">
+                                        Cash on Delivery
+                                    </p>
+
+                                    <p class="text-sm text-gray-500">
+                                        Pay when your order arrives.
+                                    </p>
+
+                                </div>
+
+                            </label>
+
+
+                        </div>
+
+                    </form>
+
+                </section>
+
+            </div>
+
+
+
+            <!-- RIGHT SIDE -->
+            <aside class="bg-white rounded-2xl shadow-sm p-6 h-fit">
+
+                <h2 class="text-xl font-semibold text-gray-800 mb-6">
+                    Order Summary
+                </h2>
+
+
+                <!-- PRODUCTS -->
+                <div class="space-y-4">
+
+                    {% for item in cart_items %}
+
+                    <div class="flex justify-between gap-4">
+
+                        <div>
+
+                            <p class="font-medium text-gray-800">
+                                {{ item.product.name }}
+                            </p>
+
+                            <p class="text-sm text-gray-500">
+                                Qty: {{ item.quantity }}
+                            </p>
+
+                        </div>
+
+
+                        <p class="font-medium text-gray-800">
+                            ₹{{ item.subtotal }}
+                        </p>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <div class="border-t border-gray-200 my-6"></div>
+
+
+                <!-- SUBTOTAL -->
+                <div class="flex justify-between text-gray-600">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span>
+                        ₹{{ cart_total }}
+                    </span>
+
+                </div>
+
+
+                <!-- DELIVERY -->
+                <div class="flex justify-between text-gray-600 mt-3">
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <span class="text-green-600">
+                        Free
+                    </span>
+
+                </div>
+
+
+                <div class="border-t border-gray-200 my-5"></div>
+
+
+                <!-- TOTAL -->
+                <div class="flex justify-between items-center">
+
+                    <span class="text-lg font-semibold text-gray-800">
+                        Total
+                    </span>
+
+                    <span class="text-2xl font-bold text-teal-800">
+                        ₹{{ cart_total }}
+                    </span>
+
+                </div>
+
+
+                <!-- PLACE ORDER -->
+                <button
+                    type="submit"
+                    form="paymentForm"
+                    class="w-full mt-6 bg-teal-700 text-white py-3 rounded-xl hover:bg-teal-800 font-semibold">
+
+                    Place Order
+
+                </button>
+
+            </aside>
+
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

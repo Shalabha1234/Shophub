@@ -1,0 +1,272 @@
+
+{% extends "seller_base.html" %}
+
+{% block title %}Seller Wallet{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-6xl space-y-6">
+
+    <!-- PAGE HEADER -->
+    <div>
+        <p class="text-sm font-semibold uppercase tracking-widest text-teal-700">
+            Finance Management
+        </p>
+
+        <h1 class="mt-1 text-3xl font-bold tracking-tight text-[#123f3a]">
+            Seller Wallet
+        </h1>
+
+        <p class="mt-2 text-sm text-slate-500">
+            Manage your earnings, balances, deductions, and withdrawals.
+        </p>
+    </div>
+
+
+    <!-- WALLET SUMMARY -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+
+
+        <!-- AVAILABLE BALANCE -->
+        <div class="rounded-2xl border border-teal-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">
+                        Available Balance
+                    </p>
+
+                    {% if balance_owed %}
+                <p class="mt-3 break-words text-2xl font-bold tracking-tight text-rose-700">
+                    −₹{{ balance_owed|floatformat:2 }}
+                </p>
+            {% else %}
+                <p class="mt-3 break-words text-2xl font-bold tracking-tight text-[#123f3a]">
+                    ₹{{ available_balance|floatformat:2 }}
+                </p>
+            {% endif %}
+                </div>
+
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-4-9.5h6a2.5 2.5 0 0 1 0 5H9.5a2.5 2.5 0 0 0 0 5H16"/>
+                    </svg>
+                </div>
+            </div>
+
+           {% if balance_owed %}
+                <p class="mt-4 text-xs leading-5 text-rose-700">
+                    Refunds were larger than your earnings. This will be deducted from your future earnings.
+                </p>
+            {% else %}
+                <p class="mt-4 text-xs leading-5 text-slate-400">
+                    Earnings currently available for withdrawal.
+                </p>
+            {% endif %}
+                    </div>
+
+
+
+        <!-- HOLDING BALANCE -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">
+                        Holding Balance
+                    </p>
+
+                    <p class="mt-3 break-words text-2xl font-bold tracking-tight text-[#123f3a]">
+                        ₹{{ holding_balance|floatformat:2 }}
+                    </p>
+                </div>
+
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l2.5 2.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <p class="mt-4 text-xs text-slate-400">
+                Earnings temporarily held or awaiting release.
+            </p>
+        </div>
+
+
+
+        <!-- PENDING WITHDRAWAL -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">
+                        Pending Withdrawal
+                    </p>
+
+                    <p class="mt-3 break-words text-2xl font-bold tracking-tight text-[#123f3a]">
+                        ₹{{ pending_payout|floatformat:2 }}
+                    </p>
+                </div>
+
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-orange-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/>
+                    </svg>
+                </div>
+            </div>
+
+            <p class="mt-4 text-xs text-slate-400">
+                Withdrawal requests awaiting processing.
+            </p>
+        </div>
+
+
+
+        <!-- TOTAL EARNED -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">
+                        Total Earned
+                    </p>
+
+                    <p class="mt-3 break-words text-2xl font-bold tracking-tight text-[#123f3a]">
+                        ₹{{ seller_earnings|floatformat:2 }}
+                    </p>
+                </div>
+
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 17l6-6 4 4 8-9M15 6h6v6"/>
+                    </svg>
+                </div>
+            </div>
+
+            <p class="mt-4 text-xs text-slate-400">
+                Total seller earnings recorded.
+            </p>
+        </div>
+
+
+
+        <!-- TOTAL WITHDRAWN -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">
+                        Total Withdrawn
+                    </p>
+
+                    <p class="mt-3 break-words text-2xl font-bold tracking-tight text-[#123f3a]">
+                        ₹{{ paid_payout|floatformat:2 }}
+                    </p>
+                </div>
+
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/>
+                    </svg>
+                </div>
+            </div>
+
+            <p class="mt-4 text-xs text-slate-400">
+                Payouts already marked as paid.
+            </p>
+        </div>
+
+
+
+        <!-- TOTAL REFUND -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">
+                        Total Refund
+                    </p>
+
+                    <p class="mt-3 break-words text-2xl font-bold tracking-tight text-[#123f3a]">
+                        ₹{{ total_refund|floatformat:2 }}
+                    </p>
+                </div>
+
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 0 12h-2"/>
+                    </svg>
+                </div>
+            </div>
+
+            <p class="mt-4 text-xs text-slate-400">
+                Refund amount recorded in your wallet.
+            </p>
+        </div>
+
+
+
+        <!-- GST ON COMMISSION -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+
+            <div class="flex items-start justify-between gap-3">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">
+                        GST on Commission
+                    </p>
+
+                    <p class="mt-3 break-words text-2xl font-bold tracking-tight text-[#123f3a]">
+                        ₹{{ gst_on_commission|floatformat:2 }}
+                    </p>
+                </div>
+
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m9-9H3"/>
+                        <circle cx="12" cy="12" r="9"/>
+                    </svg>
+                </div>
+            </div>
+
+            <p class="mt-4 text-xs text-slate-400">
+                GST calculated on platform commission.
+            </p>
+        </div>
+
+
+    </div>
+
+
+    <!-- WALLET NOTE -->
+    <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:p-5">
+
+        <div class="flex items-start gap-3">
+
+            <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-5 w-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M10.3 3.86 1.82 18.5A2 2 0 0 0 3.55 21h16.9a2 2 0 0 0 1.73-2.5L13.7 3.86a2 2 0 0 0-3.4 0Z"/>
+                </svg>
+            </div>
+
+            <div>
+                <h2 class="text-sm font-bold text-amber-900">
+                    Understanding Your Wallet
+                </h2>
+
+                <p class="mt-1 text-sm leading-6 text-amber-900/80">
+                    Available balance is the amount currently eligible for withdrawal.
+                    Holding balance represents earnings that have not yet been released.
+                    Pending withdrawals are requests awaiting processing.
+                    Total earned and total withdrawn show your recorded earnings and completed payouts.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

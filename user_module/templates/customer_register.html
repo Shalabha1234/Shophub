@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | ShopHub</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            font-family: "Bricolage Grotesque", sans-serif;
+        }
+    </style>
+</head>
+
+
+<body class="min-h-screen bg-[#f7f8f6]">
+
+    <div class="min-h-screen flex">
+
+
+        <!-- =====================================================
+             LEFT VISUAL SECTION
+        ====================================================== -->
+
+        <section class="hidden lg:flex lg:w-[52%]
+                        bg-[#123f3a]
+                        relative overflow-hidden
+                        text-white">
+
+
+            <!-- Decorative circles -->
+
+            <div class="absolute -top-32 -left-32
+                        w-96 h-96
+                        rounded-full
+                        bg-[#f4c542]/10">
+            </div>
+
+            <div class="absolute -bottom-40 -right-32
+                        w-[500px] h-[500px]
+                        rounded-full
+                        bg-white/5">
+            </div>
+
+
+            <!-- Content -->
+
+            <div class="relative z-10
+                        w-full
+                        flex flex-col
+                        justify-between
+                        p-12">
+
+
+                <!-- Brand -->
+
+                <a href="{% url 'customer_home' %}"
+                   class="flex items-center gap-3 w-fit">
+
+                    <div class="w-11 h-11
+                                rounded-xl
+                                bg-[#f4c542]
+                                flex items-center justify-center">
+
+                        <span class="text-[#123f3a]
+                                     text-xl font-extrabold">
+                            S
+                        </span>
+
+                    </div>
+
+                    <span class="text-2xl font-bold">
+                        ShopHub
+                    </span>
+
+                </a>
+
+
+                <!-- Main Visual -->
+
+                <div class="max-w-xl">
+
+                    <p class="text-[#f4c542]
+                              text-sm
+                              font-semibold
+                              uppercase
+                              tracking-[0.2em]
+                              mb-5">
+
+                        Welcome to ShopHub
+
+                    </p>
+
+
+                    <h1 class="text-5xl xl:text-6xl
+                               font-extrabold
+                               leading-[1.05]">
+
+                        Everything you need.
+                        <span class="text-[#f4c542]">
+                            One place.
+                        </span>
+
+                    </h1>
+
+
+                    <p class="mt-6
+                              text-gray-300
+                              text-lg
+                              leading-relaxed
+                              max-w-lg">
+
+                        Create your account and discover products
+                        from sellers across the ShopHub marketplace.
+
+                    </p>
+
+
+                    <!-- Floating shopping cards -->
+
+                    <div class="relative
+                                mt-12
+                                h-48">
+
+
+                        <!-- Main card -->
+
+                        <div class="absolute
+                                    left-0
+                                    top-4
+                                    w-72
+                                    bg-white
+                                    rounded-2xl
+                                    p-5
+                                    shadow-2xl
+                                    text-gray-900
+                                    rotate-[-3deg]">
+
+                            <div class="flex items-center gap-4">
+
+                                <div class="w-14 h-14
+                                            rounded-xl
+                                            bg-[#f4c542]/20
+                                            flex items-center
+                                            justify-center
+                                            text-3xl">
+
+                                    🛍️
+
+                                </div>
+
+                                <div>
+
+                                    <p class="text-xs
+                                              text-gray-500">
+                                        ShopHub Marketplace
+                                    </p>
+
+                                    <p class="font-bold
+                                              text-lg">
+                                        Discover more
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mt-4
+                                        h-2
+                                        rounded-full
+                                        bg-gray-100">
+
+                                <div class="w-3/4
+                                            h-full
+                                            rounded-full
+                                            bg-[#123f3a]">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Small card -->
+
+                        <div class="absolute
+                                    right-4
+                                    bottom-0
+                                    w-48
+                                    bg-[#f4c542]
+                                    rounded-2xl
+                                    p-4
+                                    shadow-2xl
+                                    text-[#123f3a]
+                                    rotate-[4deg]">
+
+                            <div class="flex
+                                        items-center
+                                        justify-between">
+
+                                <span class="text-sm
+                                             font-bold">
+
+                                    Shopping
+
+                                </span>
+
+                                <span class="text-xl">
+                                    ✦
+                                </span>
+
+                            </div>
+
+                            <p class="text-2xl
+                                      font-extrabold
+                                      mt-3">
+
+                                Made Simple.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Bottom text -->
+
+                <div class="flex items-center
+                            justify-between
+                            text-sm
+                            text-gray-400">
+
+                    <span>
+                        Your everyday marketplace
+                    </span>
+
+                    <span>
+                        © 2026 ShopHub
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             RIGHT REGISTRATION SECTION
+        ====================================================== -->
+
+        <section class="flex-1
+                        flex items-center justify-center
+                        px-5 sm:px-8
+                        py-10">
+
+
+            <div class="w-full max-w-md">
+
+
+                <!-- Mobile Brand -->
+
+                <div class="lg:hidden
+                            flex items-center
+                            justify-center
+                            gap-3
+                            mb-10">
+
+                    <div class="w-11 h-11
+                                rounded-xl
+                                bg-[#123f3a]
+                                flex items-center
+                                justify-center">
+
+                        <span class="text-[#f4c542]
+                                     text-xl
+                                     font-extrabold">
+
+                            S
+
+                        </span>
+
+                    </div>
+
+                    <span class="text-2xl
+                                 font-bold
+                                 text-[#123f3a]">
+
+                        ShopHub
+
+                    </span>
+
+                </div>
+
+
+
+                <!-- Heading -->
+
+                <div class="mb-8">
+
+                    <div class="inline-flex
+                                items-center
+                                gap-2
+                                px-3 py-1.5
+                                rounded-full
+                                bg-[#123f3a]/10
+                                text-[#123f3a]
+                                text-xs
+                                font-semibold
+                                mb-5">
+
+                        
+
+                        
+
+                    </div>
+
+
+                    <h2 class="text-3xl
+                               sm:text-4xl
+                               font-extrabold
+                               text-gray-900">
+
+                        Create your account
+
+                    </h2>
+
+
+                    <p class="text-gray-500
+                              mt-3
+                              leading-relaxed">
+
+                        Join ShopHub and start discovering
+                        products you'll love.
+
+                    </p>
+
+                </div>
+
+
+
+                <!-- Registration Card -->
+
+                <div class="bg-white
+                            border border-gray-200
+                            rounded-3xl
+                            p-7 sm:p-8
+                            shadow-[0_20px_60px_rgba(18,63,58,0.08)]">
+
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+                        {% if error %}
+                        <div class="mb-5 px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+
+
+                        <!-- Email -->
+
+                        <div class="mb-5">
+
+                            <label
+                                for="email"
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       text-gray-700
+                                       mb-2">
+
+                                Email Address
+
+                            </label>
+
+
+                            <div class="relative">
+
+                                <span class="absolute
+                                             left-4
+                                             top-1/2
+                                             -translate-y-1/2
+                                             text-gray-400">
+
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="w-5 h-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor">
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="1.8"
+                                            d="M3 7.5A2.5 2.5 0 0 1 5.5 5h13A2.5 2.5 0 0 1 21 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 16.5v-9Z"/>
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="1.8"
+                                            d="m4 7 8 6 8-6"/>
+
+                                    </svg>
+
+                                </span>
+
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    required
+                                    placeholder="you@example.com"
+                                    class="w-full
+                                           pl-12 pr-4
+                                           py-3.5
+                                           rounded-xl
+                                           border border-gray-200
+                                           bg-gray-50
+                                           text-gray-900
+                                           placeholder-gray-400
+                                           outline-none
+                                           transition
+                                           focus:bg-white
+                                           focus:border-[#123f3a]
+                                           focus:ring-4
+                                           focus:ring-[#123f3a]/10">
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- Password -->
+
+                        <div class="mb-6">
+
+                            <div class="flex
+                                        items-center
+                                        justify-between
+                                        mb-2">
+
+                                <label
+                                    for="password"
+                                    class="text-sm
+                                           font-semibold
+                                           text-gray-700">
+
+                                    Password
+
+                                </label>
+
+                                <span class="text-xs
+                                             text-gray-400">
+
+                                    8+ characters
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="relative">
+
+                                <span class="absolute
+                                             left-4
+                                             top-1/2
+                                             -translate-y-1/2
+                                             text-gray-400">
+
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="w-5 h-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor">
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="1.8"
+                                            d="M12 15v2m-6 4h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Zm3-10V7a3 3 0 1 1 6 0v2"/>
+
+                                    </svg>
+
+                                </span>
+
+
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    required
+                                    minlength="8"
+                                    placeholder="Create a password"
+                                    class="w-full
+                                           pl-12 pr-12
+                                           py-3.5
+                                           rounded-xl
+                                           border border-gray-200
+                                           bg-gray-50
+                                           text-gray-900
+                                           placeholder-gray-400
+                                           outline-none
+                                           transition
+                                           focus:bg-white
+                                           focus:border-[#123f3a]
+                                           focus:ring-4
+                                           focus:ring-[#123f3a]/10">
+
+
+                                <button
+                                    type="button"
+                                    onclick="togglePassword()"
+                                    class="absolute
+                                           right-4
+                                           top-1/2
+                                           -translate-y-1/2
+                                           text-gray-400
+                                           hover:text-[#123f3a]">
+
+                                    <svg
+                                        id="eyeIcon"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="w-5 h-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor">
+
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="1.8"
+                                            d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/>
+
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="2.5"
+                                            stroke-width="1.8"/>
+
+                                    </svg>
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- Terms -->
+
+                        <div class="flex items-start
+                                    gap-3
+                                    mb-6">
+
+                            <input
+                                type="checkbox"
+                                required
+                                class="mt-1
+                                       w-4 h-4
+                                       accent-[#123f3a]">
+
+                            <p class="text-xs
+                                      text-gray-500
+                                      leading-relaxed">
+
+                                I agree to the ShopHub
+                                <a href="#"
+                                   class="text-[#123f3a]
+                                          font-semibold
+                                          hover:underline">
+                                    Terms & Conditions
+                                </a>
+                                and
+                                <a href="#"
+                                   class="text-[#123f3a]
+                                          font-semibold
+                                          hover:underline">
+                                    Privacy Policy
+                                </a>.
+
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- Create Account -->
+
+                        <button
+                            type="submit"
+                            class="w-full
+                                   py-3.5
+                                   rounded-xl
+                                   bg-[#123f3a]
+                                   text-white
+                                   font-bold
+                                   shadow-lg
+                                   shadow-[#123f3a]/20
+                                   hover:bg-[#0e322e]
+                                   hover:-translate-y-0.5
+                                   transition">
+
+                            Create Account
+
+                        </button>
+
+                    </form>
+
+
+
+                    <!-- Divider -->
+
+                    <div class="flex items-center
+                                gap-4
+                                my-7">
+
+                        <div class="h-px
+                                    flex-1
+                                    bg-gray-200">
+                        </div>
+
+                        <span class="text-xs
+                                     text-gray-400
+                                     font-medium">
+
+                            OR
+
+                        </span>
+
+                        <div class="h-px
+                                    flex-1
+                                    bg-gray-200">
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Login -->
+
+                    <div class="text-center">
+
+                        <p class="text-sm text-gray-500">
+
+                            Already have an account?
+
+                            <a href="#"
+                               class="font-bold
+                                      text-[#123f3a]
+                                      hover:underline">
+
+                                Log in
+
+                            </a>
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Back Home -->
+
+                <div class="text-center mt-6">
+
+                    <a href="{% url 'customer_home' %}"
+                       class="inline-flex
+                              items-center
+                              gap-2
+                              text-sm
+                              font-medium
+                              text-gray-500
+                              hover:text-[#123f3a]
+                              transition">
+
+                        <span>←</span>
+
+                        Back to ShopHub
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PASSWORD TOGGLE
+    ====================================================== -->
+
+    <script>
+
+        function togglePassword() {
+
+            const password =
+                document.getElementById("password");
+
+            const eyeIcon =
+                document.getElementById("eyeIcon");
+
+
+            if (password.type === "password") {
+
+                password.type = "text";
+
+                eyeIcon.innerHTML = `
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M3 3l18 18"/>
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/>
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M9.9 5.2A10.6 10.6 0 0 1 12 5c6 0 9.5 7 9.5 7a18.7 18.7 0 0 1-3.1 3.9"/>
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M6.1 6.1C3.7 7.8 2.5 12 2.5 12s3.5 6 9.5 6c1.5 0 2.8-.3 4-.8"/>
+                `;
+
+            } else {
+
+                password.type = "password";
+
+                eyeIcon.innerHTML = `
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.8"
+                        d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/>
+
+                    <circle
+                        cx="12"
+                        cy="12"
+                        r="2.5"
+                        stroke-width="1.8"/>
+                `;
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

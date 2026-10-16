@@ -1,0 +1,123 @@
+
+{% extends "admin_module/admin_base.html" %}
+
+{% block title %}
+Edit Category
+{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-3xl p-4 sm:p-6">
+
+    <div class="mb-6">
+        <a href="{% url 'admin_category_list' %}"
+           class="text-sm font-semibold text-teal-700 hover:underline">
+            ← Back to Categories
+        </a>
+
+        <h1 class="mt-4 text-2xl font-bold text-gray-900">
+            Edit Category
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500">
+            Update the category details and its display image.
+        </p>
+    </div>
+
+    <div class="rounded-xl bg-white p-5 shadow-sm sm:p-8">
+
+        {% if error %}
+        <div class="mb-5 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST"
+              enctype="multipart/form-data"
+              class="space-y-6">
+
+            {% csrf_token %}
+
+            <div>
+                <label for="name"
+                       class="mb-2 block text-sm font-semibold text-gray-700">
+                    Category Name
+                </label>
+
+                <input type="text"
+                       id="name"
+                       name="name"
+                       value="{{ category.name }}"
+                       required
+                       class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-100">
+            </div>
+
+            <div>
+                <label for="description"
+                       class="mb-2 block text-sm font-semibold text-gray-700">
+                    Description
+                </label>
+
+                <textarea id="description"
+                          name="description"
+                          rows="4"
+                          class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-100">{{ category.description }}</textarea>
+            </div>
+
+            <div>
+                <label class="mb-3 block text-sm font-semibold text-gray-700">
+                    Current Category Image
+                </label>
+
+                {% if category.image %}
+                    <img src="{{ category.image.url }}"
+                         alt="{{ category.name }}"
+                         class="mb-4 h-40 w-40 rounded-lg border border-gray-200 object-cover">
+
+                    <p class="mb-3 text-sm text-gray-500">
+                        Choose a new image only if you want to replace the current one.
+                    </p>
+                {% else %}
+                    <p class="mb-3 text-sm text-gray-500">
+                        No image has been uploaded for this category yet.
+                    </p>
+                {% endif %}
+
+                <label for="image"
+                       class="mb-2 block text-sm font-semibold text-gray-700">
+                    Upload or Replace Image
+                </label>
+
+                <input type="file"
+                       id="image"
+                       name="image"
+                       accept="image/*"
+                       class="w-full rounded-lg border border-gray-300 p-3 text-sm">
+
+                <p class="mt-2 text-xs text-gray-500">
+                    Leave this field empty to keep the current image.
+                </p>
+            </div>
+
+            <div class="flex flex-col gap-3 border-t border-gray-100 pt-5 sm:flex-row">
+
+                <button type="submit"
+                        class="rounded-lg bg-[#0f3d3e] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#16504f]">
+                    Save Changes
+                </button>
+
+                <a href="{% url 'admin_category_list' %}"
+                   class="rounded-lg border border-gray-300 px-6 py-3 text-center text-sm font-semibold text-gray-700 hover:bg-gray-50">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

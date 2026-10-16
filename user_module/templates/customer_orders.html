@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Orders - ShopHub</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- HEADER -->
+    <header class="bg-teal-900 text-white">
+        <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
+
+            <a
+                href="{% url 'customer_home' %}"
+                class="text-2xl font-bold">
+                ShopHub
+            </a>
+
+            <a
+                href="{% url 'customer_dashboard' %}"
+                class="text-sm hover:text-yellow-300">
+                My Account
+            </a>
+
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="max-w-6xl mx-auto px-6 py-10">
+
+        <!-- PAGE TITLE -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">
+                My Orders
+            </h1>
+
+            <p class="text-gray-500 mt-2">
+                View your orders and purchased products.
+            </p>
+        </div>
+
+        {% if orders %}
+
+            <div class="space-y-6">
+
+                {% for order in orders %}
+
+                    <!-- ORDER CARD -->
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+
+                        <!-- ORDER HEADER -->
+                        <div class="bg-gray-50 border-b border-gray-200 px-6 py-5">
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                                <!-- ORDER DATE -->
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase tracking-wide">
+                                        Order Placed
+                                    </p>
+
+                                    <p class="font-medium text-gray-800 mt-1">
+                                        {{ order.created_at|date:"d M Y, h:i A" }}
+                                    </p>
+                                </div>
+
+                                <!-- TOTAL -->
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase tracking-wide">
+                                        Total
+                                    </p>
+
+                                    <p class="font-medium text-gray-800 mt-1">
+                                        ₹{{ order.total_amount }}
+                                    </p>
+                                </div>
+
+                                <!-- ORDER NUMBER -->
+                                <div class="md:text-right">
+                                    <p class="text-xs text-gray-500 uppercase tracking-wide">
+                                        Order Number
+                                    </p>
+
+                                    <p class="font-medium text-teal-800 mt-1">
+                                        #{{ order.id }}
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- ORDER BODY -->
+                        <div class="p-6">
+
+                            <!-- STATUS + ACTION -->
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+
+                                <!-- ORDER STATUS -->
+                                <div>
+                                    <p class="text-lg font-semibold text-gray-800">
+                                        Order Status
+                                    </p>
+
+                                    <span class="inline-block mt-2 px-4 py-2 rounded-full bg-yellow-100 text-yellow-800 text-sm font-medium">
+                                        {{ order.get_status_display }}
+                                    </span>
+                                </div>
+
+                                <!-- CANCEL ORDER -->
+                                {% if order.status == 'PENDING' or order.status == 'CONFIRMED' or order.status == 'PROCESSING' %}
+
+                                    <form
+                                        method="POST"
+                                        action="{% url 'customer_cancel_order' order.id %}">
+
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition">
+
+                                            Cancel Order
+
+                                        </button>
+                                    </form>
+
+                                {% endif %}
+
+                                <!-- RETURN & REFUND STATUS -->
+                                {% if order.status == 'DELIVERED' %}
+
+                                    {% if order.refund %}
+
+                                        {% if order.refund.status == 'REQUESTED' %}
+
+                                            <span class="w-full sm:w-auto text-center px-5 py-2.5 rounded-xl bg-yellow-100 text-yellow-800 font-medium">
+                                                Return Requested
+                                            </span>
+
+                                        {% elif order.refund.status == 'APPROVED' %}
+
+                                            <span class="w-full sm:w-auto text-center px-5 py-2.5 rounded-xl bg-blue-100 text-blue-800 font-medium">
+                                                ✓ Refund Approved
+                                            </span>
+
+                                        {% elif order.refund.status == 'REJECTED' %}
+
+                                            <span class="w-full sm:w-auto text-center px-5 py-2.5 rounded-xl bg-red-100 text-red-800 font-medium">
+                                                Refund Rejected
+                                            </span>
+
+                                        {% elif order.refund.status == 'PROCESSED' %}
+
+                                            <span class="w-full sm:w-auto text-center px-5 py-2.5 rounded-xl bg-green-100 text-green-800 font-medium">
+                                                ✓ Refund Processed
+                                            </span>
+
+                                        {% endif %}
+
+                                    {% else %}
+
+                                        <form method="POST" action="{% url 'customer_return_order' order.id %}" class="w-full sm:w-auto">
+                                            {% csrf_token %}
+                                            <button type="submit"
+                                                    class="w-full sm:w-auto text-center px-5 py-2.5 rounded-xl bg-orange-500 text-white font-medium hover:bg-orange-600 transition">
+                                                Return &amp; Refund
+                                            </button>
+                                        </form>
+                                    {% endif %}
+
+                                {% endif %}
+
+                            </div>
+
+                            <!-- PRODUCTS -->
+                            <div class="space-y-5">
+
+                                {% for item in order.orderitem_set.all %}
+
+                                    <div class="flex flex-col sm:flex-row sm:items-center gap-5 border-b border-gray-100 pb-5">
+
+                                        <!-- PRODUCT IMAGE -->
+                                        <div class="w-24 h-24 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0">
+
+                                            {% if item.product.image %}
+
+                                                <img
+                                                    src="{{ item.product.image.url }}"
+                                                    alt="{{ item.product.name }}"
+                                                    class="w-full h-full object-cover">
+
+                                            {% else %}
+
+                                                <span class="text-3xl">
+                                                    🛍️
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                        <!-- PRODUCT INFORMATION -->
+                                        <div class="flex-1">
+
+                                            <a
+                                                href="{% url 'customer_product_detail' item.product.id %}"
+                                                class="text-lg font-semibold text-teal-800 hover:text-teal-600">
+
+                                                {{ item.product.name }}
+
+                                            </a>
+
+                                            <p class="text-sm text-gray-500 mt-2">
+                                                ₹{{ item.price }} × {{ item.quantity }}
+                                            </p>
+
+                                            <p class="text-sm text-gray-500">
+                                                Quantity: {{ item.quantity }}
+                                            </p>
+
+                                        </div>
+
+                                        <!-- ITEM TOTAL -->
+                                        <div class="sm:text-right">
+
+                                            <p class="text-xs text-gray-500">
+                                                Item Total
+                                            </p>
+
+                                            <p class="text-lg font-bold text-gray-800 mt-1">
+                                                ₹{{ item.subtotal }}
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                            <!-- ORDER TOTAL -->
+                            <div class="border-t border-gray-200 mt-6 pt-5 flex justify-between items-center">
+
+                                <span class="text-lg font-semibold text-gray-700">
+                                    Order Total
+                                </span>
+
+                                <span class="text-xl font-bold text-teal-800">
+                                    ₹{{ order.total_amount }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <!-- EMPTY ORDERS -->
+            <div class="bg-white rounded-2xl shadow-sm p-12 text-center">
+
+                <div class="text-5xl mb-5">
+                    📦
+                </div>
+
+                <h2 class="text-2xl font-bold text-gray-800">
+                    No Orders Yet
+                </h2>
+
+                <p class="text-gray-500 mt-2 mb-6">
+                    Your orders will appear here.
+                </p>
+
+                <a
+                    href="{% url 'customer_home' %}"
+                    class="inline-block bg-teal-700 text-white px-6 py-3 rounded-xl hover:bg-teal-800 font-medium">
+
+                    Start Shopping
+
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </main>
+
+</body>
+
+</html>
+

@@ -1,0 +1,90 @@
+
+{% extends "admin_module/admin_base.html" %}
+
+{% block title %}
+Delete Category
+{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-2xl space-y-6">
+
+    <!-- HEADER -->
+    <div>
+
+        <a
+            href="{% url 'admin_category_list' %}"
+            class="text-sm font-semibold text-[#123f3a] hover:underline"
+        >
+            ← Back to Categories
+        </a>
+
+        <h1 class="mt-4 text-2xl font-extrabold tracking-tight text-red-600">
+            Delete Product Category
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500">
+            Please review this action before continuing.
+        </p>
+
+    </div>
+
+
+    <!-- CONFIRMATION CARD -->
+    <section class="rounded-2xl border border-red-200 bg-white p-6 shadow-sm">
+
+        <div class="rounded-xl bg-red-50 p-4">
+
+            <p class="text-sm font-semibold text-red-700">
+                Are you sure you want to delete this category?
+            </p>
+
+            <p class="mt-2 text-lg font-extrabold text-gray-900">
+                {{ category.name }}
+            </p>
+
+        </div>
+
+
+        <!-- WARNING -->
+        <div class="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4">
+
+            <p class="text-sm font-semibold text-amber-800">
+                Important
+            </p>
+
+            <p class="mt-1 text-sm text-amber-700">
+                Products belonging to this category will not be deleted.
+                They will simply no longer have a category assigned.
+            </p>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+        <form method="POST" class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+
+            {% csrf_token %}
+
+            <a
+                href="{% url 'admin_category_list' %}"
+                class="inline-flex items-center justify-center rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-bold text-gray-700 transition hover:bg-gray-50"
+            >
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="inline-flex items-center justify-center rounded-xl bg-red-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-red-700"
+            >
+                Delete Category
+            </button>
+
+        </form>
+
+    </section>
+
+</div>
+
+{% endblock %}
+

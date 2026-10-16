@@ -1,0 +1,241 @@
+{% extends "seller_base.html" %}
+
+{% block title %}Edit Product{% endblock %}
+
+{% block content %}
+
+<div class="mb-8">
+    <h1 class="text-3xl font-bold tracking-tight text-[#123f3a]">
+        Edit Product
+    </h1>
+    <p class="text-sm text-gray-500 mt-2">
+        Update your product details and images.
+    </p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
+
+    <div class="bg-white border border-gray-200 rounded-2xl p-7 shadow-sm">
+        <h2 class="text-xl font-bold text-[#123f3a] mb-6">
+            Product Information
+        </h2>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-5">
+            {% csrf_token %}
+
+            {% if error %}
+                <div class="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <!-- PRODUCT NAME -->
+            <div>
+                <label for="name" class="block text-sm font-semibold text-[#244d48] mb-2">
+                    Product Name
+                </label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="{{ product.name }}"
+                    required
+                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#163f3b] outline-none focus:border-[#3c8279] focus:ring-4 focus:ring-[#3c8279]/10"
+                >
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div>
+                <label for="description" class="block text-sm font-semibold text-[#244d48] mb-2">
+                    Description
+                </label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="5"
+                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#163f3b] outline-none resize-y focus:border-[#3c8279] focus:ring-4 focus:ring-[#3c8279]/10"
+                >{{ product.description }}</textarea>
+            </div>
+
+            <!-- PRICE -->
+            <div>
+                <label for="price" class="block text-sm font-semibold text-[#244d48] mb-2">
+                    Price
+                </label>
+                <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    value="{{ product.price }}"
+                    min="0"
+                    step="0.01"
+                    required
+                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#163f3b] outline-none focus:border-[#3c8279] focus:ring-4 focus:ring-[#3c8279]/10"
+                >
+            </div>
+
+            <!-- CATEGORY -->
+            <div>
+                <label for="category" class="block text-sm font-semibold text-[#244d48] mb-2">
+                    Category
+                </label>
+                <select
+                    id="category"
+                    name="category"
+                    required
+                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#163f3b] bg-white outline-none focus:border-[#3c8279] focus:ring-4 focus:ring-[#3c8279]/10"
+                >
+                    <option value="">Select category</option>
+
+                    
+                    {% for category in categories %}
+                        <option
+                            value="{{ category.id }}"
+                            {% if product.category_id == category.id %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                    </select>
+            </div>
+
+            <!-- MAIN IMAGE -->
+            <div>
+                <label class="block text-sm font-semibold text-[#244d48] mb-2">
+                    Main Product Image
+                </label>
+
+                {% if product.image %}
+                    <div class="mb-4">
+                        <img
+                            src="{{ product.image.url }}"
+                            alt="{{ product.name }}"
+                            class="w-36 h-36 object-cover rounded-xl border border-gray-200"
+                        >
+                        <p class="text-xs text-gray-500 mt-2">
+                            Current main image
+                        </p>
+                    </div>
+                {% else %}
+                    <div class="mb-4 w-36 h-36 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-sm text-gray-500">
+                        No main image
+                    </div>
+                {% endif %}
+
+                <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600 bg-white file:mr-4 file:border-0 file:bg-[#123f3a] file:text-white file:px-4 file:py-2 file:rounded-lg file:font-medium file:cursor-pointer"
+                >
+
+                <p class="text-xs text-gray-400 mt-2">
+                    Choose a file only if you want to replace the main image.
+                </p>
+            </div>
+
+            <!-- EXISTING GALLERY IMAGES -->
+            <div>
+                <label class="block text-sm font-semibold text-[#244d48] mb-3">
+                    Additional Gallery Images
+                </label>
+
+                {% with gallery_images=product.gallery_images.all %}
+                    {% if gallery_images %}
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            {% for gallery_image in gallery_images %}
+                                <div class="border border-gray-200 rounded-xl p-3">
+                                    <img
+                                        src="{{ gallery_image.image.url }}"
+                                        alt="{{ gallery_image.alt_text|default:product.name }}"
+                                        class="w-full h-28 object-cover rounded-lg"
+                                    >
+
+                                    <label class="flex items-start gap-2 mt-3 text-sm text-red-700">
+                                        <input
+                                            type="checkbox"
+                                            name="delete_gallery_images"
+                                            value="{{ gallery_image.id }}"
+                                            class="mt-1 h-4 w-4"
+                                        >
+                                        <span>Remove image</span>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-sm text-gray-500">
+                            No additional gallery images uploaded yet.
+                        </p>
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <!-- ADD MORE GALLERY IMAGES -->
+            <div>
+                <label for="gallery_images" class="block text-sm font-semibold text-[#244d48] mb-2">
+                    Add More Images
+                </label>
+                <input
+                    type="file"
+                    id="gallery_images"
+                    name="gallery_images"
+                    accept="image/*"
+                    multiple
+                    class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-600 bg-white file:mr-4 file:border-0 file:bg-[#123f3a] file:text-white file:px-4 file:py-2 file:rounded-lg file:font-medium file:cursor-pointer"
+                >
+                <p class="text-xs text-gray-400 mt-2">
+                    You can select multiple images. Existing images stay unless you select Remove image.
+                </p>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-6 border-t border-gray-100">
+                <a
+                    href="{% url 'seller_products' %}"
+                    class="inline-flex items-center justify-center min-h-11 px-5 rounded-xl bg-gray-100 text-[#355a55] font-semibold text-sm hover:bg-gray-200 transition"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="inline-flex items-center justify-center min-h-11 px-5 rounded-xl bg-[#f3c84b] text-[#123f3a] font-bold text-sm hover:bg-[#e7b934] transition"
+                >
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- INFORMATION PANEL -->
+    <div class="bg-[#123f3a] text-white rounded-2xl p-6">
+        <h3 class="text-lg font-bold mb-3">Editing Product</h3>
+
+        <p class="text-sm leading-6 text-white/70 mb-6">
+            Changes will apply to this product in your store.
+        </p>
+
+        <div class="bg-white/10 border border-white/10 rounded-xl p-4">
+            <span class="block text-[11px] uppercase tracking-wider text-white/50 mb-1">
+                Product
+            </span>
+            <strong class="text-sm text-white break-words">
+                {{ product.name }}
+            </strong>
+        </div>
+
+        <div class="mt-5 space-y-4">
+            <p class="text-sm text-white/80">✓ Review the product name and description.</p>
+            <p class="text-sm text-white/80">✓ Verify the price and category.</p>
+            <p class="text-sm text-white/80">✓ Replace the main image if needed.</p>
+            <p class="text-sm text-white/80">✓ Add or remove gallery images.</p>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

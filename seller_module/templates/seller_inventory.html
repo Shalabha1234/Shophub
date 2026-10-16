@@ -1,0 +1,322 @@
+
+{% extends "seller_base.html" %}
+{% block inventory_active %}bg-shop-yellow !text-shop-dark{% endblock %}
+
+{% block title %}
+Inventory
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="space-y-6">
+
+    <!-- HEADER -->
+
+    <div>
+        <h1 class="text-2xl font-extrabold tracking-tight text-[#123f3a]">
+            Inventory
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500">
+            Manage your product stock and availability.
+        </p>
+    </div>
+
+
+    <!-- SUMMARY CARDS -->
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
+        <!-- PRODUCTS TRACKED -->
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <p class="text-sm font-medium text-gray-500">
+                Products tracked
+            </p>
+
+            <p class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900">
+                {{ inventory|length }}
+            </p>
+
+        </div>
+
+
+        <!-- TOTAL STOCK -->
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <p class="text-sm font-medium text-gray-500">
+                Total stock
+            </p>
+
+            <p class="mt-2 text-3xl font-extrabold tracking-tight text-gray-900">
+                {{ total_stock }}
+            </p>
+
+        </div>
+
+
+        <!-- STOCK ALERTS -->
+
+        <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
+
+            <p class="text-sm font-medium text-amber-700">
+                Stock alerts
+            </p>
+
+            <p class="mt-2 text-3xl font-extrabold tracking-tight text-amber-700">
+                {{ low_stock_count }}
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- INVENTORY CARD -->
+
+    <section class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+        <!-- CARD HEADER -->
+
+        <div class="border-b border-gray-200 px-5 py-5 sm:px-6">
+
+            <h2 class="text-lg font-bold text-gray-900">
+                Product inventory
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-500">
+                Update the available quantity for each product.
+            </p>
+
+        </div>
+
+
+        <!-- TABLE -->
+
+        {% if inventory %}
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full divide-y divide-gray-200">
+
+                <thead class="bg-gray-50">
+
+                    <tr>
+
+                        <th
+                            scope="col"
+                            class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 sm:px-6"
+                        >
+                            Product
+                        </th>
+
+                        <th
+                            scope="col"
+                            class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 sm:px-6"
+                        >
+                            Stock
+                        </th>
+
+                        <th
+                            scope="col"
+                            class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 sm:px-6"
+                        >
+                            Reserved
+                        </th>
+
+                        <th
+                            scope="col"
+                            class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 sm:px-6"
+                        >
+                            Low stock limit
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-gray-100 bg-white">
+
+                    {% for item in inventory %}
+
+                    <tr class="transition hover:bg-gray-50">
+
+                        <!-- PRODUCT -->
+
+                        <td class="whitespace-nowrap px-5 py-4 sm:px-6">
+
+                            <div class="flex items-center gap-3">
+
+                                <!-- PRODUCT IMAGE -->
+
+                                {% if item.product.image %}
+
+                                    <img
+                                        src="{{ item.product.image.url }}"
+                                        alt="{{ item.product.name }}"
+                                        class="h-11 w-11 flex-none rounded-xl border border-gray-200 object-cover"
+                                    >
+
+                                {% else %}
+
+                                    <div
+                                        class="flex h-11 w-11 flex-none items-center justify-center rounded-xl bg-[#e3f2ef] font-bold text-[#123f3a]"
+                                    >
+                                        {{ item.product.name|first|upper }}
+                                    </div>
+
+                                {% endif %}
+
+
+                                <!-- PRODUCT NAME -->
+
+                                <div>
+
+                                    <p class="font-semibold text-gray-900">
+                                        {{ item.product.name }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- STOCK -->
+
+                        <td class="px-5 py-4 sm:px-6">
+
+                            <form
+                                method="POST"
+                                class="flex flex-wrap items-center gap-2"
+                            >
+
+                                {% csrf_token %}
+
+                                <input
+                                    type="hidden"
+                                    name="inventory_id"
+                                    value="{{ item.id }}"
+                                >
+
+                                <input
+                                    type="number"
+                                    name="quantity"
+                                    value="{{ item.quantity }}"
+                                    min="0"
+                                    aria-label="Stock quantity for {{ item.product.name }}"
+                                    class="w-24 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-[#123f3a] focus:ring-2 focus:ring-[#123f3a]/10"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="rounded-lg bg-[#123f3a] px-3 py-2 text-sm font-bold text-white transition hover:bg-[#16504f]"
+                                >
+                                    Update
+                                </button>
+
+                            </form>
+
+
+                            <!-- STOCK STATUS -->
+
+                            {% if item.quantity == 0 %}
+
+                                <div class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-600">
+
+                                    <span>
+                                        ⚠
+                                    </span>
+
+                                    Out of stock
+
+                                </div>
+
+                            {% elif item.quantity <= item.low_stock_limit %}
+
+                                <div class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+
+                                    <span>
+                                        ⚠
+                                    </span>
+
+                                    Low stock
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="mt-2 text-xs font-medium text-[#123f3a]">
+                                    Stock available
+                                </div>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- RESERVED -->
+
+                        <td class="px-5 py-4 sm:px-6">
+
+                            <span class="text-sm text-gray-500">
+                                {{ item.reserved_quantity }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- LOW STOCK LIMIT -->
+
+                        <td class="px-5 py-4 sm:px-6">
+
+                            <span class="text-sm text-gray-500">
+                                {{ item.low_stock_limit }}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <!-- EMPTY STATE -->
+
+        <div class="px-6 py-16 text-center">
+
+            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#e3f2ef] text-xl font-bold text-[#123f3a]">
+                I
+            </div>
+
+            <h3 class="mt-4 text-base font-bold text-gray-900">
+                No inventory found
+            </h3>
+
+            <p class="mt-1 text-sm text-gray-500">
+                Your products will appear here once inventory is created.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}
+

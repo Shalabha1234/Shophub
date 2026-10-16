@@ -1,0 +1,509 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ShopHub Admin</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            font-family: 'Bricolage Grotesque', sans-serif;
+        }
+
+        /* Prevent the page from scrolling while the mobile sidebar is open */
+
+        body.sidebar-open {
+            overflow: hidden;
+        }
+
+    </style>
+
+</head>
+
+
+<body class="min-h-screen bg-[#f1f4f3] text-gray-900">
+
+
+    <!-- Mobile Header -->
+
+    <header
+        class="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 lg:hidden"
+    >
+
+        <div class="flex items-center gap-3">
+
+            <div
+                class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#ffc845] text-xl font-bold text-[#0f3d3e]"
+            >
+                S
+            </div>
+
+            <div>
+
+                <h1 class="text-lg font-bold text-[#0f3d3e]">
+                    ShopHub
+                </h1>
+
+                <p class="text-xs text-gray-500">
+                    Admin Panel
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Hamburger -->
+
+        <button
+            type="button"
+            id="menuButton"
+            aria-label="Open navigation menu"
+            aria-controls="adminSidebar"
+            aria-expanded="false"
+            class="flex h-10 w-10 items-center justify-center rounded-lg text-[#0f3d3e] transition hover:bg-[#f1f4f3]"
+        >
+
+            <svg
+                id="menuIcon"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+            >
+
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                />
+
+            </svg>
+
+        </button>
+
+    </header>
+
+
+    <!-- Mobile Overlay -->
+
+    <div
+        id="sidebarOverlay"
+        class="fixed inset-0 z-40 hidden bg-black/40 lg:hidden"
+    ></div>
+
+
+    <!-- Sidebar -->
+
+    <aside
+        id="adminSidebar"
+        class="fixed left-0 top-0 z-50 flex h-screen w-64 -translate-x-full flex-col bg-[#0f3d3e] text-white transition-transform duration-200 ease-in-out lg:translate-x-0"
+    >
+
+
+        <!-- Logo -->
+
+        <div class="flex shrink-0 items-center justify-between border-b border-white/10 px-6 py-5">
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#ffc845] text-xl font-bold text-[#0f3d3e]"
+                >
+                    S
+                </div>
+
+                <div>
+
+                    <h1 class="text-lg font-bold">
+                        ShopHub
+                    </h1>
+
+                    <p class="text-xs text-white/60">
+                        Admin Panel
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Mobile Close Button -->
+
+            <button
+                type="button"
+                id="closeSidebar"
+                aria-label="Close navigation menu"
+                class="flex h-8 w-8 items-center justify-center rounded-lg text-white/70 transition hover:bg-white/10 hover:text-white lg:hidden"
+            >
+
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                >
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                    />
+
+                </svg>
+
+            </button>
+
+        </div>
+
+
+        <!-- Navigation -->
+
+        <nav class="flex-1 overflow-y-auto px-3 py-5">
+
+
+            <!-- Main -->
+
+            <p class="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-white/40">
+                Main
+            </p>
+
+
+            <div class="space-y-1">
+
+
+                <!-- Dashboard -->
+
+                <a
+                    href="{% url 'admin_dashboard' %}"
+                    class="flex items-center rounded-lg px-3 py-3 text-sm font-semibold transition
+                    {% if request.resolver_match.url_name == 'admin_dashboard' %}
+                        bg-[#ffc845] text-[#0f3d3e]
+                    {% else %}
+                        text-white/80 hover:bg-[#ffc845] hover:text-[#0f3d3e]
+                    {% endif %}"
+                >
+                    Dashboard
+                </a>
+
+
+            </div>
+
+
+            <!-- Management -->
+
+            <div class="mt-6">
+
+                <p class="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-white/40">
+                    Management
+                </p>
+
+
+                <div class="space-y-1">
+
+
+                    <!-- Users -->
+
+                    <a
+                        href="{% url 'admin_user_list' %}"
+                        class="flex items-center rounded-lg px-3 py-3 text-sm font-semibold transition
+                        {% if request.resolver_match.url_name == 'admin_user_list' or request.resolver_match.url_name == 'admin_user_detail' %}
+                            bg-[#ffc845] text-[#0f3d3e]
+                        {% else %}
+                            text-white/80 hover:bg-[#ffc845] hover:text-[#0f3d3e]
+                        {% endif %}"
+                    >
+                        Users
+                    </a>
+
+
+                    <!-- Sellers -->
+
+                    <a
+                        href="{% url 'admin_seller_list' %}"
+                        class="flex items-center rounded-lg px-3 py-3 text-sm font-semibold transition
+                        {% if request.resolver_match.url_name == 'admin_seller_list' or request.resolver_match.url_name == 'admin_seller_detail' %}
+                            bg-[#ffc845] text-[#0f3d3e]
+                        {% else %}
+                            text-white/80 hover:bg-[#ffc845] hover:text-[#0f3d3e]
+                        {% endif %}"
+                    >
+                        Sellers
+                    </a>
+
+
+                    <!-- Categories -->
+
+                    <a
+                        href="{% url 'admin_category_list' %}"
+                        class="flex items-center rounded-lg px-3 py-3 text-sm font-semibold transition
+                        {% if request.resolver_match.url_name == 'admin_category_list' or request.resolver_match.url_name == 'admin_category_add' or request.resolver_match.url_name == 'admin_category_edit' %}
+                            bg-[#ffc845] text-[#0f3d3e]
+                        {% else %}
+                            text-white/80 hover:bg-[#ffc845] hover:text-[#0f3d3e]
+                        {% endif %}"
+                    >
+                        Categories
+                    </a>
+
+
+                    <!-- Products -->
+
+                    <a
+                        href="{% url 'admin_product_list' %}"
+                        class="flex items-center rounded-lg px-3 py-3 text-sm font-semibold transition
+                        {% if request.resolver_match.url_name == 'admin_product_list' or request.resolver_match.url_name == 'admin_product_detail' %}
+                            bg-[#ffc845] text-[#0f3d3e]
+                        {% else %}
+                            text-white/80 hover:bg-[#ffc845] hover:text-[#0f3d3e]
+                        {% endif %}"
+                    >
+                        Products
+                    </a>
+
+
+                    <!-- Orders -->
+
+                    <a
+                        href="{% url 'admin_order_list' %}"
+                        class="flex items-center rounded-lg px-3 py-3 text-sm font-semibold transition
+                        {% if request.resolver_match.url_name == 'admin_order_list' or request.resolver_match.url_name == 'admin_order_detail' %}
+                            bg-[#ffc845] text-[#0f3d3e]
+                        {% else %}
+                            text-white/80 hover:bg-[#ffc845] hover:text-[#0f3d3e]
+                        {% endif %}"
+                    >
+                        Orders
+                    </a>
+
+
+                    <!-- Payments -->
+
+                    <a
+                        href="{% url 'admin_payment_list' %}"
+                        class="flex items-center rounded-lg px-3 py-3 text-sm font-semibold transition
+                        {% if request.resolver_match.url_name == 'admin_payment_list' or request.resolver_match.url_name == 'admin_payment_detail' %}
+                            bg-[#ffc845] text-[#0f3d3e]
+                        {% else %}
+                            text-white/80 hover:bg-[#ffc845] hover:text-[#0f3d3e]
+                        {% endif %}"
+                    >
+                        Payments
+                    </a>
+
+
+                    <!-- Refunds -->
+
+                    <a
+                        href="{% url 'admin_refund_list' %}"
+                        class="flex items-center rounded-lg px-3 py-3 text-sm font-semibold transition
+                        {% if request.resolver_match.url_name == 'admin_refund_list' %}
+                            bg-[#ffc845] text-[#0f3d3e]
+                        {% else %}
+                            text-white/80 hover:bg-[#ffc845] hover:text-[#0f3d3e]
+                        {% endif %}"
+                    >
+                        Refunds
+                    </a>
+
+
+                    <!-- Seller Payouts -->
+
+                    <a
+                        href="{% url 'admin_payout_list' %}"
+                        class="flex items-center rounded-lg px-3 py-3 text-sm font-semibold transition
+                        {% if request.resolver_match.url_name == 'admin_payout_list' or request.resolver_match.url_name == 'admin_payout_detail' or request.resolver_match.url_name == 'admin_payout_update_status' %}
+                            bg-[#ffc845] text-[#0f3d3e]
+                        {% else %}
+                            text-white/80 hover:bg-[#ffc845] hover:text-[#0f3d3e]
+                        {% endif %}"
+                    >
+                        Seller Payouts
+                    </a>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- Account -->
+
+            <div class="mt-6">
+
+                <p class="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-white/40">
+                    Account
+                </p>
+
+
+                <!-- Admin Profile -->
+
+                <a
+                    href="{% url 'admin_profile' %}"
+                    class="flex items-center rounded-lg px-3 py-3 text-sm font-semibold transition
+                    {% if request.resolver_match.url_name == 'admin_profile' %}
+                        bg-[#ffc845] text-[#0f3d3e]
+                    {% else %}
+                        text-white/80 hover:bg-[#ffc845] hover:text-[#0f3d3e]
+                    {% endif %}"
+                >
+                    Admin Profile
+                </a>
+
+
+            
+            <!-- Logout -->
+
+            <a
+                href="{% url 'admin_logout' %}"
+                class="mt-1 flex items-center rounded-lg px-3 py-3 text-sm font-semibold text-white/80 transition hover:bg-red-500 hover:text-white"
+            >
+                Logout
+            </a>
+
+
+
+            </div>
+
+
+        </nav>
+
+
+    </aside>
+
+
+    <!-- Main Content -->
+
+    <main class="min-h-screen lg:ml-64">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <!-- Mobile Sidebar JavaScript -->
+
+    <script>
+
+        const menuButton = document.getElementById("menuButton");
+        const closeSidebar = document.getElementById("closeSidebar");
+        const sidebar = document.getElementById("adminSidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+
+
+        function openSidebar() {
+
+            sidebar.classList.remove("-translate-x-full");
+            overlay.classList.remove("hidden");
+
+            menuButton.setAttribute("aria-expanded", "true");
+
+            document.body.classList.add("sidebar-open");
+
+        }
+
+
+        function closeSidebarMenu() {
+
+            sidebar.classList.add("-translate-x-full");
+            overlay.classList.add("hidden");
+
+            menuButton.setAttribute("aria-expanded", "false");
+
+            document.body.classList.remove("sidebar-open");
+
+        }
+
+
+        menuButton.addEventListener(
+            "click",
+            openSidebar
+        );
+
+
+        closeSidebar.addEventListener(
+            "click",
+            closeSidebarMenu
+        );
+
+
+        overlay.addEventListener(
+            "click",
+            closeSidebarMenu
+        );
+
+
+        // Close the sidebar after selecting a menu item on mobile
+
+        const sidebarLinks = sidebar.querySelectorAll("a");
+
+
+        sidebarLinks.forEach(function (link) {
+
+            link.addEventListener("click", function () {
+
+                if (window.innerWidth < 1024) {
+
+                    closeSidebarMenu();
+
+                }
+
+            });
+
+        });
+
+
+        // If the screen becomes desktop-sized,
+        // reset mobile sidebar state
+
+        window.addEventListener(
+            "resize",
+            function () {
+
+                if (window.innerWidth >= 1024) {
+
+                    sidebar.classList.remove("-translate-x-full");
+
+                    overlay.classList.add("hidden");
+
+                    document.body.classList.remove("sidebar-open");
+
+                    menuButton.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                }
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>

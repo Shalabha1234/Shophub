@@ -1,0 +1,355 @@
+
+{% extends "seller_base.html" %}
+
+
+{% block title %}Seller Dashboard | ShopHub{% endblock %}
+
+
+
+{% block page_heading %}Seller Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-7xl space-y-6">
+
+    <!-- Welcome and Add Product -->
+    <section class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <div>
+            <h2 class="text-2xl font-extrabold tracking-tight text-[#123f3a]">
+                Welcome to your dashboard
+            </h2>
+            <p class="mt-1 text-sm text-[#5d6f70]">
+                Here's what's happening with your store today.
+            </p>
+        </div>
+
+        <a href="{% url 'add_product' %}"
+           class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#123f3a] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#16504f]">
+            <span class="text-xl">+</span>
+            Add a new product
+        </a>
+    </section>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+        <!-- Revenue -->
+        <section class="flex flex-col justify-between gap-6 rounded-2xl bg-[#123f3a] p-6 text-white shadow-sm">
+            <div>
+                <div class="mb-4 flex items-center justify-between">
+                    <p class="text-sm font-medium text-emerald-100/80">
+                        Total revenue
+                    </p>
+                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-xl">
+                        ₹
+                    </span>
+                </div>
+
+                <p class="text-3xl font-extrabold tracking-tight">
+                    ₹{{ revenue|floatformat:2 }}
+                </p>
+
+                <p class="mt-2 text-xs text-emerald-100/70">
+                    Revenue from your store
+                </p>
+            </div>
+
+            <a href="{% url 'seller_orders' %}"
+               class="flex items-center justify-between rounded-xl bg-[#ffc845] px-4 py-3 text-sm font-bold text-[#123f3a] transition hover:bg-[#ffda70]">
+                View all orders
+                <span class="text-lg">→</span>
+            </a>
+        </section>
+
+        <!-- Products -->
+        <section class="rounded-2xl border border-[#dfe7e6] bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            <div class="flex items-center justify-between">
+                <p class="text-sm font-semibold text-[#5d6f70]">Products</p>
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2ef] text-xl text-[#16504f]">
+                    □
+                </span>
+            </div>
+
+            <p class="mt-5 text-3xl font-extrabold tracking-tight text-[#123f3a]">
+                {{ products_count }}
+            </p>
+
+            <p class="mt-2 text-sm text-[#5d6f70]">
+                Products in your store
+            </p>
+
+            <a href="{% url 'seller_products' %}"
+               class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#16504f] hover:underline">
+                Manage products <span>→</span>
+            </a>
+        </section>
+
+        <!-- Total Orders -->
+        <section class="rounded-2xl border border-[#dfe7e6] bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+            <div class="flex items-center justify-between">
+                <p class="text-sm font-semibold text-[#5d6f70]">Total orders</p>
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2ef] text-xl text-[#16504f]">
+                    ▤
+                </span>
+            </div>
+
+            <p class="mt-5 text-3xl font-extrabold tracking-tight text-[#123f3a]">
+                {{ orders_count }}
+            </p>
+
+            <p class="mt-2 text-sm text-[#5d6f70]">
+                Orders received
+            </p>
+
+            <a href="{% url 'seller_orders' %}"
+               class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#16504f] hover:underline">
+                Manage orders <span>→</span>
+            </a>
+        </section>
+
+        <!-- Pending Orders -->
+        <section class="rounded-2xl border p-6 shadow-sm
+            {% if pending_orders %}
+                border-amber-200 bg-amber-50
+            {% else %}
+                border-[#dfe7e6] bg-white
+            {% endif %}">
+
+            <div class="flex items-center justify-between">
+                <p class="text-sm font-semibold text-[#5d6f70]">
+                    Pending orders
+                </p>
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-xl text-amber-700">
+                    !
+                </span>
+            </div>
+
+            <p class="mt-5 text-3xl font-extrabold tracking-tight
+                {% if pending_orders %}text-amber-700{% else %}text-[#123f3a]{% endif %}">
+                {{ pending_orders }}
+            </p>
+
+            <p class="mt-2 text-sm text-[#5d6f70]">
+                {% if pending_orders %}
+                    Orders waiting for an update
+                {% else %}
+                    You're all caught up
+                {% endif %}
+            </p>
+
+            <a href="{% url 'seller_orders' %}"
+               class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#16504f] hover:underline">
+                Review orders <span>→</span>
+            </a>
+        </section>
+
+    </div>
+
+    <!-- Stock, Store Information and Greeting -->
+    <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+
+        <!-- Stock Alerts -->
+        <section class="rounded-2xl border border-[#dfe7e6] bg-white p-6 shadow-sm">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-extrabold text-[#123f3a]">
+                        Stock alerts
+                    </h2>
+                    <p class="mt-1 text-sm text-[#5d6f70]">
+                        Products that may need restocking
+                    </p>
+                </div>
+
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-xl
+                    {% if low_stock_count %}bg-amber-100 text-amber-700{% else %}bg-[#e3f2ef] text-[#16504f]{% endif %}">
+                    ▧
+                </span>
+            </div>
+
+            <p class="mt-6 text-4xl font-extrabold
+                {% if low_stock_count %}text-amber-700{% else %}text-[#123f3a]{% endif %}">
+                {{ low_stock_count }}
+            </p>
+
+            <p class="mt-2 text-sm text-[#5d6f70]">
+                {% if low_stock_count %}
+                    Product{{ low_stock_count|pluralize }} need restocking.
+                {% else %}
+                    All products have sufficient stock.
+                {% endif %}
+            </p>
+
+            <a href="{% url 'seller_inventory' %}"
+               class="mt-6 flex items-center justify-between rounded-xl bg-[#e3f2ef] px-4 py-3 text-sm font-bold text-[#123f3a] transition hover:bg-[#d3ebe6]">
+                View inventory
+                <span class="text-lg">→</span>
+            </a>
+        </section>
+
+        <!-- Store Information -->
+        <section class="rounded-2xl bg-[#123f3a] p-6 text-white shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#ffc845] text-2xl font-extrabold text-[#123f3a]">
+                    {{ request.user.email|first|upper }}
+                </div>
+
+                <div class="min-w-0">
+                    <p class="text-sm text-emerald-100/70">Your Store</p>
+                    <h2 class="mt-1 truncate text-xl font-extrabold">
+                        {{ request.user.sellerprofile.store.store_name|default:"Your Store" }}
+                    </h2>
+                </div>
+            </div>
+
+            <div class="mt-6 border-t border-white/15 pt-5">
+                <p class="text-xs font-semibold uppercase tracking-wider text-emerald-100/60">
+                    Seller account
+                </p>
+                <p class="mt-2 break-words text-sm font-medium">
+                    {{ request.user.email }}
+                </p>
+            </div>
+
+            <a href="{% url 'seller_profile' %}"
+               class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#ffc845] hover:underline">
+                Manage seller account <span>→</span>
+            </a>
+        </section>
+
+        <!-- Greeting -->
+        <section class="rounded-2xl border border-[#d3e1f6] bg-[#e8f0fb] p-6 shadow-sm">
+            <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white text-xl text-[#123f3a]">
+                ✦
+            </span>
+
+            <h2 class="mt-4 text-xl font-extrabold text-[#123f3a]">
+                Good day!
+            </h2>
+
+            <p class="mt-2 text-sm leading-6 text-[#5d6f70]">
+                Keep your products active and your orders moving to grow your store.
+            </p>
+
+            <a href="{% url 'add_product' %}"
+               class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#123f3a] hover:underline">
+                Add a new product <span>→</span>
+            </a>
+        </section>
+
+    </div>
+
+    <!-- Pending Tasks and Quick Actions -->
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+        <!-- Pending Tasks -->
+        <section class="rounded-2xl border border-[#dfe7e6] bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-extrabold text-[#123f3a]">
+                        Pending tasks
+                    </h2>
+                    <p class="mt-1 text-sm text-[#5d6f70]">
+                        Keep your store running smoothly.
+                    </p>
+                </div>
+
+                <span class="text-xl text-[#16504f]">☰</span>
+            </div>
+
+            <div class="mt-5 divide-y divide-[#dfe7e6]">
+
+                <a href="{% url 'seller_orders' %}"
+                   class="flex items-center justify-between gap-4 rounded-lg px-2 py-4 transition hover:bg-[#f8faf9]">
+                    <div>
+                        <p class="font-bold text-[#123f3a]">Update order status</p>
+                        <p class="mt-1 text-sm text-[#5d6f70]">
+                            {{ pending_orders }} pending order{{ pending_orders|pluralize }}
+                        </p>
+                    </div>
+                    <span class="text-2xl text-[#5d6f70]">›</span>
+                </a>
+
+                <a href="{% url 'seller_products' %}"
+                   class="flex items-center justify-between gap-4 rounded-lg px-2 py-4 transition hover:bg-[#f8faf9]">
+                    <div>
+                        <p class="font-bold text-[#123f3a]">Review your products</p>
+                        <p class="mt-1 text-sm text-[#5d6f70]">
+                            {{ products_count }} listed
+                        </p>
+                    </div>
+                    <span class="text-2xl text-[#5d6f70]">›</span>
+                </a>
+
+                {% if low_stock_count %}
+                <a href="{% url 'seller_inventory' %}"
+                   class="flex items-center justify-between gap-4 rounded-lg px-2 py-4 transition hover:bg-[#f8faf9]">
+                    <div>
+                        <p class="font-bold text-[#123f3a]">Check low-stock products</p>
+                        <p class="mt-1 text-sm text-[#5d6f70]">
+                            {{ low_stock_count }} product{{ low_stock_count|pluralize }} need attention
+                        </p>
+                    </div>
+                    <span class="text-2xl text-[#5d6f70]">›</span>
+                </a>
+                {% endif %}
+
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="rounded-2xl border border-[#dfe7e6] bg-white p-6 shadow-sm">
+            <h2 class="text-lg font-extrabold text-[#123f3a]">
+                Quick actions
+            </h2>
+
+            <p class="mt-1 text-sm text-[#5d6f70]">
+                Jump directly to the tools you use most.
+            </p>
+
+            <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+
+                <a href="{% url 'add_product' %}"
+                   class="group rounded-xl border border-[#dfe7e6] bg-white p-4 transition hover:border-[#16504f] hover:bg-[#e3f2ef]">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2ef] text-xl text-[#16504f] group-hover:bg-white">
+                        +
+                    </span>
+                    <p class="mt-3 font-bold text-[#123f3a]">Add product</p>
+                    <p class="mt-1 text-xs text-[#5d6f70]">List a new item</p>
+                </a>
+
+                <a href="{% url 'seller_products' %}"
+                   class="group rounded-xl border border-[#dfe7e6] bg-white p-4 transition hover:border-[#16504f] hover:bg-[#e3f2ef]">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2ef] text-xl text-[#16504f] group-hover:bg-white">
+                        □
+                    </span>
+                    <p class="mt-3 font-bold text-[#123f3a]">My products</p>
+                    <p class="mt-1 text-xs text-[#5d6f70]">Manage listings</p>
+                </a>
+
+                <a href="{% url 'seller_orders' %}"
+                   class="group rounded-xl border border-[#dfe7e6] bg-white p-4 transition hover:border-[#16504f] hover:bg-[#e3f2ef]">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2ef] text-xl text-[#16504f] group-hover:bg-white">
+                        ▤
+                    </span>
+                    <p class="mt-3 font-bold text-[#123f3a]">Orders</p>
+                    <p class="mt-1 text-xs text-[#5d6f70]">View and update orders</p>
+                </a>
+
+                <a href="{% url 'seller_inventory' %}"
+                   class="group rounded-xl border border-[#dfe7e6] bg-white p-4 transition hover:border-[#16504f] hover:bg-[#e3f2ef]">
+                    <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e3f2ef] text-xl text-[#16504f] group-hover:bg-white">
+                        ▧
+                    </span>
+                    <p class="mt-3 font-bold text-[#123f3a]">Inventory</p>
+                    <p class="mt-1 text-xs text-[#5d6f70]">Check stock levels</p>
+                </a>
+
+            </div>
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

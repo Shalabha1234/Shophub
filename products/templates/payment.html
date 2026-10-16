@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Payment</title>
+    </head>
+    <body>
+
+
+
+<h1>Payment</h1>
+
+<p>Order ID: {{ order.id }}</p>
+<p>Total Amount: ₹{{ order.total_amount }}</p>
+
+{% if payment_success %}
+
+    <h2>Payment Successful!</h2>
+    <p>Your payment has been completed successfully.</p>
+
+{% elif order.status == 'CONFIRMED' %}
+
+    <h2>Payment Completed</h2>
+    <p>This order has already been paid.</p>
+
+{% else %}
+
+    <h3>Select Payment Method</h3>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>
+            <input type="radio" name="payment_method" value="UPI">
+            UPI
+        </label>
+        <br>
+
+        <label>
+            <input type="radio" name="payment_method" value="CARD">
+            Card
+        </label>
+        <br>
+
+        <label>
+            <input type="radio" name="payment_method" value="COD">
+            Cash on Delivery
+        </label>
+        <br><br>
+
+        <button type="submit">Pay Now</button>
+    </form>
+
+{% endif %}
+</body>
+</html>

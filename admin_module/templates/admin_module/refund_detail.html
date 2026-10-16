@@ -1,0 +1,423 @@
+
+{% extends "admin_module/admin_base.html" %}
+
+{% block content %}
+
+<div class="p-4 sm:p-6">
+
+    <!-- Header -->
+    <div class="mb-6">
+        <div class="mb-4">
+            <a
+                href="{% url 'admin_refund_list' %}"
+                class="inline-flex items-center gap-2 text-sm font-semibold text-[#0f3d3e] hover:underline"
+            >
+                ← Back to Refunds
+            </a>
+        </div>
+
+        <h1 class="text-2xl font-bold text-gray-900">
+            Refund #{{ refund.id }}
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500">
+            Review the refund request, returned products, and payment information.
+        </p>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+
+        <!-- Refund Information -->
+        <div class="rounded-2xl bg-white p-5 shadow-sm lg:col-span-2">
+
+            <div class="mb-5 border-b border-gray-100 pb-4">
+                <h2 class="text-lg font-bold text-gray-900">
+                    Refund Information
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <!-- Refund ID -->
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                        Refund ID
+                    </p>
+                    <p class="mt-1 text-sm font-semibold text-gray-900">
+                        #{{ refund.id }}
+                    </p>
+                </div>
+
+                <!-- Status -->
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                        Status
+                    </p>
+
+                    <div class="mt-2">
+                        {% if refund.status == 'REQUESTED' %}
+                            <span class="inline-flex rounded-full bg-yellow-50 px-3 py-1 text-xs font-bold text-yellow-700">
+                                Requested
+                            </span>
+                        {% elif refund.status == 'APPROVED' %}
+                            <span class="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
+                                Approved
+                            </span>
+                        {% elif refund.status == 'REJECTED' %}
+                            <span class="inline-flex rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-red-700">
+                                Rejected
+                            </span>
+                        {% elif refund.status == 'PROCESSED' %}
+                            <span class="inline-flex rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-700">
+                                Processed
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Order -->
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                        Order
+                    </p>
+                    <p class="mt-1 text-sm font-semibold text-gray-900">
+                        Order #{{ refund.order.id }}
+                    </p>
+                </div>
+
+                <!-- Refund Amount -->
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                        Refund Amount
+                    </p>
+                    <p class="mt-1 text-lg font-bold text-[#0f3d3e]">
+                        ₹{{ refund.amount|floatformat:2 }}
+                    </p>
+                </div>
+
+                <!-- Requested Date -->
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                        Requested
+                    </p>
+                    <p class="mt-1 text-sm text-gray-700">
+                        {{ refund.requested_at|date:"d M Y, h:i A" }}
+                    </p>
+                </div>
+
+                <!-- Processed Date -->
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                        Processed
+                    </p>
+
+                    {% if refund.processed_at %}
+                        <p class="mt-1 text-sm text-gray-700">
+                            {{ refund.processed_at|date:"d M Y, h:i A" }}
+                        </p>
+                    {% else %}
+                        <p class="mt-1 text-sm text-gray-400">
+                            Not processed
+                        </p>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <!-- Refund Reason -->
+            <div class="mt-6 border-t border-gray-100 pt-5">
+                <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                    Refund Reason
+                </p>
+
+                <div class="mt-2 rounded-xl bg-gray-50 p-4">
+                    {% if refund.reason %}
+                        <p class="whitespace-pre-line break-words text-sm leading-6 text-gray-700">
+                            {{ refund.reason }}
+                        </p>
+                    {% else %}
+                        <p class="text-sm text-gray-400">
+                            No reason provided.
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Customer Information -->
+        <div class="rounded-2xl bg-white p-5 shadow-sm">
+
+            <div class="mb-5 border-b border-gray-100 pb-4">
+                <h2 class="text-lg font-bold text-gray-900">
+                    Customer Information
+                </h2>
+            </div>
+
+            <div class="space-y-5">
+
+                <!-- Customer -->
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                        Customer
+                    </p>
+                    <p class="mt-1 text-sm font-semibold text-gray-900">
+                        {{ refund.order.user.get_full_name|default:"Customer" }}
+                    </p>
+                    <p class="mt-1 break-all text-sm text-gray-500">
+                        {{ refund.order.user.email }}
+                    </p>
+                </div>
+
+                <!-- Order -->
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                        Order
+                    </p>
+                    <p class="mt-1 text-sm font-semibold text-gray-900">
+                        #{{ refund.order.id }}
+                    </p>
+                    <p class="mt-1 text-sm text-gray-500">
+                        Order Total: ₹{{ refund.order.total_amount|floatformat:2 }}
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Returned Products -->
+        <div class="rounded-2xl bg-white p-5 shadow-sm lg:col-span-3">
+
+            <div class="mb-5 border-b border-gray-100 pb-4">
+                <h2 class="text-lg font-bold text-gray-900">
+                    Returned Products
+                </h2>
+                <p class="mt-1 text-sm text-gray-500">
+                    Products included in Order #{{ refund.order.id }}
+                </p>
+            </div>
+
+            <div class="space-y-4">
+
+                {% for item in order_items %}
+
+                    <div class="flex flex-col justify-between gap-4 rounded-xl border border-gray-100 p-4 sm:flex-row sm:items-center">
+
+                        <div>
+                            <p class="font-semibold text-gray-900">
+                                {{ item.product.name }}
+                            </p>
+
+                            <p class="mt-1 text-sm text-gray-500">
+                                Quantity: {{ item.quantity }}
+                            </p>
+                        </div>
+
+                        <div class="sm:text-right">
+                            <p class="text-sm text-gray-500">
+                                Unit Price: ₹{{ item.price|floatformat:2 }}
+                            </p>
+
+                            <p class="mt-1 font-bold text-gray-900">
+                                Subtotal: ₹{% widthratio item.price 1 item.quantity %}
+                            </p>
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <p class="rounded-xl bg-gray-50 p-4 text-sm text-gray-500">
+                        No products found for this order.
+                    </p>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <!-- Original Payment -->
+        <div class="rounded-2xl bg-white p-5 shadow-sm lg:col-span-3">
+
+            <div class="mb-5 border-b border-gray-100 pb-4">
+                <h2 class="text-lg font-bold text-gray-900">
+                    Original Payment
+                </h2>
+            </div>
+
+            {% if refund.payment %}
+
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+
+                    <!-- Payment ID -->
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                            Payment
+                        </p>
+                        <p class="mt-1 text-sm font-semibold text-gray-900">
+                            #{{ refund.payment.id }}
+                        </p>
+                    </div>
+
+                    <!-- Payment Amount -->
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                            Payment Amount
+                        </p>
+                        <p class="mt-1 text-sm font-semibold text-gray-900">
+                            ₹{{ refund.payment.amount|floatformat:2 }}
+                        </p>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                            Payment Method
+                        </p>
+                        <p class="mt-1 text-sm font-semibold text-gray-900">
+                            {{ refund.payment.get_payment_method_display }}
+                        </p>
+                    </div>
+
+                    <!-- Payment Status -->
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                            Payment Status
+                        </p>
+                        <p class="mt-1 text-sm font-semibold text-gray-900">
+                            {{ refund.payment.get_status_display }}
+                        </p>
+                    </div>
+
+                    <!-- Transaction ID -->
+                    <div class="sm:col-span-2 lg:col-span-4">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                            Transaction ID
+                        </p>
+                        <p class="mt-1 break-all text-sm font-semibold text-gray-900">
+                            {{ refund.payment.transaction_id|default:"—" }}
+                        </p>
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                <p class="text-sm text-gray-500">
+                    No payment record is associated with this refund.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- Refund Actions -->
+    <div class="mt-6 rounded-2xl bg-white p-5 shadow-sm">
+
+        <div class="mb-4">
+            <h2 class="text-lg font-bold text-gray-900">
+                Refund Actions
+            </h2>
+            <p class="mt-1 text-sm text-gray-500">
+                Manage the current refund request.
+            </p>
+        </div>
+
+        {% if refund.status == 'REQUESTED' %}
+
+            <div class="flex flex-col gap-3 sm:flex-row">
+
+                <!-- Approve Refund -->
+                <form
+                    method="POST"
+                    action="{% url 'admin_refund_update_status' refund.id %}"
+                    class="flex-1"
+                >
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="status"
+                        value="APPROVED"
+                    >
+
+                    <button
+                        type="submit"
+                        class="w-full rounded-lg bg-[#0f3d3e] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#16504f]"
+                    >
+                        Approve Refund
+                    </button>
+                </form>
+
+                <!-- Reject Refund -->
+                <form
+                    method="POST"
+                    action="{% url 'admin_refund_update_status' refund.id %}"
+                    class="flex-1"
+                >
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="status"
+                        value="REJECTED"
+                    >
+
+                    <button
+                        type="submit"
+                        class="w-full rounded-lg border border-red-200 bg-red-50 px-5 py-3 text-sm font-bold text-red-600 transition hover:bg-red-100"
+                    >
+                        Reject Refund
+                    </button>
+                </form>
+
+            </div>
+
+        {% elif refund.status == 'APPROVED' %}
+
+            <form
+                method="POST"
+                action="{% url 'admin_refund_update_status' refund.id %}"
+            >
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="status"
+                    value="PROCESSED"
+                >
+
+                <button
+                    type="submit"
+                    class="w-full rounded-lg bg-[#0f3d3e] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#16504f]"
+                >
+                    Process Refund
+                </button>
+            </form>
+
+        {% elif refund.status == 'PROCESSED' %}
+
+            <div class="rounded-xl bg-green-50 p-4">
+                <p class="text-sm font-semibold text-green-700">
+                    This refund has already been processed.
+                </p>
+            </div>
+
+        {% elif refund.status == 'REJECTED' %}
+
+            <div class="rounded-xl bg-red-50 p-4">
+                <p class="text-sm font-semibold text-red-700">
+                    This refund request was rejected.
+                </p>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

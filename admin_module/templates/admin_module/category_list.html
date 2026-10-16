@@ -1,0 +1,297 @@
+
+{% extends "admin_module/admin_base.html" %}
+
+{% block content %}
+
+<div class="p-4 sm:p-6">
+
+    <!-- Success and Error Messages -->
+    {% if messages %}
+        <div class="mb-5 space-y-3">
+            {% for message in messages %}
+                <div class="rounded-lg border px-4 py-3 text-sm
+                    {% if 'error' in message.tags %}
+                        border-red-200 bg-red-50 text-red-700
+                    {% else %}
+                        border-green-200 bg-green-50 text-green-700
+                    {% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Header -->
+    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">
+                Product Categories
+            </h1>
+
+            <p class="mt-1 text-sm text-gray-500">
+                Manage the categories used across your marketplace.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'admin_category_add' %}"
+            class="inline-flex items-center justify-center rounded-lg bg-[#0f3d3e] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#16504f]"
+        >
+            + Add Category
+        </a>
+
+    </div>
+
+    <!-- Categories Card -->
+    <div class="overflow-hidden rounded-xl bg-white shadow-sm">
+
+        <div class="border-b border-gray-100 px-5 py-5 sm:px-6">
+            <h2 class="text-lg font-semibold text-gray-900">
+                Categories
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-500">
+                View and manage your product categories.
+            </p>
+        </div>
+
+        <!-- Desktop Table -->
+        <div class="hidden md:block">
+            <div class="overflow-x-auto">
+
+                <table class="w-full text-left">
+
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Category
+                            </th>
+
+                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Description
+                            </th>
+
+                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Products
+                            </th>
+
+                            <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-gray-100">
+
+                        {% for category in categories %}
+
+                            <tr class="transition hover:bg-gray-50">
+
+                                <!-- Category -->
+                                <td class="px-6 py-4">
+                                    <p class="font-semibold text-gray-900">
+                                        {{ category.name }}
+                                    </p>
+                                </td>
+
+                                <!-- Description -->
+                                <td class="max-w-md px-6 py-4 text-sm text-gray-600">
+                                    {% if category.description %}
+                                        {{ category.description }}
+                                    {% else %}
+                                        <span class="text-gray-400">
+                                            No description
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Product Count -->
+                                <td class="px-6 py-4">
+                                    <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                                        {{ category.product_count }}
+                                    </span>
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-4">
+
+                                        <a
+                                            href="{% url 'admin_category_edit' category.id %}"
+                                            class="text-sm font-semibold text-teal-700 hover:underline"
+                                        >
+                                            Edit
+                                        </a>
+
+                                        {% if category.product_count == 0 %}
+
+                                            <form
+                                                method="POST"
+                                                action="{% url 'admin_category_delete' category.id %}"
+                                                onsubmit="return confirm('Are you sure you want to delete this category? This action cannot be undone.');"
+                                            >
+                                                {% csrf_token %}
+
+                                                <button
+                                                    type="submit"
+                                                    class="text-sm font-semibold text-red-600 hover:underline"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </form>
+
+                                        {% else %}
+
+                                            <button
+                                                type="button"
+                                                disabled
+                                                title="Move all products out of this category before deleting it."
+                                                class="cursor-not-allowed text-sm font-semibold text-gray-400"
+                                            >
+                                                Delete
+                                            </button>
+
+                                            <span class="text-xs text-gray-400">
+                                                Products exist
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+                                <td
+                                    colspan="4"
+                                    class="px-6 py-12 text-center text-sm text-gray-500"
+                                >
+                                    No categories found.
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="space-y-4 p-4 md:hidden">
+
+            {% for category in categories %}
+
+                <div class="rounded-xl border border-gray-100 bg-gray-50 p-5">
+
+                    <!-- Category Header -->
+                    <div class="flex items-start justify-between gap-4">
+
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                Category
+                            </p>
+
+                            <h3 class="mt-1 font-semibold text-gray-900">
+                                {{ category.name }}
+                            </h3>
+                        </div>
+
+                        <span class="shrink-0 rounded-full bg-gray-200 px-3 py-1 text-xs font-semibold text-gray-700">
+                            {{ category.product_count }} product{{ category.product_count|pluralize }}
+                        </span>
+
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mt-5 border-t border-gray-200 pt-4">
+
+                        <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                            Description
+                        </p>
+
+                        {% if category.description %}
+                            <p class="mt-1 text-sm leading-6 text-gray-600">
+                                {{ category.description }}
+                            </p>
+                        {% else %}
+                            <p class="mt-1 text-sm text-gray-400">
+                                No description
+                            </p>
+                        {% endif %}
+
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-5 flex items-center gap-4 border-t border-gray-200 pt-4">
+
+                        <a
+                            href="{% url 'admin_category_edit' category.id %}"
+                            class="flex-1 rounded-lg bg-[#0f3d3e] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#16504f]"
+                        >
+                            Edit
+                        </a>
+
+                        {% if category.product_count == 0 %}
+
+                            <form
+                                method="POST"
+                                action="{% url 'admin_category_delete' category.id %}"
+                                class="flex-1"
+                                onsubmit="return confirm('Are you sure you want to delete this category? This action cannot be undone.');"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="w-full rounded-lg border border-red-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                                >
+                                    Delete
+                                </button>
+                            </form>
+
+                        {% else %}
+
+                            <div class="flex-1">
+                                <button
+                                    type="button"
+                                    disabled
+                                    title="Move all products out of this category before deleting it."
+                                    class="w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-4 py-2.5 text-sm font-semibold text-gray-400"
+                                >
+                                    Delete
+                                </button>
+
+                                <p class="mt-2 text-center text-xs text-gray-500">
+                                    Products exist
+                                </p>
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="rounded-xl bg-gray-50 px-5 py-10 text-center text-sm text-gray-500">
+                    No categories found.
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

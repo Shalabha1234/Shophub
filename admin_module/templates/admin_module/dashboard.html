@@ -1,0 +1,177 @@
+
+{% extends "admin_module/admin_base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="space-y-6">
+
+    <!-- HEADER -->
+
+    <div>
+
+        <h1 class="text-2xl font-extrabold tracking-tight text-[#123f3a]">
+            Admin Dashboard
+        </h1>
+
+        <p class="mt-1 text-sm text-gray-500">
+            Overview of your marketplace.
+        </p>
+
+    </div>
+
+
+    <!-- STAT CARDS -->
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
+
+        <!-- TOTAL USERS -->
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <p class="text-sm font-semibold text-gray-500">
+                Total Users
+            </p>
+
+            <p class="mt-2 text-3xl font-extrabold text-[#123f3a]">
+                {{ total_users }}
+            </p>
+
+            <p class="mt-1 text-xs text-gray-400">
+                All registered users
+            </p>
+
+        </div>
+
+
+        <!-- CUSTOMERS -->
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <p class="text-sm font-semibold text-gray-500">
+                Customers
+            </p>
+
+            <p class="mt-2 text-3xl font-extrabold text-[#123f3a]">
+                {{ total_customers }}
+            </p>
+
+            <p class="mt-1 text-xs text-gray-400">
+                Registered customers
+            </p>
+
+        </div>
+
+
+        <!-- SELLERS -->
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <p class="text-sm font-semibold text-gray-500">
+                Sellers
+            </p>
+
+            <p class="mt-2 text-3xl font-extrabold text-[#123f3a]">
+                {{ total_sellers }}
+            </p>
+
+            <p class="mt-1 text-xs text-gray-400">
+                Registered sellers
+            </p>
+
+        </div>
+
+
+        <!-- PRODUCTS -->
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <p class="text-sm font-semibold text-gray-500">
+                Products
+            </p>
+
+            <p class="mt-2 text-3xl font-extrabold text-[#123f3a]">
+                {{ total_products }}
+            </p>
+
+            <p class="mt-1 text-xs text-gray-400">
+                Marketplace products
+            </p>
+
+        </div>
+
+
+        <!-- ORDERS -->
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <p class="text-sm font-semibold text-gray-500">
+                Orders
+            </p>
+
+            <p class="mt-2 text-3xl font-extrabold text-[#123f3a]">
+                {{ total_orders }}
+            </p>
+
+            <p class="mt-1 text-xs text-gray-400">
+                Total marketplace orders
+            </p>
+
+        </div>
+
+
+        <!-- REVENUE -->
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+            <p class="text-sm font-semibold text-gray-500">
+                Total Revenue
+            </p>
+
+            <p class="mt-2 text-3xl font-extrabold text-[#123f3a]">
+                ₹{{ total_revenue|floatformat:2 }}
+            </p>
+
+            <p class="mt-1 text-xs text-gray-400">
+                Revenue from completed orders
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <section class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <h2 class="text-lg font-bold text-gray-900">
+            Quick Actions
+        </h2>
+
+        <p class="mt-1 text-sm text-gray-500">
+            Manage important parts of your marketplace.
+        </p>
+
+
+        <div class="mt-5 flex flex-wrap gap-3">
+
+            <a
+                href="{% url 'admin_category_list' %}"
+                class="rounded-xl bg-[#123f3a] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#16504f]"
+            >
+                Manage Categories
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+

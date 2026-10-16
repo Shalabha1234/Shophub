@@ -1,0 +1,155 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Wishlist - ShopHub</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-[#f8faf9] text-[#123f3a]"
+      style="font-family: 'Bricolage Grotesque', sans-serif;">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-5 py-5 flex items-center justify-between">
+            <a href="{% url 'customer_home' %}"
+               class="text-2xl font-extrabold tracking-tight">
+                ShopHub
+            </a>
+
+            <div class="flex items-center gap-5 text-sm font-semibold">
+                <a href="{% url 'customer_home' %}"
+                   class="hover:text-[#d6a900]">
+                    Home
+                </a>
+
+                <a href="{% url 'customer_cart' %}"
+                   class="hover:text-[#d6a900]">
+                    My Cart
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-5 py-10 sm:py-14">
+
+        <!-- Page heading -->
+        <div class="mb-9">
+            <p class="text-sm font-bold uppercase tracking-[0.2em] text-[#b18b00]">
+                Your saved favourites
+            </p>
+
+            <h1 class="text-3xl sm:text-4xl font-extrabold mt-2">
+                My Wishlist
+                <span class="text-[#78908b] text-lg font-semibold">
+                    ({{ wishlist_items|length }})
+                </span>
+            </h1>
+
+            <p class="text-gray-500 mt-3">
+                Keep the products you love in one place.
+            </p>
+        </div>
+
+        {% if wishlist_items %}
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+                {% for item in wishlist_items %}
+                    <article class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-lg transition">
+
+                        <!-- Product image -->
+                        <a href="{% url 'customer_product_detail' item.product.id %}"
+                           class="block bg-[#f1f4f3] h-56 p-5">
+
+                            {% if item.product.image %}
+                                <img
+                                    src="{{ item.product.image.url }}"
+                                    alt="{{ item.product.name }}"
+                                    class="w-full h-full object-contain"
+                                >
+                            {% else %}
+                                <div class="h-full flex flex-col items-center justify-center text-gray-400">
+                                    <span class="text-5xl">♡</span>
+                                    <span class="text-sm mt-2">No image available</span>
+                                </div>
+                            {% endif %}
+                        </a>
+
+                        <!-- Product information -->
+                        <div class="p-5">
+                            <h2 class="text-lg font-bold truncate">
+                                {{ item.product.name }}
+                            </h2>
+
+                            <p class="text-xl font-extrabold mt-2">
+                                ₹{{ item.product.price }}
+                            </p>
+
+                            <div class="mt-5 flex flex-col gap-3">
+
+                                <a href="{% url 'customer_product_detail' item.product.id %}"
+                                   class="w-full text-center bg-[#123f3a] text-white py-3 rounded-xl font-bold hover:bg-[#1b5850] transition">
+                                    View Product
+                                </a>
+
+                                <form method="post"
+                                      action="{% url 'remove_from_wishlist' item.product.id %}">
+                                    {% csrf_token %}
+
+                                    <button type="submit"
+                                            class="w-full border border-red-200 text-red-600 py-3 rounded-xl font-bold hover:bg-red-50 transition">
+                                        ♡ Remove from Wishlist
+                                    </button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <!-- Empty wishlist -->
+            <div class="bg-white border border-gray-100 rounded-3xl px-6 py-16 text-center shadow-sm">
+
+                <div class="mx-auto w-20 h-20 rounded-full bg-[#f1f4f3] flex items-center justify-center text-4xl">
+                    ♡
+                </div>
+
+                <h2 class="text-2xl font-extrabold mt-6">
+                    Your wishlist is empty
+                </h2>
+
+                <p class="text-gray-500 mt-3 max-w-md mx-auto">
+                    Found something you love? Save it here and come back to it whenever you want.
+                </p>
+
+                <a href="{% url 'customer_home' %}"
+                   class="inline-block mt-7 bg-[#123f3a] text-white px-7 py-3 rounded-xl font-bold hover:bg-[#1b5850] transition">
+                    Explore Products
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </main>
+
+    <footer class="text-center text-sm text-gray-500 py-7">
+        © ShopHub. Your Everyday Marketplace.
+    </footer>
+
+</body>
+</html>
