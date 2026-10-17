@@ -28,10 +28,22 @@ db_backup.sqlite3
 
 # Local data exports
 data.json
+shophub_render_data.json
 
-# User-uploaded media and collected static files
-media/
+
+# Public demo images
+media/*
+!media/products/
+!media/category_images/
+!media/seller_profiles/
+!media/store_logos/
+
+# Keep seller verification documents private
+media/seller_documents/
+
+# Collected static files
 staticfiles/
+
 
 # Logs
 *.log
