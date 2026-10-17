@@ -6,12 +6,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShopHub - Search Products</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Bricolage Grotesque', sans-serif;
+        }
+
+        .wishlist-button {
+            transition: background-color .2s ease, color .2s ease, transform .2s ease;
+        }
+
+        .wishlist-button:hover {
+            transform: scale(1.08);
+        }
+
+        .wishlist-button.is-added {
+            color: #e11d48;
+        }
+
+        .wishlist-button.is-not-added {
+            color: #9ca3af;
+        }
+
+        .wishlist-button.is-not-added:hover {
+            color: #e11d48;
+        }
+
+        .wishlist-button:disabled {
+            cursor: wait;
+            opacity: .65;
+        }
+
+        #wishlist-toast {
+            animation: toast-in .2s ease-out;
+        }
+
+        @keyframes toast-in {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 
-<body class="min-h-screen bg-[#f8faf9] font-sans text-gray-800"
-      style="font-family: 'Bricolage Grotesque', sans-serif;">
+<body class="min-h-screen bg-[#f8faf9] text-gray-800">
+
+<!-- WISHLIST TOAST -->
+<div id="wishlist-toast"
+     role="status"
+     aria-live="polite"
+     class="fixed right-4 top-20 z-[100] hidden max-w-sm rounded-xl border px-5 py-4 text-sm font-bold shadow-xl sm:right-6">
+    <span id="wishlist-toast-message"></span>
+</div>
 
 <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
     <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
@@ -25,6 +79,7 @@
               action="{% url 'customer_product_list' %}"
               class="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 md:max-w-md">
             <span aria-hidden="true">🔍</span>
+
             <input
                 type="search"
                 name="q"
@@ -32,6 +87,7 @@
                 placeholder="Search products..."
                 aria-label="Search products"
                 class="min-w-0 w-full bg-transparent py-1 text-sm outline-none">
+
             <button type="submit"
                     class="rounded-lg bg-[#123f3a] px-4 py-2 text-sm font-bold text-white hover:bg-[#16504a]">
                 Search
@@ -40,11 +96,17 @@
 
         <div class="flex items-center gap-2">
             <a href="{% url 'wishlist' %}"
-               class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-xl text-rose-600"
-               aria-label="My Wishlist">♥</a>
+               id="wishlist-nav-link"
+               class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-xl {% if wishlist_product_ids %}bg-rose-50 text-rose-600{% else %}text-gray-500{% endif %}"
+               aria-label="My Wishlist"
+               title="My Wishlist">
+                <span id="wishlist-nav-heart">{% if wishlist_product_ids %}♥{% else %}♡{% endif %}</span>
+            </a>
+
             <a href="{% url 'customer_cart' %}"
                class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200"
                aria-label="Shopping cart">🛒</a>
+
             <a href="{% url 'customer_dashboard' %}"
                class="rounded-xl bg-[#123f3a] px-4 py-3 text-sm font-bold text-white">
                 My Account
@@ -147,20 +209,37 @@
     <div class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
 
         {% for product in products %}
-            <article class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <article class="product-card overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
 
-                <a href="{% url 'customer_product_detail' product.id %}"
-                   class="flex h-40 items-center justify-center overflow-hidden bg-gray-50 sm:h-56">
+                <div class="relative">
+                    <a href="{% url 'customer_product_detail' product.id %}"
+                       class="flex h-40 items-center justify-center overflow-hidden bg-gray-50 sm:h-56">
 
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}"
-                             alt="{{ product.name }}"
-                             loading="lazy"
-                             class="h-full w-full object-cover">
-                    {% else %}
-                        <span class="text-4xl">📦</span>
-                    {% endif %}
-                </a>
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}"
+                                 alt="{{ product.name }}"
+                                 loading="lazy"
+                                 class="h-full w-full object-cover">
+                        {% else %}
+                            <span class="text-4xl">📦</span>
+                        {% endif %}
+                    </a>
+
+                    <!-- AJAX WISHLIST BUTTON -->
+                    <form method="post"
+                          action="{% url 'toggle_wishlist' product.id %}"
+                          class="wishlist-form absolute right-3 top-3 z-10">
+                        {% csrf_token %}
+
+                        <button type="submit"
+                                class="wishlist-button {% if product.id in wishlist_product_ids %}is-added border-rose-100 bg-rose-50{% else %}is-not-added border-gray-100 bg-white{% endif %} flex h-10 w-10 items-center justify-center rounded-full border text-2xl shadow-md"
+                                data-added="{% if product.id in wishlist_product_ids %}true{% else %}false{% endif %}"
+                                aria-label="{% if product.id in wishlist_product_ids %}Remove {{ product.name }} from wishlist{% else %}Add {{ product.name }} to wishlist{% endif %}"
+                                title="{% if product.id in wishlist_product_ids %}Remove from Wishlist{% else %}Add to Wishlist{% endif %}">
+                            {% if product.id in wishlist_product_ids %}♥{% else %}♡{% endif %}
+                        </button>
+                    </form>
+                </div>
 
                 <div class="p-4">
                     <h3 class="line-clamp-2 min-h-10 text-sm font-bold sm:text-base">
@@ -176,9 +255,13 @@
                         </p>
 
                         {% if product.inventory.quantity > 0 %}
-                            <span class="rounded-full bg-emerald-50 px-2 py-1 text-xs font-bold text-emerald-700">In Stock</span>
+                            <span class="rounded-full bg-emerald-50 px-2 py-1 text-xs font-bold text-emerald-700">
+                                In Stock
+                            </span>
                         {% else %}
-                            <span class="rounded-full bg-red-50 px-2 py-1 text-xs font-bold text-red-600">Out of Stock</span>
+                            <span class="rounded-full bg-red-50 px-2 py-1 text-xs font-bold text-red-600">
+                                Out of Stock
+                            </span>
                         {% endif %}
                     </div>
 
@@ -193,9 +276,11 @@
             <div class="col-span-full rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center">
                 <div class="mb-3 text-4xl">🔎</div>
                 <h3 class="text-lg font-extrabold text-gray-700">No products found</h3>
+
                 <p class="mt-2 text-sm text-gray-500">
                     Try another search term or select a different category.
                 </p>
+
                 <a href="{% url 'customer_home' %}"
                    class="mt-5 inline-flex rounded-xl bg-[#123f3a] px-5 py-3 text-sm font-bold text-white">
                     Back to Home
@@ -209,6 +294,154 @@
 <footer class="mt-16 bg-[#102f2c] px-4 py-6 text-center text-sm text-white/70">
     © {% now "Y" %} ShopHub. All rights reserved.
 </footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const wishlistForms = document.querySelectorAll(".wishlist-form");
+    const navbarLink = document.getElementById("wishlist-nav-link");
+    const navbarHeart = document.getElementById("wishlist-nav-heart");
+    const toast = document.getElementById("wishlist-toast");
+    const toastMessage = document.getElementById("wishlist-toast-message");
+
+    let toastTimer;
+
+    function showWishlistToast(message, added) {
+        if (!toast || !toastMessage) return;
+
+        toastMessage.textContent = message;
+
+        toast.classList.remove(
+            "hidden",
+            "border-green-200",
+            "bg-green-50",
+            "text-green-800",
+            "border-blue-200",
+            "bg-blue-50",
+            "text-blue-800"
+        );
+
+        if (added) {
+            toast.classList.add(
+                "border-green-200",
+                "bg-green-50",
+                "text-green-800"
+            );
+        } else {
+            toast.classList.add(
+                "border-blue-200",
+                "bg-blue-50",
+                "text-blue-800"
+            );
+        }
+
+        clearTimeout(toastTimer);
+
+        toastTimer = setTimeout(function () {
+            toast.classList.add("hidden");
+        }, 3000);
+    }
+
+    wishlistForms.forEach(function (form) {
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const button = form.querySelector(".wishlist-button");
+
+            if (!button || button.disabled) return;
+
+            button.disabled = true;
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: new FormData(form),
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Accept": "application/json"
+                    },
+                    credentials: "same-origin"
+                });
+
+                const data = await response.json();
+
+                if (response.status === 401) {
+                    showWishlistToast(
+                        "Please log in to use your wishlist.",
+                        false
+                    );
+                    return;
+                }
+
+                if (!response.ok || !data.success) {
+                    throw new Error(
+                        data.message || "Unable to update your wishlist."
+                    );
+                }
+
+                button.textContent = data.added ? "♥" : "♡";
+
+                button.classList.toggle("is-added", data.added);
+                button.classList.toggle("is-not-added", !data.added);
+                button.classList.toggle("border-rose-100", data.added);
+                button.classList.toggle("bg-rose-50", data.added);
+                button.classList.toggle("border-gray-100", !data.added);
+                button.classList.toggle("bg-white", !data.added);
+
+                const productName = form.closest(".product-card")
+                    ?.querySelector("h3 a")
+                    ?.textContent.trim() || "product";
+
+                button.setAttribute(
+                    "aria-label",
+                    data.added
+                        ? "Remove " + productName + " from wishlist"
+                        : "Add " + productName + " to wishlist"
+                );
+
+                button.setAttribute(
+                    "title",
+                    data.added
+                        ? "Remove from Wishlist"
+                        : "Add to Wishlist"
+                );
+
+                button.setAttribute("data-added", String(data.added));
+
+                if (
+                    navbarHeart &&
+                    navbarLink &&
+                    typeof data.wishlist_count !== "undefined"
+                ) {
+                    const hasItems = data.wishlist_count > 0;
+
+                    navbarHeart.textContent = hasItems ? "♥" : "♡";
+
+                    navbarLink.classList.toggle("bg-rose-50", hasItems);
+                    navbarLink.classList.toggle("text-rose-600", hasItems);
+                    navbarLink.classList.toggle("text-gray-500", !hasItems);
+                }
+
+                showWishlistToast(
+                    data.added
+                        ? "Product added to wishlist!"
+                        : "Product removed from your wishlist!",
+                    Boolean(data.added)
+                );
+
+            } catch (error) {
+                console.error("Wishlist update failed:", error);
+
+                showWishlistToast(
+                    error.message || "Something went wrong. Please try again.",
+                    false
+                );
+            } finally {
+                button.disabled = false;
+            }
+        });
+    });
+});
+</script>
 
 </body>
 </html>

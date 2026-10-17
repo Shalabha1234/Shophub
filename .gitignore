@@ -15,6 +15,9 @@ __pycache__/
 # Local backup copy - keep locally, don't push to GitHub
 user_module/views - Copy.py
 
+# Local backup templates - keep out of GitHub
+user_module/templates/customer_home_backup.html
+
 
 # Django local database and backups
 db.sqlite3

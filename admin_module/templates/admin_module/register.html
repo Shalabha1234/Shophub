@@ -1,0 +1,359 @@
+{% extends "admin_module/admin_auth_base.html" %}
+
+{% block title %}
+    Admin Registration | ShopHub
+{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen lg:grid lg:grid-cols-2">
+
+    <!-- Left Brand Section -->
+    <section class="relative overflow-hidden bg-[#0f3d3e] px-6 py-8 text-white sm:px-10 lg:flex lg:min-h-screen lg:flex-col lg:justify-between lg:px-14 lg:py-10">
+
+        <!-- Decorative circles -->
+        <div class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full border border-[#ffc845]/20"></div>
+
+        <div class="pointer-events-none absolute -bottom-32 -left-24 h-80 w-80 rounded-full border border-white/10"></div>
+
+
+        <!-- Top -->
+        <div class="relative">
+
+            <div class="flex items-center gap-3">
+
+                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#ffc845] text-xl font-bold text-[#0f3d3e]">
+                    S
+                </div>
+
+                <div>
+                    <div class="text-lg font-bold">
+                        Shop<span class="text-[#ffc845]">Hub</span>
+                    </div>
+
+                    <div class="text-xs text-[#c5dad8]">
+                        Admin Panel
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Main Brand Content -->
+        <div class="relative mt-12 max-w-xl lg:mt-0">
+
+            <p class="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#ffc845]">
+                Marketplace Control Center
+            </p>
+
+            <h1 class="max-w-lg text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+                Build.
+                <br>
+                Manage.
+                <br>
+                Grow.
+            </h1>
+
+            <p class="mt-6 max-w-md text-base leading-7 text-[#c5dad8]">
+                Create your administrator account and take control
+                of your ShopHub marketplace.
+            </p>
+
+
+            <!-- Feature Cards -->
+            <div class="mt-8 grid max-w-lg gap-3 sm:grid-cols-2">
+
+                <div class="rounded-xl border border-[#2a6664] bg-[#16504f] p-4">
+
+                    <div class="text-base font-bold text-[#ffc845]">
+                        Users
+                    </div>
+
+                    <p class="mt-1 text-sm text-[#c5dad8]">
+                        Manage customer accounts.
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl border border-[#2a6664] bg-[#16504f] p-4">
+
+                    <div class="text-base font-bold text-[#ffc845]">
+                        Sellers
+                    </div>
+
+                    <p class="mt-1 text-sm text-[#c5dad8]">
+                        Manage marketplace sellers.
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl border border-[#2a6664] bg-[#16504f] p-4">
+
+                    <div class="text-base font-bold text-[#ffc845]">
+                        Products
+                    </div>
+
+                    <p class="mt-1 text-sm text-[#c5dad8]">
+                        Control marketplace products.
+                    </p>
+
+                </div>
+
+
+                <div class="rounded-xl border border-[#2a6664] bg-[#16504f] p-4">
+
+                    <div class="text-base font-bold text-[#ffc845]">
+                        Orders
+                    </div>
+
+                    <p class="mt-1 text-sm text-[#c5dad8]">
+                        Monitor customer orders.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Footer -->
+        <div class="relative mt-10 text-sm text-[#9fb9b7] lg:mt-0">
+            ShopHub Admin · Marketplace Management
+        </div>
+
+    </section>
+
+
+    <!-- Right Register Section -->
+    <section class="flex min-h-screen items-center justify-center bg-[#f6f8f7] px-6 py-10 sm:px-10">
+
+        <div class="w-full max-w-md">
+
+            <!-- Mobile Logo -->
+            <div class="mb-10 flex items-center gap-3 lg:hidden">
+
+                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#ffc845] text-xl font-bold text-[#0f3d3e]">
+                    S
+                </div>
+
+                <div>
+                    <div class="text-lg font-bold text-[#0f3d3e]">
+                        Shop<span class="text-[#16504f]">Hub</span>
+                    </div>
+
+                    <div class="text-xs text-gray-500">
+                        Admin Panel
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Heading -->
+            <div>
+
+                <p class="text-sm font-semibold uppercase tracking-wider text-[#0f3d3e]">
+                    Get started
+                </p>
+
+                <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900">
+                    Create Admin Account
+                </h2>
+
+                <p class="mt-2 text-sm leading-6 text-gray-500">
+                    Set up your administrator account to manage ShopHub.
+                </p>
+
+            </div>
+
+
+            <!-- Error -->
+            {% if error %}
+
+                <div
+                    class="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                    role="alert"
+                >
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+
+            <!-- Form -->
+            <form method="POST" class="mt-8 space-y-5">
+
+                {% csrf_token %}
+
+
+                <!-- Email -->
+                <div>
+
+                    <label
+                        for="email"
+                        class="mb-2 block text-sm font-medium text-gray-700"
+                    >
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        autocomplete="email"
+                        required
+                        autofocus
+                        placeholder="Enter your admin email"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0f3d3e] focus:ring-2 focus:ring-[#0f3d3e]/10"
+                    >
+
+                </div>
+
+
+                <!-- Password -->
+                <div>
+
+                    <label
+                        for="password"
+                        class="mb-2 block text-sm font-medium text-gray-700"
+                    >
+                        Password
+                    </label>
+
+                    <div class="relative">
+
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            autocomplete="new-password"
+                            required
+                            placeholder="Create a password"
+                            class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 pr-16 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0f3d3e] focus:ring-2 focus:ring-[#0f3d3e]/10"
+                        >
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 rounded-md px-2 py-1 text-sm font-medium text-[#0f3d3e] hover:bg-[#f1f4f3]"
+                        >
+                            Show
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Confirm Password -->
+                <div>
+
+                    <label
+                        for="confirm_password"
+                        class="mb-2 block text-sm font-medium text-gray-700"
+                    >
+                        Confirm Password
+                    </label>
+
+                    <div class="relative">
+
+                        <input
+                            type="password"
+                            name="confirm_password"
+                            id="confirm_password"
+                            autocomplete="new-password"
+                            required
+                            placeholder="Confirm your password"
+                            class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 pr-16 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-[#0f3d3e] focus:ring-2 focus:ring-[#0f3d3e]/10"
+                        >
+
+                        <button
+                            type="button"
+                            id="toggleConfirmPassword"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 rounded-md px-2 py-1 text-sm font-medium text-[#0f3d3e] hover:bg-[#f1f4f3]"
+                        >
+                            Show
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Submit -->
+                <button
+                    type="submit"
+                    class="w-full rounded-lg bg-[#0f3d3e] px-4 py-3.5 text-sm font-semibold text-white transition hover:bg-[#16504f] focus:outline-none focus:ring-2 focus:ring-[#ffc845] focus:ring-offset-2"
+                >
+                    Create Admin Account
+                </button>
+
+            </form>
+
+
+            <!-- Login -->
+            <div class="mt-8 border-t border-gray-200 pt-6 text-center">
+
+                <p class="text-sm text-gray-500">
+
+                    Already have an admin account?
+
+                    <a
+                        href="{% url 'admin_login' %}"
+                        class="font-semibold text-[#0f3d3e] hover:underline"
+                    >
+                        Sign In
+                    </a>
+
+                </p>
+
+            </div>
+
+
+
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirm_password");
+
+    const togglePassword = document.getElementById("togglePassword");
+    const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
+
+
+    togglePassword.addEventListener("click", function () {
+
+        const isPassword = passwordInput.type === "password";
+
+        passwordInput.type = isPassword ? "text" : "password";
+
+        togglePassword.textContent = isPassword ? "Hide" : "Show";
+
+    });
+
+
+    toggleConfirmPassword.addEventListener("click", function () {
+
+        const isPassword = confirmPasswordInput.type === "password";
+
+        confirmPasswordInput.type = isPassword ? "text" : "password";
+
+        toggleConfirmPassword.textContent = isPassword ? "Hide" : "Show";
+
+    });
+
+</script>
+
+{% endblock %}

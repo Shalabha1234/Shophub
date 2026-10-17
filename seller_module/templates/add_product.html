@@ -2,60 +2,222 @@
 {% extends "seller_base.html" %}
 
 {% block title %}Add Product{% endblock %}
-
 {% block page_heading %}Add Product{% endblock %}
-
 {% block add_active %}bg-shop-yellow !text-shop-dark{% endblock %}
 
 {% block content %}
+<div class="mx-auto max-w-5xl space-y-6">
 
-<div class="mx-auto max-w-5xl">
-
-    <!-- Page Introduction -->
-    <div class="mb-8">
-        <p class="text-sm font-medium text-shop-teal">
+    <!-- Page heading -->
+    <div>
+        <p class="text-sm font-semibold text-shop-teal">
             Product Management
         </p>
-
         <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-shop-dark">
             Add New Product
         </h1>
-
         <p class="mt-2 text-sm text-gray-500">
             Add a product to your store and make it available to customers.
         </p>
     </div>
 
-    <!-- Product Form Card -->
-    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <!-- Error message -->
+    {% if error %}
+    <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- Product form -->
+    <form method="POST"
+          enctype="multipart/form-data"
+          class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
+        {% csrf_token %}
 
         <div class="border-b border-gray-100 px-6 py-5 sm:px-8">
             <h2 class="text-lg font-bold text-shop-dark">
                 Product Information
             </h2>
-
             <p class="mt-1 text-sm text-gray-500">
-                Enter the product details below.
+                Enter the product details and upload its images.
             </p>
         </div>
 
-        <div class="p-6 sm:p-8">
+        <div class="space-y-6 p-6 sm:p-8">
 
-            <!-- IMPORTANT:
-                 Insert your existing working Add Product form here.
-                 Preserve its original field names, validation,
-                 image upload, CSRF token and form action.
-            -->
+            <!-- Product name -->
+            <div>
+                <label for="name"
+                       class="mb-2 block text-sm font-semibold text-gray-700">
+                    Product Name <span class="text-red-500">*</span>
+                </label>
+                <input type="text"
+                       id="name"
+                       name="name"
+                       required
+                       maxlength="255"
+                       value="{{ request.POST.name|default:'' }}"
+                       placeholder="e.g. Cotton Casual Shirt"
+                       class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-shop-teal focus:ring-2 focus:ring-shop-teal/20">
+            </div>
 
-            {% comment %}
-            Replace this comment with your existing form code.
-            Do not submit the form until the original fields have
-            been restored.
-            {% endcomment %}
+            <!-- Description -->
+            <div>
+                <label for="description"
+                       class="mb-2 block text-sm font-semibold text-gray-700">
+                    Description
+                </label>
+                <textarea id="description"
+                          name="description"
+                          rows="5"
+                          placeholder="Describe the product, its features, material, size, or other details..."
+                          class="w-full resize-y rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-shop-teal focus:ring-2 focus:ring-shop-teal/20">{{ request.POST.description|default:'' }}</textarea>
+            </div>
+
+            <!-- Price and category -->
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+
+                <div>
+                    <label for="price"
+                           class="mb-2 block text-sm font-semibold text-gray-700">
+                        Price (₹) <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-gray-500">
+                            ₹
+                        </span>
+                        <input type="number"
+                               id="price"
+                               name="price"
+                               required
+                               min="0"
+                               step="0.01"
+                               value="{{ request.POST.price|default:'' }}"
+                               placeholder="0.00"
+                               class="w-full rounded-xl border border-gray-300 py-3 pl-9 pr-4 text-sm outline-none transition focus:border-shop-teal focus:ring-2 focus:ring-shop-teal/20">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="category"
+                           class="mb-2 block text-sm font-semibold text-gray-700">
+                        Category <span class="text-red-500">*</span>
+                    </label>
+                    <select id="category"
+                            name="category"
+                            required
+                            class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-shop-teal focus:ring-2 focus:ring-shop-teal/20">
+                        <option value="">Select a category</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}"
+                            {% if request.POST.category == category.id|stringformat:"s" %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                        {% empty %}
+                        <option value="" disabled>No categories available</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Main image -->
+            <div>
+                <label for="image"
+                       class="mb-2 block text-sm font-semibold text-gray-700">
+                    Main Product Image
+                </label>
+                <p class="mb-3 text-xs text-gray-500">
+                    This is the primary image customers will see in product listings.
+                </p>
+                <input type="file"
+                       id="image"
+                       name="image"
+                       accept="image/*"
+                       class="block w-full rounded-xl border border-gray-300 bg-white text-sm text-gray-600 file:mr-4 file:border-0 file:bg-shop-teal file:px-4 file:py-3 file:font-semibold file:text-gray-700 hover:file:bg-gray-200">
+                <img id="main-image-preview"
+                     alt="Main image preview"
+                     class="mt-4 hidden h-48 w-48 rounded-xl border border-gray-200 object-cover">
+            </div>
+
+            <!-- Multiple gallery images -->
+            <div>
+                <label for="gallery_images"
+                       class="mb-2 block text-sm font-semibold text-gray-700">
+                    Additional Product Images
+                </label>
+                <p class="mb-3 text-xs text-gray-500">
+                    Select multiple images to show different angles or product details.
+                </p>
+                <input type="file"
+                       id="gallery_images"
+                       name="gallery_images"
+                       accept="image/*"
+                       multiple
+                       class="block w-full rounded-xl border border-gray-300 bg-white text-sm text-gray-600 file:mr-4 file:border-0 file:bg-shop-teal file:px-4 file:py-3 file:font-semibold file:text-gray-700 hover:file:bg-gray-200">
+                <div id="gallery-preview"
+                     class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4"></div>
+            </div>
 
         </div>
-    </div>
 
+        <!-- Actions -->
+        <div class="flex flex-col-reverse gap-3 border-t border-gray-100 bg-gray-50 px-6 py-5 sm:flex-row sm:justify-end sm:px-8">
+            <a href="{% url 'seller_products' %}"
+               class="inline-flex items-center justify-center rounded-xl border border-gray-300 bg--shop-teal px-5 py-3 text-sm font-bold text-gray-700 transition hover:bg-gray-100">
+                Cancel
+            </a>
+            <button type="submit"
+                class="inline-flex items-center justify-center rounded-xl border border-gray-300 bg-shop-teal px-6 py-3 text-sm font-bold text-balck shadow-sm transition hover:bg-gray-100">
+                Add Product
+            </button>
+        </div>
+
+    </form>
 </div>
 
+<script>
+    // Preview the main image before uploading.
+    const mainImageInput = document.getElementById('image');
+    const mainImagePreview = document.getElementById('main-image-preview');
+
+    mainImageInput.addEventListener('change', function () {
+        const file = this.files[0];
+
+        if (file) {
+            mainImagePreview.src = URL.createObjectURL(file);
+            mainImagePreview.classList.remove('hidden');
+        } else {
+            mainImagePreview.removeAttribute('src');
+            mainImagePreview.classList.add('hidden');
+        }
+    });
+
+    // Preview all selected gallery images.
+    const galleryInput = document.getElementById('gallery_images');
+    const galleryPreview = document.getElementById('gallery-preview');
+
+    galleryInput.addEventListener('change', function () {
+        galleryPreview.replaceChildren();
+
+        Array.from(this.files).forEach(function (file) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'overflow-hidden rounded-xl border border-gray-200 bg-gray-50';
+
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.alt = file.name;
+            img.className = 'h-32 w-full object-cover';
+
+            const caption = document.createElement('p');
+            caption.className = 'truncate px-2 py-2 text-xs text-gray-600';
+            caption.textContent = file.name;
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(caption);
+            galleryPreview.appendChild(wrapper);
+        });
+    });
+</script>
 {% endblock %}

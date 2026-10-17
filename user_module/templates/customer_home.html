@@ -1,126 +1,40 @@
+
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth motion-reduce:scroll-auto">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>ShopHub - Your Everyday Marketplace</title>
 
-    <!-- Development only. For production, build Tailwind instead of using the CDN. -->
+    <!-- Tailwind CSS CDN: suitable for development -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet">
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            html {
-                scroll-behavior: auto;
-            }
-        }
-
-        body {
-            font-family: 'Bricolage Grotesque', sans-serif;
-            background: #f8faf9;
-            color: #172b28;
-        }
-
-        /* Shared style for the inline SVG icons */
-        .icon {
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .hero-section {
-            background:
-                radial-gradient(circle at 85% 20%, rgba(244, 197, 66, 0.18), transparent 30%),
-                linear-gradient(135deg, #123f3a 0%, #16504a 60%, #1d6258 100%);
-        }
-
-        .hero-decoration {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.10);
-        }
-
-        .product-card {
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 14px 30px rgba(18, 63, 58, 0.10);
-        }
-
-        .product-image {
-            transition: transform 0.4s ease;
-        }
-
-        .product-card:hover .product-image {
-            transform: scale(1.05);
-        }
-
-        .soft-shadow {
-            box-shadow: 0 10px 30px rgba(18, 63, 58, 0.06);
-        }
-
-        .section-label {
-            letter-spacing: 0.16em;
-        }
-
-        #categories,
-        #products,
-        #why-shophub {
-            scroll-margin-top: 100px;
-        }
-
-        .wishlist-button {
-            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-        }
-
-        .wishlist-button:hover {
-            transform: scale(1.08);
-        }
-
-        .wishlist-button.is-added {
-            color: #e11d48;
-        }
-
-        .wishlist-button.is-not-added {
-            color: #9ca3af;
-        }
-
-        .wishlist-button.is-not-added:hover {
-            color: #e11d48;
-        }
-
-        .wishlist-button:disabled {
-            cursor: wait;
-            opacity: 0.65;
-        }
-
-        .nav-wishlist {
-            transition: background-color 0.2s ease, color 0.2s ease;
-        }
-    </style>
 </head>
 
-<body>
+<body class="box-border bg-[#f8faf9] font-['Bricolage_Grotesque',sans-serif] text-[#172b28]">
 
-    <!-- ICON SPRITE (Lucide-style icons, used with <svg class="icon"><use href="#i-name"/></svg>) -->
+    <!-- WISHLIST TOAST: HIDDEN UNTIL A WISHLIST ACTION -->
+    <div
+        id="wishlist-toast"
+        class="fixed right-5 top-24 z-[100] hidden max-w-[calc(100vw-2rem)] items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-5 py-3 text-sm font-bold text-green-800 shadow-xl sm:right-6"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+    >
+        <span
+            id="wishlist-toast-icon"
+            class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-green-100 text-base"
+            aria-hidden="true"
+        >✓</span>
+        <span id="wishlist-toast-message"></span>
+    </div>
+
+    <!-- ICON SPRITE -->
     <svg class="absolute h-0 w-0 overflow-hidden" aria-hidden="true" focusable="false">
         <symbol id="i-search" viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="7"/>
@@ -161,112 +75,60 @@
     <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur">
         <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:flex-nowrap lg:gap-5 lg:px-8">
 
-            <!-- LOGO -->
-            <a href="{% url 'customer_home' %}" class="flex flex-shrink-0 items-center gap-2">
+            <a href="{% url 'customer_home' %}" class="flex shrink-0 items-center gap-2">
                 <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#123f3a] text-xl font-extrabold text-[#f4c542]">
                     S
                 </div>
-
                 <div>
-                    <span class="block text-xl font-extrabold leading-tight tracking-tight text-[#123f3a] sm:text-2xl">
-                        ShopHub
-                    </span>
-
-                    <span class="hidden text-[10px] font-semibold tracking-widest text-gray-500 sm:block">
-                        YOUR EVERYDAY MARKETPLACE
-                    </span>
+                    <span class="block text-xl font-extrabold leading-tight tracking-tight text-[#123f3a] sm:text-2xl">ShopHub</span>
+                    <span class="hidden text-[10px] font-semibold tracking-widest text-gray-500 sm:block">YOUR EVERYDAY MARKETPLACE</span>
                 </div>
             </a>
 
-            <!-- NAVIGATION LINKS -->
             <nav class="hidden items-center gap-5 md:flex lg:gap-6">
-                <a href="{% url 'customer_home' %}"
-                   class="text-sm font-bold text-[#123f3a] transition hover:text-[#16504a]">
-                    Home
-                </a>
-
-                <a href="{% url 'customer_home' %}#categories"
-                   class="text-sm font-medium text-gray-600 transition hover:text-[#123f3a]">
-                    Categories
-                </a>
-
-                <a href="{% url 'customer_home' %}#products"
-                   class="text-sm font-medium text-gray-600 transition hover:text-[#123f3a]">
-                    Products
-                </a>
-
-                <a href="{% url 'customer_home' %}#why-shophub"
-                   class="text-sm font-medium text-gray-600 transition hover:text-[#123f3a]">
-                    About Us
-                </a>
+                <a href="{% url 'customer_home' %}" class="text-sm font-bold text-[#123f3a] transition hover:text-[#16504a]">Home</a>
+                <a href="{% url 'customer_home' %}#categories" class="text-sm font-medium text-gray-600 transition hover:text-[#123f3a]">Categories</a>
+                <a href="{% url 'customer_home' %}#products" class="text-sm font-medium text-gray-600 transition hover:text-[#123f3a]">Products</a>
+                <a href="{% url 'customer_home' %}#why-shophub" class="text-sm font-medium text-gray-600 transition hover:text-[#123f3a]">About Us</a>
             </nav>
 
-            <!-- NAVBAR SEARCH (the only search bar on this page). Results open on the search results page. -->
-            <form method="get"
-                  action="{% url 'customer_product_list' %}"
-                  role="search"
+            <!-- NAVBAR SEARCH -->
+            <form method="get" action="{% url 'customer_product_list' %}" role="search"
                   class="order-last flex w-full basis-full items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-1.5 focus-within:border-[#123f3a] focus-within:ring-2 focus-within:ring-emerald-100 lg:order-none lg:max-w-sm lg:flex-1 lg:basis-auto">
-
-                <svg class="icon h-4 w-4 flex-shrink-0 text-gray-400" aria-hidden="true"><use href="#i-search"/></svg>
-
-                <input
-                    type="search"
-                    name="q"
-                    placeholder="Search products..."
-                    aria-label="Search products"
-                    class="min-w-0 w-full bg-transparent py-1.5 text-sm text-gray-800 outline-none"
-                >
-
-                <button
-                    type="submit"
-                    class="flex-shrink-0 rounded-lg bg-[#123f3a] px-3 py-2 text-xs font-bold text-white transition hover:bg-[#16504a]">
-                    Search
-                </button>
+                <svg class="h-4 w-4 shrink-0 fill-none stroke-current text-gray-400 [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-search"/></svg>
+                <input type="search" name="q" placeholder="Search products..." aria-label="Search products"
+                       class="min-w-0 w-full bg-transparent py-1.5 text-sm text-gray-800 outline-none">
+                <button type="submit" class="shrink-0 rounded-lg bg-[#123f3a] px-3 py-2 text-xs font-bold text-white transition hover:bg-[#16504a]">Search</button>
             </form>
 
             <!-- NAVIGATION ACTIONS -->
-            <div class="flex flex-shrink-0 items-center gap-2 sm:gap-3">
+            <div class="flex shrink-0 items-center gap-2 sm:gap-3">
 
-                <!-- WISHLIST -->
-                <a href="{% url 'wishlist' %}"
-                   id="wishlist-nav-link"
-                   aria-label="My Wishlist"
-                   title="My Wishlist"
-                   class="nav-wishlist flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-2xl {% if wishlist_product_ids %}bg-rose-50 text-rose-600{% else %}text-gray-500 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600{% endif %}">
-
-                    <span id="wishlist-nav-heart">
-                        {% if wishlist_product_ids %}♥{% else %}♡{% endif %}
-                    </span>
+                <a href="{% url 'wishlist' %}" id="wishlist-nav-link" aria-label="My Wishlist" title="My Wishlist"
+                   class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-2xl transition-colors duration-200 {% if wishlist_product_ids %}bg-rose-50 text-rose-600{% else %}text-gray-500 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600{% endif %}">
+                    <span id="wishlist-nav-heart">{% if wishlist_product_ids %}♥{% else %}♡{% endif %}</span>
                 </a>
 
-                <!-- CART -->
-                <a href="{% url 'customer_cart' %}"
-                   aria-label="Shopping cart"
-                   title="Shopping cart"
+                <a href="{% url 'customer_cart' %}" aria-label="Shopping cart" title="Shopping cart"
                    class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-[#123f3a] transition hover:border-[#123f3a] hover:bg-emerald-50">
-                    <svg class="icon h-5 w-5" aria-hidden="true"><use href="#i-cart"/></svg>
+                    <svg class="h-5 w-5 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-cart"/></svg>
                 </a>
 
-                <!-- ACCOUNT -->
-                <a href="{% url 'customer_dashboard' %}"
-                   class="inline-flex items-center justify-center rounded-xl bg-[#123f3a] px-3 py-2.5 text-sm font-bold text-white transition hover:bg-[#16504a] sm:px-5">
+                <a href="{% url 'customer_dashboard' %}" class="inline-flex items-center justify-center rounded-xl bg-[#123f3a] px-3 py-2.5 text-sm font-bold text-white transition hover:bg-[#16504a] sm:px-5">
                     <span class="hidden sm:inline">My Account</span>
                     <span class="sm:hidden">Account</span>
                 </a>
             </div>
-
         </div>
     </header>
 
     <main>
-
         <!-- HERO -->
-        <section class="hero-section relative overflow-hidden">
+        <section class="relative overflow-hidden bg-[radial-gradient(circle_at_85%_20%,rgba(244,197,66,0.18),transparent_30%),linear-gradient(135deg,#123f3a_0%,#16504a_60%,#1d6258_100%)]">
             <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full border-[35px] border-white/5"></div>
             <div class="pointer-events-none absolute -bottom-24 right-1/3 h-72 w-72 rounded-full bg-white/[0.03]"></div>
 
             <div class="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-14 lg:grid-cols-2 lg:px-8 lg:py-16">
-
                 <div class="relative z-10">
                     <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white">
                         <span class="h-2 w-2 rounded-full bg-[#f4c542]"></span>
@@ -283,12 +145,9 @@
                     </p>
 
                     <div class="mt-8 flex flex-wrap gap-3">
-                        <a href="#products"
-                           class="inline-flex items-center gap-2 rounded-xl bg-[#f4c542] px-6 py-3.5 text-sm font-extrabold text-[#123f3a] shadow-lg transition hover:-translate-y-0.5 hover:bg-yellow-300">
+                        <a href="#products" class="inline-flex items-center gap-2 rounded-xl bg-[#f4c542] px-6 py-3.5 text-sm font-extrabold text-[#123f3a] shadow-lg transition hover:-translate-y-0.5 hover:bg-yellow-300">
                             Start Shopping →
                         </a>
-
-                        
                     </div>
 
                     <div class="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-emerald-50/90">
@@ -299,357 +158,218 @@
                 </div>
 
                 <div class="relative mx-auto w-full max-w-lg">
-                    <div class="hero-decoration relative overflow-hidden rounded-[2rem] p-5 sm:p-7">
+                    <div class="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.06] p-5 sm:p-7">
                         <div class="relative rounded-[1.5rem] bg-[#f5f7ef] p-5 sm:p-7">
-
                             <div class="mb-5 flex items-center justify-between">
                                 <div>
                                     <p class="text-xs font-bold uppercase tracking-widest text-gray-500">The ShopHub Edit</p>
                                     <h2 class="mt-1 text-xl font-extrabold text-[#123f3a] sm:text-2xl">Your daily finds</h2>
                                 </div>
-
                                 <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f4c542] text-[#123f3a]">
-                                    <svg class="icon h-6 w-6" aria-hidden="true"><use href="#i-sparkles"/></svg>
+                                    <svg class="h-6 w-6 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-sparkles"/></svg>
                                 </span>
                             </div>
 
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="flex min-h-32 flex-col justify-between rounded-2xl bg-[#e5eee5] p-4 sm:min-h-40">
-                                    <svg class="icon h-9 w-9 text-[#123f3a]" aria-hidden="true"><use href="#i-shirt"/></svg>
-                                    <div>
-                                        <p class="font-extrabold text-[#123f3a]">Fashion</p>
-                                        <p class="text-xs text-gray-600">Find your style</p>
-                                    </div>
+                                    <svg class="h-9 w-9 fill-none stroke-current text-[#123f3a] [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-shirt"/></svg>
+                                    <div><p class="font-extrabold text-[#123f3a]">Fashion</p><p class="text-xs text-gray-600">Find your style</p></div>
                                 </div>
-
                                 <div class="mt-5 flex min-h-32 flex-col justify-between rounded-2xl bg-[#fbe9b2] p-4 sm:min-h-40">
-                                    <svg class="icon h-9 w-9 text-[#123f3a]" aria-hidden="true"><use href="#i-home"/></svg>
-                                    <div>
-                                        <p class="font-extrabold text-[#123f3a]">Home</p>
-                                        <p class="text-xs text-gray-600">Make it yours</p>
-                                    </div>
+                                    <svg class="h-9 w-9 fill-none stroke-current text-[#123f3a] [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-home"/></svg>
+                                    <div><p class="font-extrabold text-[#123f3a]">Home</p><p class="text-xs text-gray-600">Make it yours</p></div>
                                 </div>
-
                                 <div class="flex min-h-32 flex-col justify-between rounded-2xl bg-[#f4e5e4] p-4 sm:min-h-40">
-                                    <svg class="icon h-9 w-9 text-[#123f3a]" aria-hidden="true"><use href="#i-sparkles"/></svg>
-                                    <div>
-                                        <p class="font-extrabold text-[#123f3a]">Beauty</p>
-                                        <p class="text-xs text-gray-600">Your daily glow</p>
-                                    </div>
+                                    <svg class="h-9 w-9 fill-none stroke-current text-[#123f3a] [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-sparkles"/></svg>
+                                    <div><p class="font-extrabold text-[#123f3a]">Beauty</p><p class="text-xs text-gray-600">Your daily glow</p></div>
                                 </div>
-
                                 <div class="mt-5 flex min-h-32 flex-col justify-between rounded-2xl bg-[#e3eaf6] p-4 sm:min-h-40">
-                                    <svg class="icon h-9 w-9 text-[#123f3a]" aria-hidden="true"><use href="#i-bag"/></svg>
-                                    <div>
-                                        <p class="font-extrabold text-[#123f3a]">And more</p>
-                                        <p class="text-xs text-gray-600">Explore ShopHub</p>
-                                    </div>
+                                    <svg class="h-9 w-9 fill-none stroke-current text-[#123f3a] [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-bag"/></svg>
+                                    <div><p class="font-extrabold text-[#123f3a]">And more</p><p class="text-xs text-gray-600">Explore ShopHub</p></div>
                                 </div>
                             </div>
 
                             <div class="mt-5 flex items-center justify-between rounded-xl bg-white px-4 py-3">
-                                <div>
-                                    <p class="text-xs text-gray-500">Your marketplace</p>
-                                    <p class="font-extrabold text-[#123f3a]">All in one place</p>
-                                </div>
-                                <svg class="icon h-6 w-6 text-[#123f3a]" aria-hidden="true"><use href="#i-heart"/></svg>
+                                <div><p class="text-xs text-gray-500">Your marketplace</p><p class="font-extrabold text-[#123f3a]">All in one place</p></div>
+                                <svg class="h-6 w-6 fill-none stroke-current text-[#123f3a] [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-heart"/></svg>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
 
         <!-- QUICK BENEFITS -->
         <section class="border-b border-gray-100 bg-white">
             <div class="mx-auto grid max-w-7xl grid-cols-2 gap-5 px-4 py-6 sm:px-6 md:grid-cols-4 lg:px-8">
-
                 <div class="flex items-center gap-3">
-                    <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-[#123f3a]">
-                        <svg class="icon h-5 w-5" aria-hidden="true"><use href="#i-bag"/></svg>
+                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-[#123f3a]">
+                        <svg class="h-5 w-5 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-bag"/></svg>
                     </span>
-                    <div>
-                        <p class="text-sm font-extrabold text-[#123f3a]">Wide Selection</p>
-                        <p class="text-xs text-gray-500">Explore more choices</p>
-                    </div>
+                    <div><p class="text-sm font-extrabold text-[#123f3a]">Wide Selection</p><p class="text-xs text-gray-500">Explore more choices</p></div>
                 </div>
-
                 <div class="flex items-center gap-3">
-                    <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-amber-50 text-[#123f3a]">
-                        <svg class="icon h-5 w-5" aria-hidden="true"><use href="#i-search"/></svg>
+                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-[#123f3a]">
+                        <svg class="h-5 w-5 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-search"/></svg>
                     </span>
-                    <div>
-                        <p class="text-sm font-extrabold text-[#123f3a]">Easy Discovery</p>
-                        <p class="text-xs text-gray-500">Find your favourites</p>
-                    </div>
+                    <div><p class="text-sm font-extrabold text-[#123f3a]">Easy Discovery</p><p class="text-xs text-gray-500">Find your favourites</p></div>
                 </div>
-
                 <div class="flex items-center gap-3">
-                    <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-rose-50 text-[#123f3a]">
-                        <svg class="icon h-5 w-5" aria-hidden="true"><use href="#i-heart"/></svg>
+                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-[#123f3a]">
+                        <svg class="h-5 w-5 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-heart"/></svg>
                     </span>
-                    <div>
-                        <p class="text-sm font-extrabold text-[#123f3a]">Customer Focus</p>
-                        <p class="text-xs text-gray-500">A simpler experience</p>
-                    </div>
+                    <div><p class="text-sm font-extrabold text-[#123f3a]">Customer Focus</p><p class="text-xs text-gray-500">A simpler experience</p></div>
                 </div>
-
                 <div class="flex items-center gap-3">
-                    <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#123f3a]">
-                        <svg class="icon h-5 w-5" aria-hidden="true"><use href="#i-package"/></svg>
+                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#123f3a]">
+                        <svg class="h-5 w-5 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-package"/></svg>
                     </span>
-                    <div>
-                        <p class="text-sm font-extrabold text-[#123f3a]">Order Tracking</p>
-                        <p class="text-xs text-gray-500">Keep up with orders</p>
-                    </div>
+                    <div><p class="text-sm font-extrabold text-[#123f3a]">Order Tracking</p><p class="text-xs text-gray-500">Keep up with orders</p></div>
                 </div>
-
             </div>
         </section>
 
-        <!-- CATEGORY CAROUSEL (dark brand green, so the carousel's light text stays readable) -->
-        <section id="categories" class="bg-[#123f3a] py-12 sm:py-16">
+        <!-- CATEGORY CAROUSEL -->
+        <section id="categories" class="scroll-mt-[100px] bg-[#123f3a] py-12 sm:py-16">
             {% include "components/category_carousel.html" %}
         </section>
 
         <!-- FEATURED PRODUCTS -->
-        <section id="products" class="bg-[#f8faf9] py-12 sm:py-16">
+        <section id="products" class="scroll-mt-[100px] bg-[#f8faf9] py-12 sm:py-16">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
-                <!-- HEADING -->
                 <div class="mb-8">
-                    <p class="section-label mb-2 text-xs font-extrabold uppercase text-amber-600">
-                        Handpicked for you
-                    </p>
-
-                    <h2 class="text-2xl font-extrabold tracking-tight text-[#123f3a] sm:text-3xl">
-                        Featured Products
-                    </h2>
-
-                    <p class="mt-2 text-sm text-gray-500 sm:text-base">
-                        Take a look at what's available on ShopHub.
-                    </p>
+                    <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.16em] text-amber-600">Handpicked for you</p>
+                    <h2 class="text-2xl font-extrabold tracking-tight text-[#123f3a] sm:text-3xl">Featured Products</h2>
+                    <p class="mt-2 text-sm text-gray-500 sm:text-base">Take a look at what's available on ShopHub.</p>
                 </div>
 
-                <!-- PRODUCT GRID -->
                 <div class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-
                     {% for product in products %}
-
-                        <article class="product-card flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-
-                            <!-- PRODUCT IMAGE -->
-                            <div class="relative">
-
-                                <a href="{% url 'customer_product_detail' product.id %}"
-                                   class="block overflow-hidden bg-gray-50">
-
-                                    <div class="flex h-40 items-center justify-center overflow-hidden sm:h-56 {% if product.inventory.quantity > 0 %}{% else %}opacity-60{% endif %}">
-
-                                        {% if product.image %}
-                                            <img
-                                                src="{{ product.image.url }}"
-                                                alt="{{ product.name }}"
-                                                loading="lazy"
-                                                class="product-image h-full w-full object-cover">
-                                        {% else %}
-                                            <div class="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-gray-50 to-emerald-50 text-gray-400">
-                                                <svg class="icon h-10 w-10" aria-hidden="true"><use href="#i-package"/></svg>
-                                                <span class="text-xs">No image available</span>
-                                            </div>
-                                        {% endif %}
-
+                    <article class="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-[5px] hover:shadow-[0_14px_30px_rgba(18,63,58,0.10)]">
+                        <!-- PRODUCT IMAGE -->
+                        <div class="relative">
+                            <a href="{% url 'customer_product_detail' product.id %}" class="block overflow-hidden bg-gray-50">
+                                <div class="flex h-40 items-center justify-center overflow-hidden sm:h-56 {% if product.inventory.quantity > 0 %}{% else %}opacity-60{% endif %}">
+                                    {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy"
+                                         class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105">
+                                    {% else %}
+                                    <div class="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-gray-50 to-emerald-50 text-gray-400">
+                                        <svg class="h-10 w-10 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-package"/></svg>
+                                        <span class="text-xs">No image available</span>
                                     </div>
-                                </a>
-
-                                <!-- AJAX WISHLIST TOGGLE -->
-                                <form method="post"
-                                      action="{% url 'toggle_wishlist' product.id %}"
-                                      class="wishlist-form absolute right-3 top-3 z-10">
-
-                                    {% csrf_token %}
-
-                                    <button
-                                        type="submit"
-                                        class="wishlist-button {% if product.id in wishlist_product_ids %}is-added border-rose-100 bg-rose-50{% else %}is-not-added border-gray-100 bg-white{% endif %} flex h-10 w-10 items-center justify-center rounded-full border text-2xl shadow-md"
-                                        data-added="{% if product.id in wishlist_product_ids %}true{% else %}false{% endif %}"
-                                        aria-label="{% if product.id in wishlist_product_ids %}Remove {{ product.name }} from wishlist{% else %}Add {{ product.name }} to wishlist{% endif %}"
-                                        title="{% if product.id in wishlist_product_ids %}Remove from Wishlist{% else %}Add to Wishlist{% endif %}">
-
-                                        {% if product.id in wishlist_product_ids %}♥{% else %}♡{% endif %}
-
-                                    </button>
-                                </form>
-
-                            </div>
-
-                            <!-- PRODUCT DETAILS -->
-                            <div class="flex flex-1 flex-col p-3 sm:p-4">
-
-                                {% if product.store.store_name %}
-                                    <p class="mb-1 truncate text-[11px] font-semibold uppercase tracking-wider text-gray-400">
-                                        Sold by {{ product.store.store_name }}
-                                    </p>
-                                {% endif %}
-
-                                <h3 class="line-clamp-2 min-h-10 text-sm font-bold text-gray-800 sm:text-base">
-                                    <a href="{% url 'customer_product_detail' product.id %}"
-                                       class="transition hover:text-[#16504f]">
-                                        {{ product.name }}
-                                    </a>
-                                </h3>
-
-                                <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
-
-                                    <p class="text-base font-extrabold text-[#123f3a] sm:text-lg">
-                                        ₹{{ product.price }}
-                                    </p>
-
-                                    {% if product.inventory.quantity > 0 %}
-                                        <span class="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700 sm:text-xs">
-                                            In Stock
-                                        </span>
-                                    {% else %}
-                                        <span class="rounded-full bg-red-50 px-2 py-1 text-[10px] font-bold text-red-600 sm:text-xs">
-                                            Out of Stock
-                                        </span>
                                     {% endif %}
-
                                 </div>
+                            </a>
 
-                                <div class="mt-auto pt-4">
-
-                                    {% if product.inventory.quantity > 0 %}
-                                        <form method="post" action="{% url 'add_to_cart' product.id %}">
-                                            {% csrf_token %}
-                                            <button
-                                                type="submit"
-                                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#123f3a] px-3 py-2.5 text-xs font-bold text-white transition hover:bg-[#16504f] sm:text-sm">
-                                                <svg class="icon h-4 w-4" aria-hidden="true"><use href="#i-cart"/></svg>
-                                                Add to Cart
-                                            </button>
-                                        </form>
-                                    {% else %}
-                                        <button
-                                            type="button"
-                                            disabled
-                                            class="flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-gray-200 px-3 py-2.5 text-xs font-bold text-gray-500 sm:text-sm">
-                                            Out of Stock
-                                        </button>
-                                    {% endif %}
-
-                                    <a href="{% url 'customer_product_detail' product.id %}"
-                                       class="mt-2 block text-center text-xs font-semibold text-[#123f3a] hover:underline sm:text-sm">
-                                        View details
-                                    </a>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-                    {% empty %}
-
-                        <div class="col-span-full rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-12 text-center">
-
-                            <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-[#123f3a]">
-                                <svg class="icon h-7 w-7" aria-hidden="true"><use href="#i-bag"/></svg>
-                            </div>
-
-                            <h3 class="font-extrabold text-gray-700">
-                                Products are coming soon
-                            </h3>
-
-                            <p class="mt-2 text-sm text-gray-500">
-                                Check back later to discover products on ShopHub.
-                            </p>
-
+                            <!-- AJAX WISHLIST TOGGLE -->
+                            <form method="post" action="{% url 'toggle_wishlist' product.id %}" class="wishlist-form absolute right-3 top-3 z-10">
+                                {% csrf_token %}
+                                <button type="submit"
+                                    class="wishlist-button flex h-10 w-10 items-center justify-center rounded-full border text-2xl shadow-md transition-[background-color,color,transform] duration-200 hover:scale-[1.08] disabled:cursor-wait disabled:opacity-65 {% if product.id in wishlist_product_ids %}border-rose-100 bg-rose-50 text-rose-600{% else %}border-gray-100 bg-white text-gray-400 hover:text-rose-600{% endif %}"
+                                    data-added="{% if product.id in wishlist_product_ids %}true{% else %}false{% endif %}"
+                                    aria-label="{% if product.id in wishlist_product_ids %}Remove {{ product.name }} from wishlist{% else %}Add {{ product.name }} to wishlist{% endif %}"
+                                    title="{% if product.id in wishlist_product_ids %}Remove from Wishlist{% else %}Add to Wishlist{% endif %}">
+                                    {% if product.id in wishlist_product_ids %}♥{% else %}♡{% endif %}
+                                </button>
+                            </form>
                         </div>
 
-                    {% endfor %}
+                        <!-- PRODUCT DETAILS -->
+                        <div class="flex flex-1 flex-col p-3 sm:p-4">
+                            {% if product.store.store_name %}
+                            <p class="mb-1 truncate text-[11px] font-semibold uppercase tracking-wider text-gray-400">Sold by {{ product.store.store_name }}</p>
+                            {% endif %}
 
+                            <h3 class="line-clamp-2 min-h-10 text-sm font-bold text-gray-800 sm:text-base">
+                                <a href="{% url 'customer_product_detail' product.id %}" class="transition hover:text-[#16504f]">{{ product.name }}</a>
+                            </h3>
+
+                            <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+                                <p class="text-base font-extrabold text-[#123f3a] sm:text-lg">₹{{ product.price }}</p>
+                                {% if product.inventory.quantity > 0 %}
+                                <span class="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700 sm:text-xs">In Stock</span>
+                                {% else %}
+                                <span class="rounded-full bg-red-50 px-2 py-1 text-[10px] font-bold text-red-600 sm:text-xs">Out of Stock</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="mt-auto pt-4">
+                                {% if product.inventory.quantity > 0 %}
+                                <form method="post" action="{% url 'add_to_cart' product.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#123f3a] px-3 py-2.5 text-xs font-bold text-white transition hover:bg-[#16504f] sm:text-sm">
+                                        <svg class="h-4 w-4 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-cart"/></svg>
+                                        Add to Cart
+                                    </button>
+                                </form>
+                                {% else %}
+                                <button type="button" disabled class="flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-gray-200 px-3 py-2.5 text-xs font-bold text-gray-500 sm:text-sm">Out of Stock</button>
+                                {% endif %}
+
+                                <a href="{% url 'customer_product_detail' product.id %}" class="mt-2 block text-center text-xs font-semibold text-[#123f3a] hover:underline sm:text-sm">View details</a>
+                            </div>
+                        </div>
+                    </article>
+                    {% empty %}
+                    <div class="col-span-full rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-12 text-center">
+                        <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-[#123f3a]">
+                            <svg class="h-7 w-7 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-bag"/></svg>
+                        </div>
+                        <h3 class="font-extrabold text-gray-700">Products are coming soon</h3>
+                        <p class="mt-2 text-sm text-gray-500">Check back later to discover products on ShopHub.</p>
+                    </div>
+                    {% endfor %}
                 </div>
 
                 <!-- PAGINATION -->
                 {% if products.has_other_pages %}
-                    <nav class="mt-10 flex items-center justify-center gap-3" aria-label="Product pages">
-
-                        {% if products.has_previous %}
-                            <a href="?page={{ products.previous_page_number }}#products"
-                               class="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-[#123f3a] transition hover:bg-emerald-50">
-                                ← Previous
-                            </a>
-                        {% endif %}
-
-                        <span class="text-sm text-gray-500">
-                            Page {{ products.number }} of {{ products.paginator.num_pages }}
-                        </span>
-
-                        {% if products.has_next %}
-                            <a href="?page={{ products.next_page_number }}#products"
-                               class="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-[#123f3a] transition hover:bg-emerald-50">
-                                Next →
-                            </a>
-                        {% endif %}
-
-                    </nav>
+                <nav class="mt-10 flex items-center justify-center gap-3" aria-label="Product pages">
+                    {% if products.has_previous %}
+                    <a href="?page={{ products.previous_page_number }}#products" class="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-[#123f3a] transition hover:bg-emerald-50">← Previous</a>
+                    {% endif %}
+                    <span class="text-sm text-gray-500">Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+                    {% if products.has_next %}
+                    <a href="?page={{ products.next_page_number }}#products" class="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-[#123f3a] transition hover:bg-emerald-50">Next →</a>
+                    {% endif %}
+                </nav>
                 {% endif %}
-
             </div>
         </section>
 
         <!-- WHY SHOPHUB -->
-        <section id="why-shophub" class="bg-[#f1f5f2] py-12 sm:py-16">
+        <section id="why-shophub" class="scroll-mt-[100px] bg-[#f1f5f2] py-12 sm:py-16">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
                 <div class="mx-auto mb-10 max-w-2xl text-center">
-                    <p class="section-label mb-2 text-xs font-extrabold uppercase text-amber-600">
-                        The ShopHub Difference
-                    </p>
-
-                    <h2 class="text-2xl font-extrabold text-[#123f3a] sm:text-3xl">
-                        Shopping That Fits Your Everyday Life
-                    </h2>
-
-                    <p class="mt-3 text-sm leading-6 text-gray-500 sm:text-base">
-                        Discover products across categories and enjoy a convenient way to shop.
-                    </p>
+                    <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.16em] text-amber-600">The ShopHub Difference</p>
+                    <h2 class="text-2xl font-extrabold text-[#123f3a] sm:text-3xl">Shopping That Fits Your Everyday Life</h2>
+                    <p class="mt-3 text-sm leading-6 text-gray-500 sm:text-base">Discover products across categories and enjoy a convenient way to shop.</p>
                 </div>
 
                 <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-
-                    <div class="rounded-2xl border border-gray-100 bg-white p-6 soft-shadow">
+                    <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_10px_30px_rgba(18,63,58,0.06)]">
                         <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-[#123f3a]">
-                            <svg class="icon h-6 w-6" aria-hidden="true"><use href="#i-cart"/></svg>
+                            <svg class="h-6 w-6 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-cart"/></svg>
                         </div>
                         <h3 class="text-lg font-extrabold text-[#123f3a]">Convenient Shopping</h3>
-                        <p class="mt-2 text-sm leading-6 text-gray-500">
-                            Browse available products, add your favourites to your cart, and continue to checkout.
-                        </p>
+                        <p class="mt-2 text-sm leading-6 text-gray-500">Browse available products, add your favourites to your cart, and continue to checkout.</p>
                     </div>
 
-                    <div class="rounded-2xl border border-gray-100 bg-white p-6 soft-shadow">
+                    <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_10px_30px_rgba(18,63,58,0.06)]">
                         <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-[#123f3a]">
-                            <svg class="icon h-6 w-6" aria-hidden="true"><use href="#i-bag"/></svg>
+                            <svg class="h-6 w-6 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-bag"/></svg>
                         </div>
                         <h3 class="text-lg font-extrabold text-[#123f3a]">Explore More Choices</h3>
-                        <p class="mt-2 text-sm leading-6 text-gray-500">
-                            Explore categories and discover products offered by sellers in the marketplace.
-                        </p>
+                        <p class="mt-2 text-sm leading-6 text-gray-500">Explore categories and discover products offered by sellers in the marketplace.</p>
                     </div>
 
-                    <div class="rounded-2xl border border-gray-100 bg-white p-6 soft-shadow sm:col-span-2 lg:col-span-1">
+                    <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0_10px_30px_rgba(18,63,58,0.06)] sm:col-span-2 lg:col-span-1">
                         <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-[#123f3a]">
-                            <svg class="icon h-6 w-6" aria-hidden="true"><use href="#i-package"/></svg>
+                            <svg class="h-6 w-6 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-package"/></svg>
                         </div>
                         <h3 class="text-lg font-extrabold text-[#123f3a]">Stay Updated</h3>
-                        <p class="mt-2 text-sm leading-6 text-gray-500">
-                            Use your customer account to access your shopping experience and keep track of your orders.
-                        </p>
+                        <p class="mt-2 text-sm leading-6 text-gray-500">Use your customer account to access your shopping experience and keep track of your orders.</p>
                     </div>
-
                 </div>
             </div>
         </section>
@@ -657,51 +377,29 @@
         <!-- CALL TO ACTION -->
         <section class="bg-white px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
             <div class="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 overflow-hidden rounded-3xl bg-[#123f3a] px-6 py-8 sm:px-10 sm:py-10 md:flex-row md:items-center">
-
                 <div class="max-w-2xl">
-                    <p class="section-label text-xs font-extrabold uppercase text-[#f4c542]">
-                        Your next favourite find
-                    </p>
-
-                    <h2 class="mt-3 text-2xl font-extrabold text-white sm:text-3xl">
-                        Ready to explore ShopHub?
-                    </h2>
-
-                    <p class="mt-3 text-sm leading-6 text-emerald-50/80 sm:text-base">
-                        Browse the marketplace and discover products for your everyday needs.
-                    </p>
+                    <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-[#f4c542]">Your next favourite find</p>
+                    <h2 class="mt-3 text-2xl font-extrabold text-white sm:text-3xl">Ready to explore ShopHub?</h2>
+                    <p class="mt-3 text-sm leading-6 text-emerald-50/80 sm:text-base">Browse the marketplace and discover products for your everyday needs.</p>
                 </div>
-
-                <a href="#products"
-                   class="inline-flex flex-shrink-0 items-center gap-2 rounded-xl bg-[#f4c542] px-6 py-3.5 text-sm font-extrabold text-[#123f3a] transition hover:-translate-y-0.5 hover:bg-yellow-300">
-                    Browse Products →
-                </a>
-
+                <a href="#products" class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#f4c542] px-6 py-3.5 text-sm font-extrabold text-[#123f3a] transition hover:-translate-y-0.5 hover:bg-yellow-300">Browse Products →</a>
             </div>
         </section>
-
     </main>
 
     <!-- FOOTER -->
     <footer class="bg-[#102f2c] text-white">
         <div class="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 md:grid-cols-3 lg:px-8">
-
             <div>
                 <a href="{% url 'customer_home' %}" class="inline-flex items-center gap-2">
                     <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f4c542] text-xl font-extrabold text-[#123f3a]">S</span>
                     <span class="text-2xl font-extrabold">ShopHub</span>
                 </a>
-
-                <p class="mt-4 max-w-sm text-sm leading-6 text-emerald-50/70">
-                    Your everyday marketplace for discovering products across categories in one convenient place.
-                </p>
+                <p class="mt-4 max-w-sm text-sm leading-6 text-emerald-50/70">Your everyday marketplace for discovering products across categories in one convenient place.</p>
             </div>
 
             <div>
-                <h3 class="text-sm font-extrabold uppercase tracking-widest text-[#f4c542]">
-                    Quick Links
-                </h3>
-
+                <h3 class="text-sm font-extrabold uppercase tracking-widest text-[#f4c542]">Quick Links</h3>
                 <div class="mt-4 flex flex-col items-start gap-3 text-sm text-emerald-50/75">
                     <a href="{% url 'customer_home' %}" class="transition hover:text-white">Home</a>
                     <a href="{% url 'customer_home' %}#categories" class="transition hover:text-white">Categories</a>
@@ -713,20 +411,10 @@
             </div>
 
             <div>
-                <h3 class="text-sm font-extrabold uppercase tracking-widest text-[#f4c542]">
-                    Your Shopping
-                </h3>
-
-                <p class="mt-4 text-sm leading-6 text-emerald-50/70">
-                    Discover products, save your favourites, manage your cart, and access your account.
-                </p>
-
-                <a href="{% url 'customer_home' %}#products"
-                   class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#f4c542] transition hover:text-yellow-200">
-                    Start exploring →
-                </a>
+                <h3 class="text-sm font-extrabold uppercase tracking-widest text-[#f4c542]">Your Shopping</h3>
+                <p class="mt-4 text-sm leading-6 text-emerald-50/70">Discover products, save your favourites, manage your cart, and access your account.</p>
+                <a href="{% url 'customer_home' %}#products" class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#f4c542] transition hover:text-yellow-200">Start exploring →</a>
             </div>
-
         </div>
 
         <div class="border-t border-white/10">
@@ -741,8 +429,56 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const wishlistForms = document.querySelectorAll(".wishlist-form");
-            const navbarLink = document.getElementById("wishlist-nav-link");
-            const navbarHeart = document.getElementById("wishlist-nav-heart");
+            const toast = document.getElementById("wishlist-toast");
+            const toastMessage = document.getElementById("wishlist-toast-message");
+            const toastIcon = document.getElementById("wishlist-toast-icon");
+
+            let toastTimer;
+
+            function showWishlistToast(message, type) {
+                if (!toast || !toastMessage || !toastIcon) {
+                    console.error("Wishlist toast elements not found.");
+                    return;
+                }
+
+                clearTimeout(toastTimer);
+                toastMessage.textContent = message;
+
+                toast.classList.remove(
+                    "border-green-200", "bg-green-50", "text-green-800",
+                    "border-blue-200", "bg-blue-50", "text-blue-800",
+                    "border-red-200", "bg-red-50", "text-red-800"
+                );
+
+                toastIcon.classList.remove(
+                    "bg-green-100", "bg-blue-100", "bg-red-100"
+                );
+
+                if (type === "removed") {
+                    toast.classList.add("border-blue-200", "bg-blue-50", "text-blue-800");
+                    toastIcon.classList.add("bg-blue-100");
+                    toastIcon.textContent = "♥";
+                } else if (type === "error") {
+                    toast.classList.add("border-red-200", "bg-red-50", "text-red-800");
+                    toastIcon.classList.add("bg-red-100");
+                    toastIcon.textContent = "!";
+                } else {
+                    toast.classList.add("border-green-200", "bg-green-50", "text-green-800");
+                    toastIcon.classList.add("bg-green-100");
+                    toastIcon.textContent = "✓";
+                }
+
+                toast.classList.remove("hidden");
+                toast.classList.add("flex");
+
+                toastTimer = setTimeout(function () {
+                    toast.classList.add("hidden");
+                    toast.classList.remove("flex");
+                }, 3000);
+            }
+
+            console.log("Wishlist script loaded.");
+            console.log("Wishlist forms found:", wishlistForms.length);
 
             wishlistForms.forEach(function (form) {
                 form.addEventListener("submit", async function (event) {
@@ -769,49 +505,51 @@
 
                         const data = await response.json();
 
-                        if (response.status === 401) {
-                            alert("Please log in to use your wishlist.");
-                            return;
-                        }
-
                         if (!response.ok || !data.success) {
                             throw new Error(
                                 data.message || "Unable to update your wishlist."
                             );
                         }
 
-                        // Update the product heart.
+                        // Update the product heart without refreshing the page.
                         button.textContent = data.added ? "♥" : "♡";
 
-                        button.classList.toggle("is-added", data.added);
-                        button.classList.toggle("is-not-added", !data.added);
+                        button.classList.toggle("text-rose-600", data.added);
+                        button.classList.toggle("text-gray-400", !data.added);
                         button.classList.toggle("border-rose-100", data.added);
                         button.classList.toggle("bg-rose-50", data.added);
                         button.classList.toggle("border-gray-100", !data.added);
                         button.classList.toggle("bg-white", !data.added);
 
-                        const productName = form.closest(".product-card")
-                            ?.querySelector("h3 a")
-                            ?.textContent.trim() || "product";
+                        button.dataset.added = String(data.added);
 
                         button.setAttribute(
                             "aria-label",
                             data.added
-                                ? "Remove " + productName + " from wishlist"
-                                : "Add " + productName + " to wishlist"
+                                ? "Remove product from wishlist"
+                                : "Add product to wishlist"
                         );
 
-                        button.setAttribute(
-                            "title",
-                            data.added ? "Remove from Wishlist" : "Add to Wishlist"
+                        button.title = data.added
+                            ? "Remove from Wishlist"
+                            : "Add to Wishlist";
+
+                        showWishlistToast(
+                            data.added
+                                ? "Product added to wishlist!"
+                                : "Product removed from your wishlist!",
+                            data.added ? "added" : "removed"
                         );
 
-                        button.setAttribute("data-added", String(data.added));
+                        // Update the navbar wishlist heart.
+                        const navbarLink = document.getElementById("wishlist-nav-link");
+                        const navbarHeart = document.getElementById("wishlist-nav-heart");
 
-                        // Update the navbar heart without refreshing.
-                        if (navbarHeart && navbarLink &&
-                            typeof data.wishlist_count !== "undefined") {
-
+                        if (
+                            navbarLink &&
+                            navbarHeart &&
+                            typeof data.wishlist_count !== "undefined"
+                        ) {
                             const hasItems = data.wishlist_count > 0;
 
                             navbarHeart.textContent = hasItems ? "♥" : "♡";
@@ -822,12 +560,13 @@
                         }
 
                     } catch (error) {
-                        console.error("Wishlist update failed:", error);
+                        console.error("Wishlist error:", error);
 
-                        alert(
-                            error.message ||
-                            "Something went wrong. Please try again."
+                        showWishlistToast(
+                            error.message || "Something went wrong.",
+                            "error"
                         );
+
                     } finally {
                         button.disabled = false;
                     }

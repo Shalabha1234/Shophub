@@ -42,6 +42,37 @@
 
     <main class="max-w-7xl mx-auto px-5 py-10 sm:py-14">
 
+        <!-- Wishlist success and error messages -->
+        {% if messages %}
+            <div id="wishlist-messages"
+                 class="mb-8 space-y-3"
+                 aria-live="polite">
+
+                {% for message in messages %}
+                    <div role="status"
+                         class="flex items-start gap-3 rounded-xl border px-5 py-4 text-sm font-semibold shadow-sm
+                         {% if 'success' in message.tags %}
+                             border-green-200 bg-green-50 text-green-800
+                         {% elif 'error' in message.tags %}
+                             border-red-200 bg-red-50 text-red-800
+                         {% else %}
+                             border-blue-200 bg-blue-50 text-blue-800
+                         {% endif %}">
+
+                        {% if 'success' in message.tags %}
+                            <span class="text-lg leading-5">✓</span>
+                        {% elif 'error' in message.tags %}
+                            <span class="text-lg leading-5">!</span>
+                        {% else %}
+                            <span class="text-lg leading-5">ℹ</span>
+                        {% endif %}
+
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <!-- Page heading -->
         <div class="mb-9">
             <p class="text-sm font-bold uppercase tracking-[0.2em] text-[#b18b00]">
@@ -62,6 +93,7 @@
 
         {% if wishlist_items %}
 
+            <!-- Wishlist products -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
                 {% for item in wishlist_items %}
@@ -97,12 +129,14 @@
 
                             <div class="mt-5 flex flex-col gap-3">
 
+                                <!-- View product -->
                                 <a href="{% url 'customer_product_detail' item.product.id %}"
                                    class="w-full text-center bg-[#123f3a] text-white py-3 rounded-xl font-bold hover:bg-[#1b5850] transition">
                                     View Product
                                 </a>
 
-                                <form method="post"
+                                <!-- Remove from wishlist -->
+                                <form method="POST"
                                       action="{% url 'remove_from_wishlist' item.product.id %}">
                                     {% csrf_token %}
 
@@ -147,6 +181,7 @@
 
     </main>
 
+    <!-- Footer -->
     <footer class="text-center text-sm text-gray-500 py-7">
         © ShopHub. Your Everyday Marketplace.
     </footer>

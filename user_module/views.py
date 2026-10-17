@@ -9,6 +9,7 @@ from django.core.validators import validate_email
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models import Avg, Count, F, Q
@@ -257,19 +258,25 @@ def customer_product_list(request):
     # --------------------------------------------------------
     # DISPLAY SEARCH RESULTS
     # --------------------------------------------------------
+    wishlist_product_ids = []
 
-    return render(
-        request,
-        'customer_product_list.html',
-        {
-            'products': products,
-            'categories': Category.objects.all(),
-            'search_query': search_query,
-            'selected_category': selected_category,
-            'sort_by': sort_by,
-            'selected_store': selected_store,
-        }
-    )
+    if request.user.is_authenticated and request.user.role == 'CUSTOMER':
+                wishlist_product_ids = list(
+                    Wishlist.objects.filter(
+                        user=request.user
+                    ).values_list('product_id', flat=True)
+                )
+
+    return render(request, 'customer_product_list.html', {
+                'products': products,
+                'categories': Category.objects.all(),
+                'search_query': search_query,
+                'selected_category': selected_category,
+                'sort_by': sort_by,
+                'selected_store': selected_store,
+                'wishlist_product_ids': wishlist_product_ids,
+                })
+
 
 
 # ============================================================
@@ -351,10 +358,21 @@ def add_to_wishlist(request, product_id):
         status='ACTIVE',
     )
 
-    Wishlist.objects.get_or_create(
+    wishlist_item, created = Wishlist.objects.get_or_create(
         user=request.user,
         product=product,
     )
+
+    if created:
+        messages.success(
+            request,
+            "Product added to your wishlist."
+        )
+    else:
+        messages.info(
+            request,
+            "This product is already in your wishlist."
+        )
 
     return redirect(request.POST.get('next') or 'wishlist')
 
@@ -362,10 +380,21 @@ def add_to_wishlist(request, product_id):
 @customer_required
 @require_POST
 def remove_from_wishlist(request, product_id):
-    Wishlist.objects.filter(
+    deleted_count, _ = Wishlist.objects.filter(
         user=request.user,
         product_id=product_id,
     ).delete()
+
+    if deleted_count:
+        messages.success(
+            request,
+            "Product removed from your wishlist."
+        )
+    else:
+        messages.info(
+            request,
+            "This product is not in your wishlist."
+        )
 
     return redirect(request.POST.get('next') or 'wishlist')
 
