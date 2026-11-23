@@ -104,15 +104,31 @@
             <!-- NAVIGATION ACTIONS -->
             <div class="flex shrink-0 items-center gap-2 sm:gap-3">
 
-                <a href="{% url 'wishlist' %}" id="wishlist-nav-link" aria-label="My Wishlist" title="My Wishlist"
-                   class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-2xl transition-colors duration-200 {% if wishlist_product_ids %}bg-rose-50 text-rose-600{% else %}text-gray-500 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600{% endif %}">
-                    <span id="wishlist-nav-heart">{% if wishlist_product_ids %}♥{% else %}♡{% endif %}</span>
+
+                <a href="{% url 'wishlist' %}" id="wishlist-nav-link"
+                aria-label="My Wishlist" title="My Wishlist"
+                class="relative flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-2xl transition-colors duration-200 {% if wishlist_count %}bg-rose-50 text-rose-600{% else %}text-gray-500 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600{% endif %}">
+                    <span id="wishlist-nav-heart">{% if wishlist_count %}♥{% else %}♡{% endif %}</span>
+                    <span id="wishlist-nav-count"
+                        class="{% if not wishlist_count %}hidden{% endif %} absolute -right-1 -top-1 min-w-5 h-5 rounded-full bg-rose-600 px-1 text-center text-xs font-bold leading-5 text-white">
+                        {{ wishlist_count }}
+                    </span>
                 </a>
 
-                <a href="{% url 'customer_cart' %}" aria-label="Shopping cart" title="Shopping cart"
-                   class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-[#123f3a] transition hover:border-[#123f3a] hover:bg-emerald-50">
-                    <svg class="h-5 w-5 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true"><use href="#i-cart"/></svg>
-                </a>
+
+
+                    <a href="{% url 'customer_cart' %}" id="cart-nav-link"
+                    aria-label="Shopping cart" title="Shopping cart"
+                    class="relative flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-[#123f3a] transition hover:border-[#123f3a] hover:bg-emerald-50">
+                        <svg class="h-5 w-5 fill-none stroke-current [stroke-width:2] [stroke-linecap:round] [stroke-linejoin:round]" aria-hidden="true">
+                            <use href="#i-cart"/>
+                        </svg>
+                        <span id="cart-nav-count"
+                            class="{% if not cart_count %}hidden{% endif %} absolute -right-1 -top-1 min-w-5 h-5 rounded-full bg-[#f4c542] px-1 text-center text-xs font-bold leading-5 text-[#123f3a]">
+                            {{ cart_count }}
+                        </span>
+                    </a>
+
 
                 <a href="{% url 'customer_dashboard' %}" class="inline-flex items-center justify-center rounded-xl bg-[#123f3a] px-3 py-2.5 text-sm font-bold text-white transition hover:bg-[#16504a] sm:px-5">
                     <span class="hidden sm:inline">My Account</span>
@@ -553,6 +569,15 @@
                             const hasItems = data.wishlist_count > 0;
 
                             navbarHeart.textContent = hasItems ? "♥" : "♡";
+
+                            const wishlistCountBadge = document.getElementById(
+                                "wishlist-nav-count"
+                            );
+
+                            if (wishlistCountBadge) {
+                                wishlistCountBadge.textContent = data.wishlist_count;
+                                wishlistCountBadge.classList.toggle("hidden", !hasItems);
+                            }
 
                             navbarLink.classList.toggle("bg-rose-50", hasItems);
                             navbarLink.classList.toggle("text-rose-600", hasItems);

@@ -117,18 +117,30 @@
         <div class="flex items-center gap-2 sm:gap-3">
 
             <a href="{% url 'wishlist' %}"
-               class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-2xl text-gray-500 transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600"
-               aria-label="My Wishlist">
-                ♡
-            </a>
+                id="wishlist-nav-link"
+                class="relative flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-2xl text-gray-500 transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600"
+                aria-label="My Wishlist">
+                    <span id="wishlist-nav-heart">♡</span>
 
-            <a href="{% url 'customer_cart' %}"
-               class="flex h-10 items-center justify-center rounded-xl border border-gray-200 px-3 text-sm font-bold text-[#123f3a] transition hover:border-[#123f3a] hover:bg-emerald-50"
-               aria-label="Shopping cart">
-                Cart
-            </a>
+                    <span id="wishlist-nav-count"
+                        class="{% if not wishlist_count %}hidden{% endif %} absolute -right-2 -top-2 min-w-[20px] h-5 rounded-full bg-rose-600 px-1 text-center text-xs font-bold leading-5 text-white">
+                        {{ wishlist_count }}
+                    </span>
+                </a>
 
-            <a href="{% url 'customer_dashboard' %}"
+                <a href="{% url 'customer_cart' %}"
+                id="cart-nav-link"
+                class="relative flex h-10 items-center justify-center rounded-xl border border-gray-200 px-3 text-sm font-bold text-[#123f3a] transition hover:border-[#123f3a] hover:bg-emerald-50"
+                aria-label="Shopping cart">
+                    Cart
+
+                    <span id="cart-nav-count"
+                        class="{% if not cart_count %}hidden{% endif %} absolute -right-2 -top-2 min-w-[20px] h-5 rounded-full bg-emerald-600 px-1 text-center text-xs font-bold leading-5 text-white">
+                        {{ cart_count }}
+                    </span>
+                </a>
+
+                <a href="{% url 'customer_dashboard' %}"
                class="rounded-xl bg-[#123f3a] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#16504a]">
                 <span class="hidden sm:inline">My Account</span>
                 <span class="sm:hidden">Account</span>

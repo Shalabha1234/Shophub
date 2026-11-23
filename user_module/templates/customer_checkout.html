@@ -26,9 +26,15 @@
         </div>
 
         <a href="{% url 'customer_cart' %}"
-           class="inline-flex items-center gap-2 self-start rounded-lg px-3 py-2 font-semibold text-[#123f3a] transition hover:bg-teal-50 sm:self-auto">
-            <span aria-hidden="true"> </span> Back to Cart
-        </a>
+            class="relative inline-flex items-center gap-2 self-start rounded-lg px-3 py-2 font-semibold text-[#123f3a] transition hover:bg-teal-50 sm:self-auto">
+
+                <span aria-hidden="true">←</span>
+                Back to Cart
+
+                <span class="{% if not cart_count %}hidden{% endif %} min-w-[20px] h-5 rounded-full bg-emerald-600 px-1 text-center text-xs font-bold leading-5 text-white">
+                    {{ cart_count }}
+                </span>
+            </a>
     </header>
 
     {% if messages %}
@@ -197,28 +203,30 @@
                         <div>
                             <label for="edit_full_name_{{ address.id }}" class="mb-1.5 block text-sm font-semibold text-gray-700">Full Name</label>
                             <input type="text" id="edit_full_name_{{ address.id }}" name="full_name"
-                                   value="{{ address.full_name }}" autocomplete="name" required
+                                   value="{{ address.full_name }}" autocomplete="name" required maxlength="100"
                                    class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                         </div>
 
                         <div>
                             <label for="edit_phone_{{ address.id }}" class="mb-1.5 block text-sm font-semibold text-gray-700">Phone Number</label>
                             <input type="tel" id="edit_phone_{{ address.id }}" name="phone"
-                                   value="{{ address.phone }}" autocomplete="tel" required
+                                   value="{{ address.phone }}" autocomplete="tel" required maxlength="10"
+                                   pattern="[6-9][0-9]{9}" inputmode="numeric"
+                                   title="Enter a valid 10-digit Indian mobile number"
                                    class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                         </div>
 
                         <div>
                             <label for="edit_house_name_{{ address.id }}" class="mb-1.5 block text-sm font-semibold text-gray-700">House Name</label>
                             <input type="text" id="edit_house_name_{{ address.id }}" name="house_name"
-                                   value="{{ address.house_name }}" required
+                                   value="{{ address.house_name }}" required maxlength="200"
                                    class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                         </div>
 
                         <div>
                             <label for="edit_street_{{ address.id }}" class="mb-1.5 block text-sm font-semibold text-gray-700">Street Address</label>
                             <input type="text" id="edit_street_{{ address.id }}" name="street"
-                                   value="{{ address.street }}" autocomplete="street-address" required
+                                   value="{{ address.street }}" autocomplete="street-address" required maxlength="200"
                                    class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                         </div>
 
@@ -226,14 +234,14 @@
                             <div>
                                 <label for="edit_city_{{ address.id }}" class="mb-1.5 block text-sm font-semibold text-gray-700">City</label>
                                 <input type="text" id="edit_city_{{ address.id }}" name="city"
-                                       value="{{ address.city }}" autocomplete="address-level2" required
+                                       value="{{ address.city }}" autocomplete="address-level2" required maxlength="100"
                                        class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                             </div>
 
                             <div>
                                 <label for="edit_state_{{ address.id }}" class="mb-1.5 block text-sm font-semibold text-gray-700">State</label>
                                 <input type="text" id="edit_state_{{ address.id }}" name="state"
-                                       value="{{ address.state }}" autocomplete="address-level1" required
+                                       value="{{ address.state }}" autocomplete="address-level1" required maxlength="100"
                                        class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                             </div>
                         </div>
@@ -242,7 +250,9 @@
                             <div>
                                 <label for="edit_pincode_{{ address.id }}" class="mb-1.5 block text-sm font-semibold text-gray-700">PIN Code</label>
                                 <input type="text" id="edit_pincode_{{ address.id }}" name="pincode"
-                                       value="{{ address.pincode }}" autocomplete="postal-code" required
+                                       value="{{ address.pincode }}" autocomplete="postal-code" required maxlength="6"
+                                       minlength="6" pattern="[1-9][0-9]{5}" inputmode="numeric"
+                                       title="Enter a valid 6-digit Indian PIN code"
                                        class="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                             </div>
 
@@ -305,38 +315,46 @@
 
                             <div>
                                 <label for="new_full_name" class="mb-1.5 block text-sm font-semibold text-gray-700">Full Name</label>
-                                <input type="text" id="new_full_name" name="full_name" autocomplete="name" required
+                                <input type="text" id="new_full_name" name="full_name"
+                                       autocomplete="name" required maxlength="100"
                                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                             </div>
 
                             <div>
                                 <label for="new_phone" class="mb-1.5 block text-sm font-semibold text-gray-700">Phone Number</label>
-                                <input type="tel" id="new_phone" name="phone" autocomplete="tel" required
+                                <input type="tel" id="new_phone" name="phone"
+                                       autocomplete="tel" required maxlength="10"
+                                       pattern="[6-9][0-9]{9}" inputmode="numeric"
+                                       title="Enter a valid 10-digit Indian mobile number"
                                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                             </div>
 
                             <div>
                                 <label for="new_house_name" class="mb-1.5 block text-sm font-semibold text-gray-700">House Name</label>
-                                <input type="text" id="new_house_name" name="house_name" required
+                                <input type="text" id="new_house_name" name="house_name"
+                                       required maxlength="200"
                                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                             </div>
 
                             <div>
                                 <label for="new_street" class="mb-1.5 block text-sm font-semibold text-gray-700">Street Address</label>
-                                <input type="text" id="new_street" name="street" autocomplete="street-address" required
+                                <input type="text" id="new_street" name="street"
+                                       autocomplete="street-address" required maxlength="200"
                                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                             </div>
 
                             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div>
                                     <label for="new_city" class="mb-1.5 block text-sm font-semibold text-gray-700">City</label>
-                                    <input type="text" id="new_city" name="city" autocomplete="address-level2" required
+                                    <input type="text" id="new_city" name="city"
+                                           autocomplete="address-level2" required maxlength="100"
                                            class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                                 </div>
 
                                 <div>
                                     <label for="new_state" class="mb-1.5 block text-sm font-semibold text-gray-700">State</label>
-                                    <input type="text" id="new_state" name="state" autocomplete="address-level1" required
+                                    <input type="text" id="new_state" name="state"
+                                           autocomplete="address-level1" required maxlength="100"
                                            class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                                 </div>
                             </div>
@@ -344,7 +362,11 @@
                             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div>
                                     <label for="new_pincode" class="mb-1.5 block text-sm font-semibold text-gray-700">PIN Code</label>
-                                    <input type="text" id="new_pincode" name="pincode" autocomplete="postal-code" required
+                                    <input type="text" id="new_pincode" name="pincode"
+                                           autocomplete="postal-code" required maxlength="6"
+                                           minlength="6" pattern="[1-9][0-9]{5}"
+                                           inputmode="numeric"
+                                           title="Enter a valid 6-digit Indian PIN code"
                                            class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100">
                                 </div>
 
@@ -462,4 +484,3 @@ function toggleEditAddress(id) {
 </script>
 </body>
 </html>
-

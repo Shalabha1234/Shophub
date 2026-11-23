@@ -33,8 +33,12 @@
                 </a>
 
                 <a href="{% url 'customer_cart' %}"
-                   class="hover:text-[#d6a900]">
-                    My Cart
+            class="relative hover:text-[#d6a900]">
+                My Cart
+
+                <span class="{% if not cart_count %}hidden{% endif %} absolute -top-3 -right-4 min-w-[20px] h-5 rounded-full bg-emerald-600 px-1 text-center text-xs font-bold leading-5 text-white">
+                    {{ cart_count }}
+                </span>
                 </a>
             </div>
         </div>

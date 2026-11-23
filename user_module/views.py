@@ -1,3 +1,8 @@
+import json
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
+
+
 from datetime import timedelta
 from urllib.parse import urlencode
 
@@ -41,6 +46,151 @@ from .models import (
     Wishlist,
     CustomerAddress,
 )
+
+import re
+
+
+INDIAN_STATES_AND_UTS = {
+    'andhra pradesh',
+    'arunachal pradesh',
+    'assam',
+    'bihar',
+    'chhattisgarh',
+    'goa',
+    'gujarat',
+    'haryana',
+    'himachal pradesh',
+    'jharkhand',
+    'karnataka',
+    'kerala',
+    'madhya pradesh',
+    'maharashtra',
+    'manipur',
+    'meghalaya',
+    'mizoram',
+    'nagaland',
+    'odisha',
+    'punjab',
+    'rajasthan',
+    'sikkim',
+    'tamil nadu',
+    'telangana',
+    'tripura',
+    'uttar pradesh',
+    'uttarakhand',
+    'west bengal',
+    'andaman and nicobar islands',
+    'chandigarh',
+    'dadra and nagar haveli and daman and diu',
+    'delhi',
+    'jammu and kashmir',
+    'ladakh',
+    'lakshadweep',
+    'puducherry',
+}
+
+
+def validate_pincode_location(city, state, pincode):
+    api_url = f"https://api.pincodeapi.in/api/v1/pincode/{pincode}"
+
+    try:
+        request = Request(
+            api_url,
+            headers={"User-Agent": "ShopHub/1.0"}
+        )
+
+        with urlopen(request, timeout=5) as response:
+            result = json.loads(response.read().decode("utf-8"))
+
+    except (HTTPError, URLError, TimeoutError, json.JSONDecodeError):
+        return "We couldn't verify your PIN code right now. Please try again later."
+
+    if not result.get("success"):
+        return "This PIN code was not found. Please enter a valid PIN code."
+
+    data = result.get("data", {})
+    post_offices = data.get("post_offices", [])
+
+    if data.get("pincode") != pincode or not post_offices:
+        return "This PIN code was not found. Please enter a valid PIN code."
+
+    normalized_city = re.sub(r"[^a-z0-9]", "", city.casefold())
+    normalized_state = state.casefold()
+
+    valid_states = {
+        office.get("state", "").casefold()
+        for office in post_offices
+    }
+
+    if normalized_state not in valid_states:
+        return "The PIN code does not match the selected state."
+
+    valid_city_names = set()
+
+    for office in post_offices:
+        district = office.get("district", "")
+        office_name = office.get("office_name", "")
+
+        valid_city_names.add(
+            re.sub(r"[^a-z0-9]", "", district.casefold())
+        )
+
+        # Remove common post-office suffixes.
+        office_name = re.sub(
+            r"\s+(ho|so|bo)\.?$",
+            "",
+            office_name,
+            flags=re.IGNORECASE
+        )
+
+        valid_city_names.add(
+            re.sub(r"[^a-z0-9]", "", office_name.casefold())
+        )
+
+    if normalized_city not in valid_city_names:
+        return "The PIN code does not match the entered city or district."
+
+    return None
+
+
+def validate_customer_address(
+    full_name, phone, house_name, street,
+    city, state, pincode
+):
+    name_pattern = r"[^\W\d_]+(?:[ .'-][^\W\d_]+)*"
+
+    if not re.fullmatch(name_pattern, full_name, flags=re.UNICODE):
+        return "Please enter a valid name using letters only."
+
+    if not re.fullmatch(r"(?:\+91[- ]?)?[6-9]\d{9}", phone):
+        return "Please enter a valid 10-digit Indian mobile number."
+
+    address_pattern = r"[\w\s.,'()/#-]+"
+
+    if not re.fullmatch(address_pattern, house_name, flags=re.UNICODE):
+        return "Please enter a valid house name."
+
+    if not re.fullmatch(address_pattern, street, flags=re.UNICODE):
+        return "Please enter a valid street address."
+
+    if not re.search(r"[^\W\d_]", city, flags=re.UNICODE):
+        return "Please enter a valid city name."
+
+    if not re.fullmatch(name_pattern, city, flags=re.UNICODE):
+        return "City name must contain valid letters."
+
+    if state.casefold() not in INDIAN_STATES_AND_UTS:
+        return "Please select a valid Indian state or union territory."
+
+    if not re.fullmatch(r"[1-9][0-9]{5}", pincode):
+        return "PIN code must contain exactly 6 digits."
+
+    pincode_error = validate_pincode_location(city, state, pincode)
+
+    if pincode_error:
+        return pincode_error
+
+    return None
 
 
 # ============================================================
@@ -982,21 +1132,18 @@ def customer_checkout(request):
             )
 
             # Validate required fields before saving.
-            if not all([
+            validation_error = validate_customer_address(
                 full_name,
                 phone,
                 house_name,
                 street,
                 city,
                 state,
-                pincode,
-            ]):
+                pincode
+            )
 
-                messages.error(
-                    request,
-                    'Please fill in all required address fields.'
-                )
-
+            if validation_error:
+                messages.error(request, validation_error)
                 return redirect('customer_checkout')
 
             has_addresses = CustomerAddress.objects.filter(
@@ -1087,21 +1234,18 @@ def customer_checkout(request):
             )
 
             # Validate before changing the existing address.
-            if not all([
+            validation_error = validate_customer_address(
                 full_name,
                 phone,
                 house_name,
                 street,
                 city,
                 state,
-                pincode,
-            ]):
+                pincode
+            )
 
-                messages.error(
-                    request,
-                    'Please fill in all required address fields.'
-                )
-
+            if validation_error:
+                messages.error(request, validation_error)
                 return redirect('customer_checkout')
 
             if is_default:

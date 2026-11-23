@@ -72,14 +72,20 @@
                         Products
                     </a>
 
-                    <a href="{% url 'wishlist' %}"
-                       class="text-gray-500 hover:text-[#123f3a] text-sm font-medium transition">
+                   <a href="{% url 'wishlist' %}"
+                    class="relative text-gray-500 hover:text-[#123f3a] text-sm font-medium transition">
                         Wishlist
+                        <span class="{% if not wishlist_count %}hidden{% endif %} absolute -top-3 -right-3 min-w-[18px] h-[18px] rounded-full bg-rose-600 px-1 text-center text-[10px] font-bold leading-[18px] text-white">
+                            {{ wishlist_count }}
+                        </span>
                     </a>
 
                     <a href="{% url 'customer_cart' %}"
-                       class="text-gray-500 hover:text-[#123f3a] text-sm font-medium transition">
+                    class="relative text-gray-500 hover:text-[#123f3a] text-sm font-medium transition">
                         Cart
+                        <span class="{% if not cart_count %}hidden{% endif %} absolute -top-3 -right-3 min-w-[18px] h-[18px] rounded-full bg-emerald-600 px-1 text-center text-[10px] font-bold leading-[18px] text-white">
+                            {{ cart_count }}
+                        </span>
                     </a>
                 </div>
 

@@ -95,17 +95,31 @@
         </form>
 
         <div class="flex items-center gap-2">
-            <a href="{% url 'wishlist' %}"
-               id="wishlist-nav-link"
-               class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-xl {% if wishlist_product_ids %}bg-rose-50 text-rose-600{% else %}text-gray-500{% endif %}"
-               aria-label="My Wishlist"
-               title="My Wishlist">
-                <span id="wishlist-nav-heart">{% if wishlist_product_ids %}♥{% else %}♡{% endif %}</span>
-            </a>
 
-            <a href="{% url 'customer_cart' %}"
-               class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200"
-               aria-label="Shopping cart">🛒</a>
+                    <a href="{% url 'wishlist' %}"
+                    id="wishlist-nav-link"
+                    class="relative flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 text-xl {% if wishlist_count %}bg-rose-50 text-rose-600{% else %}text-gray-500{% endif %}"
+                    aria-label="My Wishlist"
+                    title="My Wishlist">
+                        <span id="wishlist-nav-heart">{% if wishlist_count %}♥{% else %}♡{% endif %}</span>
+                        <span id="wishlist-nav-count"
+                            class="{% if not wishlist_count %}hidden{% endif %} absolute -right-1 -top-1 min-w-5 h-5 rounded-full bg-rose-600 px-1 text-center text-xs font-bold leading-5 text-white">
+                            {{ wishlist_count }}
+                        </span>
+                    </a>
+
+                    <a href="{% url 'customer_cart' %}"
+                    id="cart-nav-link"
+                    class="relative flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200"
+                    aria-label="Shopping cart"
+                    title="Shopping cart">
+                        🛒
+                        <span id="cart-nav-count"
+                            class="{% if not cart_count %}hidden{% endif %} absolute -right-1 -top-1 min-w-5 h-5 rounded-full bg-[#f4c542] px-1 text-center text-xs font-bold leading-5 text-[#123f3a]">
+                            {{ cart_count }}
+                        </span>
+                    </a>
+
 
             <a href="{% url 'customer_dashboard' %}"
                class="rounded-xl bg-[#123f3a] px-4 py-3 text-sm font-bold text-white">
@@ -415,6 +429,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     const hasItems = data.wishlist_count > 0;
 
                     navbarHeart.textContent = hasItems ? "♥" : "♡";
+                    const wishlistCountBadge = document.getElementById(
+                        "wishlist-nav-count"
+                    );
+
+                    if (wishlistCountBadge) {
+                        wishlistCountBadge.textContent = data.wishlist_count;
+                        wishlistCountBadge.classList.toggle("hidden", !hasItems);
+                    }
 
                     navbarLink.classList.toggle("bg-rose-50", hasItems);
                     navbarLink.classList.toggle("text-rose-600", hasItems);
