@@ -23,6 +23,7 @@ from django.contrib import messages
 from user_module.models import User, SellerProfile
 from django.db.models import Sum
 from django.utils import timezone
+from django.core.paginator import Paginator
 
 def admin_required(view_func):
     return user_passes_test(
@@ -580,6 +581,7 @@ def admin_seller_toggle_status(request, seller_id):
     )
 
 
+
 @admin_required
 def admin_order_list(request):
 
@@ -587,10 +589,18 @@ def admin_order_list(request):
 
     orders = Order.objects.select_related(
         'user'
+    ).prefetch_related(
+        'orderitem_set__product__store'
     ).order_by('-created_at')
 
     if status:
         orders = orders.filter(status=status)
+
+    paginator = Paginator(orders, 25)
+
+    page_number = request.GET.get('page')
+
+    orders = paginator.get_page(page_number)
 
     return render(
         request,
@@ -600,6 +610,7 @@ def admin_order_list(request):
             'selected_status': status,
         }
     )
+
 
 
 
